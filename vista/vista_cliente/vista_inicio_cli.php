@@ -6,10 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <?php
-    include('bd.php')
-    ?>
-    <h1>hola1</h1>
+    <h1>Hola cliente</h1>
     
 </body>
 </html>
