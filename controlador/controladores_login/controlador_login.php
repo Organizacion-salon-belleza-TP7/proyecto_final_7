@@ -23,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $resultado_cli = $logeo->discriminar_cliente($usuario,$conn);
 
             if($resultado_adm && $resultado_adm->num_rows > 0){
-                header("Location: ". BASE_URL ."/vista/vista_adm/vista_inicio_adm.php");
+                header("Location: ". BASE_URL ."/vista/vista_adm/servicios_combos/vista_inicio_adm.php");
                 exit;
 
             }elseif($resultado_emp && $resultado_emp->num_rows > 0){
