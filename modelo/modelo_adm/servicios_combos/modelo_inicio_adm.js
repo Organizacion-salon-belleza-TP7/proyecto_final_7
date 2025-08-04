@@ -36,4 +36,3 @@ function addProduct() {
         firstSelect.appendChild(option);
         });
     });
-       

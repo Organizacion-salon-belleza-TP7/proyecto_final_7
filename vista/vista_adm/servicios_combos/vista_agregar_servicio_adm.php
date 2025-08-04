@@ -16,6 +16,7 @@
 
     $resultado_tiempo = $resultado_traer_datos_form['tiempos'];
     $resultado_trabajador = $resultado_traer_datos_form['trabajadores'];
+    $resultado_tipo_servicio = $resultado_traer_datos_form['tipo_servicio'];
     $productosJS = $resultado_traer_datos_form['productosJS'];
     ?>
 
@@ -88,7 +89,24 @@
                         <option value="inactivo">Inactivo</option>
                     </select></td>
                 </tr>
+                <tr>
+                    <td>Tipo de servicio</td>
+                    <td>
+                        <select name="tipo_servicio">
+                            <option value="">Elija un tipo de servicio</option>
 
+                            <?php
+                            if($resultado_tipo_servicio && $resultado_tipo_servicio->num_rows > 0){
+                                while($row_tipo_servicio = $resultado_tipo_servicio->fetch_assoc()){
+                                     echo "<option value='{$row_tipo_servicio['id_tipo_servicio']}'>" . htmlspecialchars($row_tipo_servicio['tipo_servicio']) . "</option>";
+
+                                }
+
+                            }
+                            ?>
+                        </select>
+                    </td>
+                </tr>
             
 
             </table>
