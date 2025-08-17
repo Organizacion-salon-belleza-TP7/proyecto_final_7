@@ -15,7 +15,7 @@ class iniciar_session {
     }
 
     public function buscar_usuario($conn){
-        $consulta_buscar = $conn->prepare("SELECT nombre_usuario, contrasena, id_tipo_usuario,dni 
+        $consulta_buscar = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, id_tipo_usuario,dni 
         FROM usuarios WHERE nombre_usuario = ? 
         AND contrasena = ?");
 
@@ -94,6 +94,19 @@ class iniciar_session {
             alert("hubo un fallo al traer el dni del cliente")
             self.location = "' . BASE_URL . '/vista/vista_login/vista_login.php"
             </script>';
+        }
+
+    }
+
+    public function insertar_historial_login($conn,$id_usuario,$fecha_actual){
+        $consulta_insert_logueo = $conn->prepare("INSERT INTO `historial_logeos`(id_usuario, fecha_logueo) VALUES (?,?)");
+        $consulta_insert_logueo->bind_param("is",$id_usuario,$fecha_actual);
+
+        if($consulta_insert_logueo->execute()){
+            return true;
+
+        }else{
+            return false;
         }
 
     }

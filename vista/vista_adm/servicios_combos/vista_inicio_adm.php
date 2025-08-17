@@ -19,12 +19,8 @@
         <a href="">Productos</a>
         <a href="">Ventas Y Compras</a>
         <a href="">Proveedores</a>
-        <a href="">Logeos y Movimientos</a>
-        <a href="" class="logout">Cerrar sesión</a>
-    </div>
-
-    <h1>Servicios</h1>
-
+        <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+        <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm" class="logout">Cerrar sesión</a>
     <?php
 
     if($resultado_traer_servicios && $resultado_traer_servicios->num_rows > 0){

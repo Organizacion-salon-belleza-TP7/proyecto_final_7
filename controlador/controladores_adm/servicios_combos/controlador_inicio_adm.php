@@ -14,6 +14,8 @@
     require_once(ROOT_PATH . '/modelo/modelo_adm/servicios_combos/modelo_inicio_adm.php');
     require_once(ROOT_PATH . '/modelo/BD.php');
     date_default_timezone_set('America/Argentina/Buenos_Aires');
+    
+    session_start();
 
     if(isset($_GET['eliminar']) && $_GET['eliminar'] === 'vista_inicio_adm'){
         if($_SERVER['REQUEST_METHOD'] === 'GET'){

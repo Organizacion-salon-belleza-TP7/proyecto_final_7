@@ -1,4 +1,4 @@
 <?php
 define('ROOT_PATH', __DIR__);
-define('BASE_URL', '/proyecto_septimo_final_2.0');
+define('BASE_URL', '/proyecto_final_7');
 ?>

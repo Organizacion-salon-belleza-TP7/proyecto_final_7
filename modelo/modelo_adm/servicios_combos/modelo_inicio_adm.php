@@ -127,8 +127,8 @@ class servicios{
     }
 
     public function agregar_servicio($nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$id_trabajador,$activo,$tipo_servicio){
-        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio ,activo,id_tipo_servicio) VALUES (?,?,?,?,?,?)");
-        $insertar_nuevo_servicio->bind_param("ssiiii",$nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$activo,$tipo_servicio);
+        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio ,activo,id_tipo_servicio) VALUES (?,?,?,?,?,?,?)");
+        $insertar_nuevo_servicio->bind_param("ssiiiii",$nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$activo,$tipo_servicio);
 
        if($insertar_nuevo_servicio->execute()){
         $id_servicio_insertado = $this->conn->insert_id;
@@ -136,12 +136,14 @@ class servicios{
         $insertar_trabajores_servicios->bind_param('ii',$id_trabajador,$id_servicio_insertado);
         
         if($insertar_trabajores_servicios->execute()){
-            $id_trabajadores_servicios = $this->conn->insert_id;
-            $insert_trab_servi = "UPDATE servicios SET id_trabajadores_servicios=$id_trabajadores_servicios WHERE $id_servicio_insertado";
-            $resultado = $this->conn->query($insert_trab_servi);
+            if($id_trabajadores_servicios = $this->conn->insert_id){
+                $insert_trab_servi = "UPDATE trabajadores_servicios SET id_trabajador=$id_trabajador WHERE $id_servicio_insertado";
+                $resultado = $this->conn->query($insert_trab_servi);
 
-            return $id_servicio_insertado;
+                return $id_servicio_insertado;
 
+            }
+            
         }else{
             echo "hubo un fallo al insertar el id del servicio_trabajador en servicios";
             die();

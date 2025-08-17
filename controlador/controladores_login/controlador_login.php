@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 require_once(__DIR__ . '/../../variable_global.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/modelo/modelo_login/modelo_login.php');
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+session_start();
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(isset($_POST['send_form'])){
@@ -15,8 +18,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $resultado = $logeo->buscar_usuario($conn);
 
 
+
+
         if($resultado && $resultado->num_rows > 0){
             $usuario = $resultado->fetch_assoc();
+            $fecha_actual = date('Y-m-d H:i:s');
+
+            if($bucle = $usuario){
+                $id_usuario = $bucle['id_usuario'];
+                $_SESSION['user'] = $id_usuario;
+                $insertar_logueo = $logeo->insertar_historial_login($conn,$id_usuario,$fecha_actual);
+            }
 
             $resultado_adm = $logeo->discriminar_adm($usuario,$conn);
             $resultado_emp = $logeo->discriminar_empleados($usuario,$conn);
@@ -43,6 +55,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 
 
             }
+            exit;
         }else{
             echo '<script>
             alert("no se encontro un usuario");
