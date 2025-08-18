@@ -14,7 +14,7 @@ class logout{
     }
 
     public function cerrar_session($id_usuario){
-        $seleccionar_usuario = $this->conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, dni, id_tipo_usuario FROM usuarios WHERE id_usuario = ?");
+        $seleccionar_usuario = $this->conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, id_tipo_usuario FROM usuarios WHERE id_usuario = ?");
         $seleccionar_usuario->bind_param("i",$id_usuario);
 
         if($seleccionar_usuario->execute()){
