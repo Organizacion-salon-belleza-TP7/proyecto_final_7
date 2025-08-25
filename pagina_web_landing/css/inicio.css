@@ -1,0 +1,299 @@
+/* Estilo general */
+body {
+    margin: 0;
+    font-family: 'Times New Roman', sans-serif;
+    background-image: url(https://i.pinimg.com/1200x/b9/24/00/b92400c3311e667c2a75956a9c2c5d7d.jpg);
+    background-size: cover;      /* Hace que la imagen cubra todo el fondo */
+    
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    background-position: center;  /* Centra la imagen */
+    /* Opcional: para que el fondo quede fijo al hacer scroll */
+    background-attachment: fixed;
+    color: white;
+    text-align: center;
+    object-fit:cover;
+}
+
+div:first-of-type {
+    background-color: rgba(146, 146, 146, 0.2);
+    padding: 15px;
+    display: flex;
+    align-items: center;       /* alinea verticalmente imagen y enlaces */
+    justify-content: space-between; /* separa imagen y enlaces a los lados */
+}
+
+div:first-of-type a {
+    text-decoration: none;
+    color: rgb(31, 1, 1);
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+div:first-of-type a:hover {
+    background-color: red;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+}
+
+body .contenedor_nav {
+    position: sticky;
+    overflow: hidden;
+    background-color: rgba(255, 192, 203, 0.747); /* fondo rosado translúcido */
+    border-radius: 25px; /* esquinas más redondeadas */
+    padding: 10px 20px;
+    margin: 20px auto; /* separarlo un poco del borde superior */
+    width: 90%; /* que no ocupe todo el ancho */
+    max-width: 1200px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* sombra suave */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000; /* para que quede encima de otros elementos */
+    top: 0;
+}
+
+
+.contenedor_nav::before {
+    content: "";
+    position: absolute;
+    top: -200px;  /* empieza arriba */
+    left: 0;
+    width: 100%;
+    height: 300%; /* cubre bastante para animar la caída */
+    background-image: url('../imagenes/92577822-pink-rose-petals-on-a-transparent-background-removebg-preview_2.png'); /* pétalo PNG con fondo transparente */
+    background-repeat: repeat;
+    background-size: 80px; /* tamaño del pétalo */
+    animation: lluviaPetalos 10s linear infinite;
+    opacity: 0.6;
+    pointer-events: none; /* no bloquea clics */
+    z-index: 0;
+}
+
+/* Anima la caída */
+@keyframes lluviaPetalos {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(200px);
+    }
+}
+
+/* Aseguramos que el contenido del nav esté encima de los pétalos */
+.contenedor_nav > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Título principal */
+h1 {
+    font-size: 3rem;
+    margin-top: 40px;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+    color: rgb(31, 1, 1);
+}
+
+/* Subtítulos */
+h2 {
+    font-size: 1.5rem;
+    margin-top: 20px;
+    color: rgb(48, 0, 0);
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 10px;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+h1, h2, div:first-of-type {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Imagen del logo */
+.imagen_logo {
+    height: 120px;
+    width: 120px; /* que sea igual al height para que el círculo sea perfecto */
+    margin: 0;
+    border-radius: 50%; /* lo vuelve redondo */
+    object-fit: cover; /* asegura que la imagen se recorte bien */
+}
+
+.cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px auto;
+    max-width: 1000px; /* límite de ancho para que no se estiren demasiado */
+}
+
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    width: 250px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    color: rgb(31, 1, 1);
+    text-align: center;
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column; /* mantiene imagen, texto y descripción alineados */
+    align-items: center;
+}
+
+.card img {
+    width: 100%;
+    height: 180px; /* altura fija */
+    object-fit: cover; /* recorta la imagen para encajar */
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(180, 0, 0, 0.5);
+}
+
+/* Contenedor de enlaces */
+body .menu-links {
+    display: flex;
+    gap: 25px;
+    background-color: rgb(241, 45, 120);
+    border-radius: 12px; /* Esto redondea las esquinas */
+    padding: 10px; /* Para que el contenido no quede pegado al borde */
+}
+
+
+.carrusel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    margin-top: 20px;
+    gap: 5px; /* flechas más cerca */
+}
+
+.imagenes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    position: relative; /* para que .texto se posicione encima de la imagen */
+}
+
+.img img {
+    height: 300px; /* antes 400px */
+    width: 550px;  /* antes 700px */
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.texto {
+    overflow: hidden;
+    position: absolute;
+    bottom: 0; /* para que salga desde abajo */
+    backdrop-filter: blur(20px);
+    background-color: rgba(63, 106, 138, 0.21);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    width: 100%;
+    height: 100px;
+    transition: all 0.5s ease;
+}
+
+.texto h3 {
+    text-shadow: 0px 0px 15px black;
+    color: rgb(31, 1, 1);
+    font-weight: 300;
+    font-size: 27px;
+    margin: 10px 0 5px 0;
+}
+
+.texto p {
+    color: rgb(31, 1, 1);
+    font-size: 0px; /* oculto al inicio */
+    font-weight: 300;
+    margin: 0;
+    transition: font-size 0.3s ease;
+}
+
+.imagenes:hover .texto {
+    height: 200px;
+    background-color: rgba(63, 106, 138, 0.71);
+    transform: translateY(-10%);
+}
+
+.imagenes:hover .texto p {
+    font-size: 18px;
+}
+
+.atras img,
+.adelante img {
+    width: 25px; /* antes más grandes */
+    height: auto;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.atras img:hover,
+.adelante img:hover {
+    transform: scale(1.1);
+}
+
+.footer {
+    background-color: rgba(255, 192, 203, 0.75); /* rosa translúcido */
+    padding: 20px;
+    text-align: center;
+    border-radius: 20px 20px 0 0; /* esquinas redondeadas arriba */
+    margin-top: 40px;
+    color: rgb(31, 1, 1);
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+}
+
+.footer p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.footer-links {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: rgb(31, 1, 1);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: white;
+    background-color: red;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+}

@@ -22,6 +22,8 @@
                     <th>Nombre del servicio</th>
                     <th>Nombre Del producto</th>
                     <th>Cantidad a usar</th>
+                    <th>Tipo de servicio</th>
+                    <th>Intereses</th>
                 </tr>
             </thead>";
 
@@ -31,6 +33,9 @@
                     <td>{$row['nombre']}</td>
                     <td>{$row['nombre_producto']}</td>
                     <td>{$row['cantidad_usada']}</td>
+                    <td>{$row['tipo_servicio']}</td>
+                    <td>{$row['intereses']}%</td>
+
                 ";
 
             }

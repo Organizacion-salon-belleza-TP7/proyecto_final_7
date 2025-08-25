@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contactos - Rose Spa</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Times New Roman', sans-serif;
+            background-image: url(https://i.pinimg.com/1200x/b9/24/00/b92400c3311e667c2a75956a9c2c5d7d.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            object-fit: cover;
+            line-height: 1.6;
+        }
+
+        /* Navegación */
+        .contenedor_nav {
+            position: sticky;
+            overflow: hidden;
+            background-color: rgba(255, 192, 203, 0.747);
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .contenedor_nav::before {
+            content: "";
+            position: absolute;
+            top: -200px;
+            left: 0;
+            width: 100%;
+            height: 300%;
+            background-image: url('imagenes/92577822-pink-rose-petals-on-a-transparent-background-removebg-preview_2.png');
+            background-repeat: repeat;
+            background-size: 80px;
+            animation: lluviaPetalos 10s linear infinite;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes lluviaPetalos {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(200px); }
+        }
+
+        .contenedor_nav > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .imagen_logo {
+            height: 120px;
+            width: 120px;
+            margin: 0;
+            border-radius: 50%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.5s ease;
+        }
+
+        .menu-links {
+            display: flex;
+            gap: 25px;
+            background-color: rgb(241, 45, 120);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .menu-links a {
+            text-decoration: none;
+            color: rgb(31, 1, 1);
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: red;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+        }
+
+        /* Título principal */
+        h1 {
+            font-size: 3rem;
+            margin: 40px 0;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            color: rgb(31, 1, 1);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin: 30px 0 20px 0;
+            color: rgb(48, 0, 0);
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Contenedor principal */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Sección de contacto */
+        .contact-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 40px 0;
+            align-items: start;
+        }
+
+        /* Formulario de contacto */
+        .contact-form {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgb(31, 1, 1);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid rgba(255, 105, 180, 0.3);
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: rgb(31, 1, 1);
+            font-family: 'Times New Roman', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ff69b4, #ffc0cb);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+            width: 100%;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+            background: linear-gradient(45deg, #ff1493, #ff69b4);
+        }
+
+        /* Información de contacto */
+        .contact-info {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1.2s ease forwards;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateX(10px);
+            background-color: rgba(255, 192, 203, 0.3);
+        }
+
+        .info-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            min-width: 60px; /* Este es el ancho del contenedor */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .info-icon img {
+            width: 40px; /* Tamaño fijo en píxeles */
+            height: 40px;
+            object-fit: contain; /* Mantiene proporciones sin recortar */
+            transition: transform 0.3s ease;
+        }
+
+        .info-content {
+            text-align: left;
+        }
+
+        .info-content h3 {
+            color: rgb(31, 1, 1);
+            font-size: 1.3rem;
+            margin: 0 0 5px 0;
+        }
+
+        .info-content p {
+            color: rgb(31, 1, 1);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        /* Ubicaciones */
+        .ubicaciones-section {
+            margin: 60px 0;
+        }
+
+        .ubicaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .ubicacion-card {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1.4s ease forwards;
+        }
+
+        .ubicacion-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
+        }
+
+        .ubicacion-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ubicacion-card h3 {
+            color: rgb(31, 1, 1);
+            font-size: 1.5rem;
+            margin: 15px 0;
+        }
+
+        .ubicacion-details {
+            text-align: left;
+            color: rgb(31, 1, 1);
+        }
+
+        .ubicacion-details p {
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .ubicacion-details span {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Redes sociales */
+        .social-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .social-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Para que la imagen cubra todo el espacio manteniendo proporciones */
+            transition: transform 0.3s ease;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .social-link:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.5);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: rgba(255, 192, 203, 0.75);
+            padding: 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            margin-top: 40px;
+            color: rgb(31, 1, 1);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: rgb(31, 1, 1);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            background-color: red;
+            padding: 4px 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .contact-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            .contact-form, .contact-info {
+                padding: 25px;
+            }
+            .ubicaciones-grid {
+                grid-template-columns: 1fr;
+            }
+            .social-links {
+                gap: 20px;
+            }
+            .menu-links {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+        }
+
+        /* Animación de éxito */
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(45deg, #ff69b4, #ffc0cb);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.5);
+            z-index: 2000;
+            transition: all 0.3s ease;
+        }
+
+        .success-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor_nav">
+        <img src="imagenes/Flores_Rosas_Plantas-removebg-preview_2.png" class="imagen_logo" alt="Logo Rose Spa">
+        <div class="menu-links">
+            <a href="inicio.html">Inicio</a>
+            <a href="quienes_somos.html">¿Quiénes somos?</a>
+            <a href="contactos.html">Contactos</a>
+            <a href="historia.html">Historia</a>
+            <a href="../vista/vista_login/vista_login.php">Iniciar Sesión</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Contáctanos</h1>
+
+        <div class="contact-section">
+            <!-- Formulario de contacto -->
+            <div class="contact-form">
+                <h2>Envíanos un Mensaje</h2>
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="nombre">Nombre Completo *</label>
+                        <input type="text" id="nombre" name="nombre" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="servicio">Servicio de Interés</label>
+                        <select id="servicio" name="servicio">
+                            <option value="">Selecciona un servicio</option>
+                            <option value="corte-pelo">Cortes de Pelo</option>
+                            <option value="limpieza-facial">Limpieza Facial</option>
+                            <option value="corte-barba">Corte de Barba</option>
+                            <option value="tintado">Tintado de Pelo</option>
+                            <option value="masaje">Masajes</option>
+                            <option value="maquillaje">Maquillaje</option>
+                            <option value="consulta">Consulta General</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mensaje">Mensaje *</label>
+                        <textarea id="mensaje" name="mensaje" placeholder="Cuéntanos cómo podemos ayudarte..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Enviar Mensaje</button>
+                </form>
+            </div>
+
+            <!-- Información de contacto -->
+            <div class="contact-info">
+                <h2>Información de Contacto</h2>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <img src="imagenes_iconos/165038279-call-icon-vector-phone-icon-vector-mobile-phone-telephone-icon.jpg" alt="imagen_1">
+                    </div>
+                    <div class="info-content">
+                        <h3>Teléfonos</h3>
+                        <p>Principal: +1 (555) 123-4567</p>
+                        <p>WhatsApp: +1 (555) 789-0123</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <img src="imagenes_iconos/mail.png" alt="imagen_2">
+                    </div>
+                    <div class="info-content">
+                        <h3>Email</h3>
+                        <p>info@rosespa.com</p>
+                        <p>reservas@rosespa.com</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <img src="imagenes_iconos/calendario.jpg" alt="imagen_3">
+                    </div>
+                    <div class="info-content">
+                        <h3>Horarios</h3>
+                        <p>Lun - Vie: 9:00 AM - 8:00 PM</p>
+                        <p>Sáb - Dom: 10:00 AM - 6:00 PM</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon">
+                        <img src="imagenes_iconos/vector-credit-card-icon.jpg" alt="imagen_4">
+                    </div>
+                    <div class="info-content">
+                        <h3>Métodos de Pago</h3>
+                        <p>Efectivo, Tarjetas, Transferencias</p>
+                        <p>Planes de financiamiento disponibles</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nuestras Ubicaciones -->
+        <div class="ubicaciones-section">
+            <h2>Nuestras Ubicaciones</h2>
+            <div class="ubicaciones-grid">
+                <div class="ubicacion-card">
+                    <img src="imagenes/imagen_lugar/images2.jpg" alt="Sucursal Las Patatas">
+                    <h3>🌸 Sucursal Las Patatas</h3>
+                    <div class="ubicacion-details">
+                        <p><span>📍</span> Las Patatas, Manzana Paca, Depto 45</p>
+                        <p><span>📞</span> +1 (555) 123-4567</p>
+                        <p><span>🚗</span> Estacionamiento disponible</p>
+                        <p><span>♿</span> Acceso para discapacitados</p>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <img src="imagenes/imagen_lugar/images_lugar.jpg" alt="Sucursal Las Julianas">
+                    <h3>🌺 Sucursal Las Julianas</h3>
+                    <div class="ubicacion-details">
+                        <p><span>📍</span> Las Julianas, Manzana Lori, Depto 50</p>
+                        <p><span>📞</span> +1 (555) 234-5678</p>
+                        <p><span>🚗</span> Valet parking</p>
+                        <p><span>☕</span> Área de espera con café</p>
+                    </div>
+                </div>
+
+                <div class="ubicacion-card">
+                    <img src="imagenes/imagen_lugar/images_salon.jpg" alt="Sucursal Ferri">
+                    <h3>🌹 Sucursal Ferri</h3>
+                    <div class="ubicacion-details">
+                        <p><span>📍</span> Ferri, Manzana Roli, Depto 90</p>
+                        <p><span>📞</span> +1 (555) 345-6789</p>
+                        <p><span>🏢</span> Dos pisos de servicios</p>
+                        <p><span>🎵</span> Ambiente relajante premium</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Redes Sociales -->
+        <div class="social-section">
+            <h2>Síguenos en Redes Sociales</h2>
+            <p style="color: rgb(31, 1, 1); font-size: 1.1rem;">Mantente al día con nuestras promociones y novedades</p>
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook">
+                    <img src="imagenes_iconos/facebook.png" alt="imagen_5">
+                </a>
+                <a href="#" class="social-link" title="Instagram">
+                    <img src="imagenes_iconos/instagram.jpg" alt="imagen_6">
+                </a>
+                <a href="#" class="social-link" title="WhatsApp">
+                    <img src="imagenes_iconos/whatsapp.jpg" alt="imagen_7">
+                </a>
+                <a href="#" class="social-link" title="TikTok">
+                    <img src="imagenes_iconos/tiktok.jpg" alt="imagen_8">
+                </a>
+                <a href="#" class="social-link" title="YouTube">
+                    <img src="imagenes_iconos/youtube.png" alt="imagen_9">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Rose Spa. Todos los derechos reservados.</p>
+        <div class="footer-links">
+            <a href="politica_privacidad.html">Política de Privacidad</a>
+            <a href="terminos.html">Términos y Condiciones</a>
+            <a href="contactos.html">Contacto</a>
+        </div>
+    </footer>
+
+    <!-- Mensaje de éxito -->
+    <div class="success-message" id="successMessage">
+        ✅ ¡Mensaje enviado exitosamente! Te contactaremos pronto.
+    </div>
+
+    <script>
+        // Animación de la rosa (logo)
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.imagen_logo');
+            let rotation = 0;
+            const speed = 0.3;
+            
+            function animate() {
+                rotation += speed;
+                logo.style.transform = `rotate(${rotation}deg)`;
+                logo.style.transformOrigin = 'center center';
+                logo.style.willChange = 'transform';
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
+
+        // Animación de entrada progresiva
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Observar elementos con animación
+        document.querySelectorAll('.contact-form, .contact-info, .ubicacion-card, .social-section').forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Manejo del formulario
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Simular envío de formulario
+            const submitBtn = this.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Mostrar mensaje de éxito
+                const successMessage = document.getElementById('successMessage');
+                successMessage.classList.add('show');
+                
+                // Resetear formulario
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Ocultar mensaje después de 3 segundos
+                setTimeout(() => {
+                    successMessage.classList.remove('show');
+                }, 3000);
+            }, 1500);
+        });
+
+        // Efectos adicionales para inputs
+        document.querySelectorAll('.form-group input, .form-group textarea, .form-group select').forEach((input) => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateX(5px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Efecto hover para redes sociales
+        document.querySelectorAll('.social-link').forEach((link) => {
+            link.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.1) rotate(10deg)';
+            });
+            
+            link.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1) rotate(0deg)';
+            });
+        });
+
+        // Transiciones para form groups
+        document.querySelectorAll('.form-group').forEach((group) => {
+            group.style.transition = 'transform 0.3s ease';
+        });
+    </script>
+</body>
+</html>

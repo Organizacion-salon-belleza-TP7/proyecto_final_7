@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura Beauty - Salón de Belleza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #2c1810;
+            overflow-x: hidden;
+        }
+
+        /* Floating Sakura Petals */
+        .sakura-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sakura-petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffb3d1, #ff8fb3);
+            border-radius: 0 100% 0 100%;
+            transform: rotate(45deg);
+            animation: sakuraFall 8s infinite linear;
+            opacity: 0.8;
+        }
+
+        .sakura-petal::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffb3d1, #ff8fb3);
+            border-radius: 0 100% 0 100%;
+            transform: rotate(90deg);
+            top: -10px;
+            left: 0;
+        }
+
+        @keyframes sakuraFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 240, 245, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 1rem 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 240, 245, 0.98);
+            box-shadow: 0 4px 30px rgba(255, 182, 193, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #d1477a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo::before {
+            content: '🌸';
+            font-size: 2rem;
+            animation: rotate 3s infinite ease-in-out;
+        }
+
+        @keyframes rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(15deg); }
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #2c1810;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #ff8fb3, #d1477a);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d1477a;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 182, 193, 0.1), rgba(255, 240, 245, 0.3)), 
+                        url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://images.unsplash.com/photo-1583856904820-17c98e099c85?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') center/cover;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-content {
+            color: #2c1810;
+            z-index: 2;
+            max-width: 900px;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            color: #d1477a;
+            text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
+            animation: slideDown 1s ease-out 0.5s both;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .hero .subtitle {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #8b4a6b;
+            font-style: italic;
+            animation: slideUp 1s ease-out 1s both;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: #6b4c57;
+            animation: slideUp 1s ease-out 1.2s both;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeIn 1s ease-out 1.5s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #ff8fb3, #d1477a);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(209, 71, 122, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(209, 71, 122, 0.4);
+        }
+
+        .cta-secondary {
+            background: linear-gradient(135deg, #f8e6f0, #ffb3d1);
+            color: #d1477a;
+            box-shadow: 0 8px 25px rgba(255, 179, 209, 0.3);
+        }
+
+        /* Services Carousel */
+        .services {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #fff5f8, #ffe6f0);
+            position: relative;
+        }
+
+        .services::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%23ff8fb3" fill-opacity="0.1"/></svg>') center/cover;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: #d1477a;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '🌸 🌸 🌸';
+            display: block;
+            font-size: 2rem;
+            margin-top: 1rem;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.4rem;
+            color: #8b4a6b;
+            margin-bottom: 4rem;
+            font-style: italic;
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(209, 71, 122, 0.1);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            background: white;
+        }
+
+        .service-card {
+            background: linear-gradient(135deg, #fff, #fff5f8);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(209, 71, 122, 0.2);
+            border-color: #ff8fb3;
+        }
+
+        .service-image {
+            height: 280px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 143, 179, 0.2), rgba(209, 71, 122, 0.2));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .service-card:hover .service-image::before {
+            opacity: 1;
+        }
+
+        .service-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 25px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-card:hover .service-overlay {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .service-content {
+            padding: 2rem;
+        }
+
+        .service-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #d1477a;
+            text-align: center;
+        }
+
+        .service-content p {
+            color: #6b4c57;
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-features li {
+            padding: 5px 0;
+            color: #8b4a6b;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .service-features li::before {
+            content: '🌸';
+            position: absolute;
+            left: 0;
+            top: 5px;
+        }
+
+        .service-price {
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 2px solid #ffe6f0;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #d1477a;
+            display: block;
+        }
+
+        .price-note {
+            font-size: 0.9rem;
+            color: #8b4a6b;
+            font-style: italic;
+        }
+
+        /* Carousel Navigation */
+        .carousel-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .carousel-btn {
+            background: linear-gradient(135deg, #ff8fb3, #d1477a);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(209, 71, 122, 0.3);
+        }
+
+        .carousel-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(209, 71, 122, 0.4);
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ffb3d1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #d1477a;
+            transform: scale(1.2);
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #fff, #fff5f8);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-text h2 {
+            font-size: 3rem;
+            color: #d1477a;
+            margin-bottom: 2rem;
+        }
+
+        .about-text p {
+            font-size: 1.2rem;
+            color: #6b4c57;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+            background: linear-gradient(135deg, #ffe6f0, #fff5f8);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #ffb3d1;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #d1477a;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #8b4a6b;
+            margin-top: 0.5rem;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(209, 71, 122, 0.2);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #ffe6f0, #fff5f8);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+            border: 2px solid #ffe6f0;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial:hover {
+            transform: translateY(-10px);
+            border-color: #ff8fb3;
+        }
+
+        .testimonial::before {
+            content: '🌸';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            background: white;
+            padding: 0 10px;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: #6b4c57;
+            font-style: italic;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #d1477a;
+            font-size: 1.2rem;
+        }
+
+        .testimonial-rating {
+            color: #ffd700;
+            font-size: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #d1477a, #ff8fb3);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" fill-opacity="0.1"><animate attributeName="opacity" dur="3s" values="0.1;0.3;0.1" repeatCount="indefinite"/></circle><circle cx="80" cy="30" r="3" fill="white" fill-opacity="0.1"><animate attributeName="opacity" dur="4s" values="0.1;0.4;0.1" repeatCount="indefinite"/></circle><circle cx="40" cy="70" r="2" fill="white" fill-opacity="0.1"><animate attributeName="opacity" dur="2s" values="0.1;0.2;0.1" repeatCount="indefinite"/></circle></svg>');
+            animation: float 20s infinite linear;
+        }
+
+        .contact-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .contact h2 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .contact-subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2.5rem;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-10px);
+        }
+
+        .contact-item h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .contact-item p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .contact-cta {
+            margin-top: 3rem;
+        }
+
+        .contact-button {
+            background: white;
+            color: #d1477a;
+            padding: 18px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .contact-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: #2c1810;
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #ffb3d1;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: #ff8fb3;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            .hero .subtitle { font-size: 1.5rem; }
+            .section-title { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .about-content { grid-template-columns: 1fr; }
+            .carousel-slide { grid-template-columns: 1fr; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .contact-info { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Sakura Petals -->
+    <div class="sakura-container" id="sakuraContainer"></div>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">Sakura Beauty</div>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#testimonios">Testimonios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="inicio">
+        <div class="hero-content">
+            <h1>Sakura Beauty</h1>
+            <div class="subtitle">Donde la belleza florece</div>
+            <p>Experimenta la armonía perfecta entre la tradición japonesa y las técnicas más modernas de belleza. Cada servicio es una ceremonia de transformación inspirada en la delicadeza de los cerezos en flor.</p>
+            <div class="cta-buttons">
+                <a href="#servicios" class="cta-button">Ver Servicios</a>
+                <a href="#contacto" class="cta-button cta-secondary">Reservar Cita</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="servicios">
+        <div class="container">
+            <h2 class="section-title">Nuestros Servicios</h2>
+            <p class="section-subtitle">Cada tratamiento es una experiencia única inspirada en la filosofía japonesa del cuidado personal</p>
+            
+            <div class="carousel-container">
+                <div class="carousel" id="servicesCarousel">
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <div class="service-card">
+                            <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                                <div class="service-overlay">
+                                    <span style="color: #d1477a; font-weight: bold;">¡Reserva Ahora!</span>
+                                </div>
+                            </div>
+                            <div class="service-content">
+                                <h3>Sakura Hair Design</h3>
+                                <p>Cortes y peinados inspirados en la elegancia japonesa, utilizando técnicas ancestrales y productos naturales de la más alta calidad.</p>
+                                <ul class="service-features">
+                                    <li>Consulta personalizada de estilo</li>
+                                    <li>Tratamiento capilar con aceites japoneses</li>
+                                    <li>Corte y peinado profesional</li>
+                                    <li>Ritual de relajación con aromaterapia</li>
+                                </ul>
+                                <div class="service-price">
+                                    <span class="price">$45 - $80</span>
+                                    <span class="price-note">Según complejidad del servicio</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-card">
+                            <div class="service-image" style="background-image: url('https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                                <div class="service-overlay">
+                                    <span style="color: #d1477a; font-weight: bold;">¡Reserva Ahora!</span>
+                                </div>
+                            </div>
+                            <div class="service-content">
+                                <h3>Zen Nail Art</h3>
+                                <p>Manicure y pedicure con diseños únicos inspirados en la naturaleza japonesa y técnicas de relajación zen.</p>
+                                <ul class="service-features">
+                                    <li>Remojo en sales minerales japonesas</li>
+                                    <li>Exfoliación con perlas de arroz</li>
+                                    <li>Arte de uñas temático sakura</li>
+                                    <li>Masaje relajante de manos y pies</li>
+                                </ul>
+                                <div class="service-price">
+                                    <span class="price">$30 - $55</span>
+                                    <span class="price-note">Incluye arte personalizado</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                        <div class="service-card">
+                        <div class="service-image" style="background-image: url('https://images.unsplash.com/photo')
