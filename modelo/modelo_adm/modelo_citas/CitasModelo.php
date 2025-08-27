@@ -1,21 +1,24 @@
 <?php
-require_once("conexion.php");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+
 
 class CitasModelo {
-    private $conexion;
+     private $conn;
 
-    public function __construct() {
-        $this->conexion = Conexion::conectar();
-        if (!$this->conexion) {
-            die("No se pudo conectar a la base de datos");
-        }
+    public function __construct($conn) {
+        $this->conn = $conn;
     }
 
     public function listar() {
 $sql = "
 SELECT 
     c.id_cita,
-    cli.nombres,
+    cli.nombre,
     s.nombre AS nombre,
     co.nombre AS nombre_combo,
     c.fecha_cita,
@@ -29,10 +32,10 @@ ORDER BY c.fecha_cita DESC
 
 
 
-        $resultado = $this->conexion->query($sql);
+        $resultado = $this->conn->query($sql);
 
         if (!$resultado) {
-            die("Error en la consulta SQL: " . $this->conexion->error);
+            die("Error en la consulta SQL: " . $this->conn->error);
         }
 
         $citas = [];

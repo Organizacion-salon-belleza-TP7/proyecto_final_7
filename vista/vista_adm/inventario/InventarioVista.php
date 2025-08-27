@@ -22,6 +22,7 @@ $resultado_inventario = $inventario_modelo->mostrar_inventario();
         <a href="">Ventas y Compras</a>
         <a href="">Proveedores</a>
         <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+        <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php">Citas</a>
         <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inventario" class="logout">Cerrar sesión</a>
     </div>
 
