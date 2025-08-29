@@ -1,6 +1,10 @@
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.3/dist/tailwind.min.css" rel="stylesheet">
 
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 $detalles = $detalles ?? [];
 $lugares = $lugares ?? [];
 $id_cita = $id_cita ?? '';
