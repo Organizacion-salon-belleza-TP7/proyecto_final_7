@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quiénes Somos? - Rose Spa</title>
+    <style>
+        /* Estilo general */
+        body {
+            margin: 0;
+            font-family: 'Times New Roman', sans-serif;
+            background-image: url(https://i.pinimg.com/1200x/b9/24/00/b92400c3311e667c2a75956a9c2c5d7d.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            text-align: center;
+            object-fit: cover;
+            line-height: 1.6;
+        }
+
+        /* Navegación */
+        .contenedor_nav {
+            position: sticky;
+            overflow: hidden;
+            background-color: rgba(255, 192, 203, 0.747);
+            border-radius: 25px;
+            padding: 10px 20px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1200px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .contenedor_nav::before {
+            content: "";
+            position: absolute;
+            top: -200px;
+            left: 0;
+            width: 100%;
+            height: 300%;
+            background-image: url('imagenes/92577822-pink-rose-petals-on-a-transparent-background-removebg-preview_2.png');
+            background-repeat: repeat;
+            background-size: 80px;
+            animation: lluviaPetalos 10s linear infinite;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes lluviaPetalos {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(200px); }
+        }
+
+        .contenedor_nav > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .imagen_logo {
+            height: 120px;
+            width: 120px;
+            margin: 0;
+            border-radius: 50%;
+            object-fit: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.5s ease;
+        }
+
+        .menu-links {
+            display: flex;
+            gap: 25px;
+            background-color: rgb(241, 45, 120);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .menu-links a {
+            text-decoration: none;
+            color: rgb(31, 1, 1);
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-links a:hover {
+            background-color: red;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+        }
+
+        /* Título principal */
+        h1 {
+            font-size: 3rem;
+            margin: 40px 0;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            color: rgb(31, 1, 1);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        /* Subtítulos */
+        h2 {
+            font-size: 2rem;
+            margin: 30px 0 20px 0;
+            color: rgb(48, 0, 0);
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animación de entrada */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Contenedor principal */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Sección de historia */
+        .historia-section {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .historia-section p {
+            font-size: 1.2rem;
+            text-align: justify;
+            color: rgb(31, 1, 1);
+            margin-bottom: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Equipo */
+        .equipo-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .miembro-equipo {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 1.2s ease forwards;
+        }
+
+        .miembro-equipo:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
+        }
+
+        .foto-miembro {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            background: linear-gradient(45deg, #ff69b4, #ffc0cb, #ffb6c1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .foto-miembro img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Para que la imagen cubra todo el espacio manteniendo proporciones */
+            transition: transform 0.3s ease;
+        }
+
+        .miembro-equipo h3 {
+            color: rgb(31, 1, 1);
+            font-size: 1.5rem;
+            margin: 15px 0 10px 0;
+        }
+
+        .miembro-equipo .cargo {
+            color: rgb(180, 0, 0);
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .miembro-equipo p {
+            color: rgb(31, 1, 1);
+            font-size: 1rem;
+            line-height: 1.4;
+        }
+
+        /* Valores */
+        .valores-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .valor-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            animation: fadeInUp 1.4s ease forwards;
+        }
+
+        .valor-item:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 192, 203, 0.3);
+        }
+
+        .valor-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ff69b4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .valor-icon img {
+            width: 40%;
+            height: 40%;
+            object-fit: cover; /* Para que la imagen cubra todo el espacio manteniendo proporciones */
+            transition: transform 0.3s ease;
+        }
+
+        .valor-item h3 {
+            color: rgb(31, 1, 1);
+            font-size: 1.3rem;
+            margin: 15px 0 10px 0;
+        }
+
+        .valor-item p {
+            color: rgb(31, 1, 1);
+            font-size: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: rgba(255, 192, 203, 0.75);
+            padding: 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            margin-top: 40px;
+            color: rgb(31, 1, 1);
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.25);
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: rgb(31, 1, 1);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            background-color: red;
+            padding: 4px 8px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.4);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .historia-section { padding: 20px; }
+            .equipo-container { flex-direction: column; align-items: center; }
+            .miembro-equipo { width: 90%; max-width: 400px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="contenedor_nav">
+        <img src="imagenes/Flores_Rosas_Plantas-removebg-preview_2.png" class="imagen_logo" alt="Logo Rose Spa">
+        <div class="menu-links">
+            <a href="inicio.html">Inicio</a>
+            <a href="quienes_somos.html">¿Quiénes somos?</a>
+            <a href="contactos.html">Contactos</a>
+            <a href="historia.html">Historia</a>
+            <a href="../vista/vista_login/vista_login.php">Iniciar Sesión</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>¿Quiénes Somos?</h1>
+
+        <div class="historia-section">
+            <h2>Nuestra Historia</h2>
+            <p>
+                Rose Spa nació en 2018 con una visión clara: crear un oasis de belleza y relajación donde cada cliente pueda redescubrir su esencia más radiante. Fundado por un equipo de profesionales apasionados por el bienestar y la estética, nuestro spa se ha convertido en un referente de excelencia en tratamientos de belleza y cuidado personal.
+            </p>
+            <p>
+                Desde nuestros humildes comienzos, hemos crecido hasta convertirnos en una cadena de tres ubicaciones estratégicas, cada una diseñada para ofrecer una experiencia única y personalizada. Nuestra filosofía se basa en la combinación perfecta entre técnicas tradicionales y tecnología de vanguardia, siempre con el toque cálido y profesional que nos caracteriza.
+            </p>
+            <p>
+                A lo largo de los años, hemos tenido el privilegio de acompañar a miles de clientes en su journey de belleza y bienestar, creando no solo transformaciones físicas, sino también momentos de paz y renovación interior que perduran mucho más allá de cada visita.
+            </p>
+        </div>
+
+        <h2>Nuestro Equipo</h2>
+        <div class="equipo-container">
+            <div class="miembro-equipo">
+                <div class="foto-miembro">
+                    <img src="imagenes_iconos/81285963-charming-woman-stylist-with-tools-in-hands-posing-on-camera-isolated-on-white-background.jpg" alt="imagen_1">
+                </div>
+                <h3>María González</h3>
+                <div class="cargo">Directora General & Fundadora</div>
+                <p>Con más de 15 años de experiencia en el sector de la belleza, María lidera nuestro equipo con pasión y visión innovadora. Especialista en tratamientos faciales y gestión spa.</p>
+            </div>
+
+            <div class="miembro-equipo">
+                <div class="foto-miembro">
+                    <img src="imagenes_iconos/116053406-front-view-of-stylish-barber-in-white-shirt-and-waistcoat-looking-at-camera-posing-and-smiling-in.jpg" alt="imagen_2">
+                </div>
+                <h3>Carlos Mendoza</h3>
+                <div class="cargo">Estilista Principal</div>
+                <p>Maestro en cortes y colorimetría, Carlos aporta creatividad y técnica excepcional. Ha trabajado en las mejores peluquerías de la región y es especialista en tendencias contemporáneas.</p>
+            </div>
+
+            <div class="miembro-equipo">
+                <div class="foto-miembro">
+                    <img src="imagenes_iconos/istockphoto-1462217297-612x612.jpg" alt="imagen_3">
+                </div>
+                <h3>Ana Rodríguez</h3>
+                <div class="cargo">Terapeuta Senior</div>
+                <p>Especialista en masajes terapéuticos y tratamientos corporales. Con certificaciones internacionales, Ana combina técnicas ancestrales con enfoques modernos de bienestar.</p>
+            </div>
+
+            <div class="miembro-equipo">
+                <div class="foto-miembro">
+                    <img src="imagenes_iconos/images_maquilladora.jpg" alt="imagen_4">
+                </div>
+                <h3>Sofía Torres</h3>
+                <div class="cargo">Maquilladora Profesional</div>
+                <p>Artista del maquillaje con experiencia en eventos, fotografía y cine. Sofía crea looks únicos adaptados a cada personalidad y ocasión especial.</p>
+            </div>
+        </div>
+
+        <h2>Nuestros Valores</h2>
+        <div class="valores-container">
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/estrella fugaz.jpg" alt="imagen_5">
+                </div>
+                <h3>Excelencia</h3>
+                <p>Nos comprometemos a ofrecer servicios de la más alta calidad, utilizando productos premium y técnicas especializadas para garantizar resultados excepcionales.</p>
+            </div>
+
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/corazon.jpg" alt="imagen_6">
+                </div>
+                <h3>Calidez Humana</h3>
+                <p>Creemos en el trato personalizado y cercano. Cada cliente es único y merece una atención especial que haga de su visita una experiencia memorable.</p>
+            </div>
+
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/Descargar fondo de hojas caídas de otoño gratis.jpg" alt="imagen_7">
+                </div>
+                <h3>Bienestar Integral</h3>
+                <p>Promovemos el equilibrio entre belleza exterior e interior, ofreciendo servicios que nutren tanto el cuerpo como el espíritu.</p>
+            </div>
+
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/nave_espacial.jpg" alt="imagen_8">
+                </div>
+                <h3>Innovación</h3>
+                <p>Nos mantenemos a la vanguardia de las tendencias y tecnologías del sector, incorporando constantemente nuevos tratamientos y técnicas.</p>
+            </div>
+
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/apreton_manos.jpg" alt="imagen_9">
+                </div>
+                <h3>Confianza</h3>
+                <p>Construimos relaciones duraderas basadas en la transparencia, profesionalismo y resultados consistentes que superan las expectativas.</p>
+            </div>
+
+            <div class="valor-item">
+                <div class="valor-icon">
+                    <img src="imagenes_iconos/planeta_tierra.jpg" alt="imagen_10">
+                </div>
+                <h3>Responsabilidad</h3>
+                <p>Nos comprometemos con prácticas sostenibles y el uso de productos eco-friendly que cuiden tanto de nuestros clientes como del planeta.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Rose Spa. Todos los derechos reservados.</p>
+        <div class="footer-links">
+            <a href="politica_privacidad.html">Política de Privacidad</a>
+            <a href="terminos.html">Términos y Condiciones</a>
+            <a href="contactos.html">Contacto</a>
+        </div>
+    </footer>
+
+    <script>
+        // Animación de la rosa (logo)
+        document.addEventListener('DOMContentLoaded', function() {
+            const logo = document.querySelector('.imagen_logo');
+            let rotation = 0;
+            const speed = 0.3;
+            
+            function animate() {
+                rotation += speed;
+                logo.style.transform = `rotate(${rotation}deg)`;
+                logo.style.transformOrigin = 'center center';
+                logo.style.willChange = 'transform';
+                requestAnimationFrame(animate);
+            }
+            
+            animate();
+        });
+
+        // Animación de entrada progresiva para los elementos
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        // Observar todos los elementos con animación
+        document.querySelectorAll('.historia-section, .miembro-equipo, .valor-item').forEach((el) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.8s ease';
+            observer.observe(el);
+        });
+
+        // Efecto hover adicional para los miembros del equipo
+        document.querySelectorAll('.miembro-equipo').forEach((miembro) => {
+            miembro.addEventListener('mouseenter', () => {
+                miembro.querySelector('.foto-miembro').style.transform = 'scale(1.1) rotate(5deg)';
+            });
+            
+            miembro.addEventListener('mouseleave', () => {
+                miembro.querySelector('.foto-miembro').style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Transición suave para las fotos de miembros
+        document.querySelectorAll('.foto-miembro').forEach((foto) => {
+            foto.style.transition = 'transform 0.3s ease';
+        });
+    </script>
+</body>
+</html>
