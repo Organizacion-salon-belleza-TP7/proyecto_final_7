@@ -15,7 +15,7 @@ class iniciar_session {
     }
 
     public function buscar_usuario($conn){
-        $consulta_buscar = $conn->prepare("SELECT nombre_usuario, contrasena, id_tipo_usuario,dni 
+        $consulta_buscar = $conn->prepare("SELECT id_usuario, nombre_usuario, contrasena, id_tipo_usuario 
         FROM usuarios WHERE nombre_usuario = ? 
         AND contrasena = ?");
 
@@ -30,18 +30,30 @@ class iniciar_session {
 
     public function discriminar_adm($usuario,$conn){
 
-        if (!is_null($usuario['dni'])){
-            $dni = intval($usuario['dni']);
+        if (!is_null($usuario['id_usuario'])){
 
-            $consulta_admin = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,trabajadores.dni,tipo_usuario.id_tipo_usuario
+            $consulta_admin = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,tipo_usuario.id_tipo_usuario
             FROM usuarios
             INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id_tipo_usuario
-            INNER JOIN trabajadores ON usuarios.dni = trabajadores.dni
-            WHERE usuarios.dni = $dni AND trabajadores.dni = $dni AND tipo_usuario.tipo_usuario = 'administrador'";
+            WHERE tipo_usuario.id_tipo_usuario = 1";
+
 
             $resultado_adm = $conn->query($consulta_admin);
 
-            return $resultado_adm;
+            $id_usuario = $usuario['id_usuario'];
+            $consulta_relacion = $conn->prepare("SELECT id_usuarios_personas, id_trabajador, id_cliente, id_usuario FROM `usuarios_personas` WHERE id_usuario = ?");
+            $consulta_relacion->bind_param('i',$id_usuario);
+
+            if($consulta_relacion->execute()){
+                $resultado_relacion = $consulta_relacion->get_result();
+                return [
+                    'resultado_adm' => $resultado_adm,
+                    'traer_adm' => $resultado_relacion
+                ];
+
+
+            }
+
             
             
         }else{
@@ -54,18 +66,30 @@ class iniciar_session {
 
     public function discriminar_empleados($usuario,$conn){
 
-        if(!is_null($usuario['dni'])){
-            $dni_trabajador = intval($usuario['dni']);
+        if(!is_null($usuario['id_usuario'])){
             
-            $consulta_trabajador = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,trabajadores.dni,tipo_usuario.id_tipo_usuario
+            $consulta_trabajador = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,tipo_usuario.id_tipo_usuario
             FROM usuarios
             INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id_tipo_usuario
-            INNER JOIN trabajadores ON usuarios.dni = trabajadores.dni
-            WHERE usuarios.dni = $dni_trabajador AND trabajadores.dni = $dni_trabajador";
+            WHERE tipo_usuario.id_tipo_usuario = 3";
 
             $resultado_trabajador = $conn->query($consulta_trabajador);
 
-            return $resultado_trabajador;
+
+            $id_usuario = $usuario['id_usuario'];
+            $consulta_relacion = $conn->prepare("SELECT id_usuarios_personas, id_trabajador, id_cliente, id_usuario FROM `usuarios_personas` WHERE id_usuario = ?");
+            $consulta_relacion->bind_param('i',$id_usuario);
+
+             if($consulta_relacion->execute()){
+                $resultado_relacion = $consulta_relacion->get_result();
+                return [
+                    'resultado_emp' => $resultado_trabajador,
+                    'traer_emp' => $resultado_relacion
+                ];
+
+
+            }
+
 
 
         }else{
@@ -79,21 +103,47 @@ class iniciar_session {
 
     public function discriminar_cliente($usuario,$conn){
         
-        if(is_null($usuario['dni'])){
-            $consulta_cliente = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,usuarios.dni,tipo_usuario.id_tipo_usuario
+        if(!is_null($usuario['id_usuario'])){
+            $consulta_cliente = "SELECT usuarios.id_usuario,usuarios.nombre_usuario,usuarios.contrasena,tipo_usuario.id_tipo_usuario
             FROM usuarios
             INNER JOIN tipo_usuario ON usuarios.id_tipo_usuario = tipo_usuario.id_tipo_usuario
-            WHERE usuarios.dni IS NULL AND tipo_usuario.tipo_usuario = 'cliente'";
+            WHERE tipo_usuario.id_tipo_usuario = 2";
 
             $resultado_cliente = $conn->query($consulta_cliente);
 
-            return $resultado_cliente;
+            $id_usuario = $usuario['id_usuario'];
+            $consulta_relacion = $conn->prepare("SELECT id_usuarios_personas, id_trabajador, id_cliente, id_usuario FROM `usuarios_personas` WHERE id_usuario = ?");
+            $consulta_relacion->bind_param('i',$id_usuario);
+
+             if($consulta_relacion->execute()){
+                $resultado_relacion = $consulta_relacion->get_result();
+                return [
+                    'resultado_cli' => $resultado_cliente,
+                    'traer_cli' => $resultado_relacion
+                ];
+
+
+            }
+
 
         }else{
             echo '<script language = javascript>
             alert("hubo un fallo al traer el dni del cliente")
             self.location = "' . BASE_URL . '/vista/vista_login/vista_login.php"
             </script>';
+        }
+
+    }
+
+    public function insertar_historial_login($conn,$id_usuario,$fecha_actual){
+        $consulta_insert_logueo = $conn->prepare("INSERT INTO `historial_logeos`(id_usuario, fecha_logueo) VALUES (?,?)");
+        $consulta_insert_logueo->bind_param("is",$id_usuario,$fecha_actual);
+
+        if($consulta_insert_logueo->execute()){
+            return true;
+
+        }else{
+            return false;
         }
 
     }

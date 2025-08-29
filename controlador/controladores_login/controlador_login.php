@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 require_once(__DIR__ . '/../../variable_global.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/modelo/modelo_login/modelo_login.php');
+date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+session_start();
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     if(isset($_POST['send_form'])){
@@ -15,22 +18,49 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $resultado = $logeo->buscar_usuario($conn);
 
 
+
+
         if($resultado && $resultado->num_rows > 0){
             $usuario = $resultado->fetch_assoc();
+            $fecha_actual = date('Y-m-d H:i:s');
+
+            if($bucle = $usuario){
+                $id_usuario = $bucle['id_usuario'];
+                $_SESSION['user'] = $id_usuario;
+                $insertar_logueo = $logeo->insertar_historial_login($conn,$id_usuario,$fecha_actual);
+            }
 
             $resultado_adm = $logeo->discriminar_adm($usuario,$conn);
             $resultado_emp = $logeo->discriminar_empleados($usuario,$conn);
             $resultado_cli = $logeo->discriminar_cliente($usuario,$conn);
 
-            if($resultado_adm && $resultado_adm->num_rows > 0){
+            if($resultado_adm['resultado_adm'] && $resultado_adm['resultado_adm']->num_rows > 0){
+
+                $traer_relacion = $resultado_adm['traer_adm']->fetch_assoc();
+                $id_admin = $traer_relacion['id_trabajador'];
+
+                $_SESSION['id_admin'] = $id_admin;
+
                 header("Location: ". BASE_URL ."/vista/vista_adm/servicios_combos/vista_inicio_adm.php");
                 exit;
 
-            }elseif($resultado_emp && $resultado_emp->num_rows > 0){
+            }elseif($resultado_emp['resultado_emp'] && $resultado_emp['resultado_emp']->num_rows > 0){
+
+                $traer_relacion = $resultado_emp['traer_emp']->fetch_assoc();
+                $id_emp = $traer_relacion['id_trabajador'];
+
+                $_SESSION['id_emp'] = $id_emp;
+
                 header("Location: ". BASE_URL ."/vista/vista_empleados/vista_inicio_empleados.php");
                 exit;
                 
-            }elseif($resultado_cli && $resultado_cli->num_rows > 0){
+            }elseif($resultado_cli['resultado_cli'] && $resultado_cli['resultado_cli']->num_rows > 0){
+
+                $traer_relacion = $resultado_cli['traer_cli']->fetch_assoc();
+                $id_cli = $traer_relacion['id_cliente'];
+
+                $_SESSION['id_cliente'] = $id_cli;
+
                 header("Location: " . BASE_URL . "/vista/vista_cliente/vista_inicio_cli.php");
                 exit;
 
@@ -43,6 +73,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 
 
             }
+            exit;
         }else{
             echo '<script>
             alert("no se encontro un usuario");
