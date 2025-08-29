@@ -1,7 +1,12 @@
 <?php
 class Conexion {
     public static function conectar() {
-        $conexion = new mysqli("localhost", "root", "", "trabajo_final_7");
+        $host = "localhost";
+        $user = "root";
+        $pass = "";
+        $db   = "trabajo_final_7"; // tu base de datos
+
+        $conexion = new mysqli($host, $user, $pass, $db);
         if ($conexion->connect_error) {
             die("Error de conexión: " . $conexion->connect_error);
         }
