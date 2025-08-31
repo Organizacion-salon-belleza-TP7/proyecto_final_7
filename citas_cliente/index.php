@@ -1,11 +1,8 @@
 <?php
-<<<<<<< HEAD
-=======
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
->>>>>>> unir_sistema
 require_once "controlador/CitaControlador.php";
 $controlador = new CitaControlador();
 

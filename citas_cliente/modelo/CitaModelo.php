@@ -1,8 +1,4 @@
 <?php
-<<<<<<< HEAD
-require_once("conexion.php");
-
-=======
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -10,7 +6,6 @@ error_reporting(E_ALL);
 require_once("conexion.php");
 
 
->>>>>>> unir_sistema
 class CitaModelo {
     private $conexion;
 

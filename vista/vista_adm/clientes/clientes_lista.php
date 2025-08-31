@@ -1,6 +1,14 @@
 <?php
-require_once '../controlador/ClienteControlador.php';
-$controlador = new ClienteControlador();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+
+require_once(ROOT_PATH . '/controlador/controladores_adm/clientes/ClienteControlador.php');
+
+$controlador = new ClienteControlador($conn);
 $clientes = $controlador->listar();
 ?>
 <!DOCTYPE html>

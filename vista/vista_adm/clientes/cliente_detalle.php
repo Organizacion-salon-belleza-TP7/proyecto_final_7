@@ -1,11 +1,19 @@
 <?php
-require_once '../controlador/ClienteControlador.php';
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+
+require_once(ROOT_PATH . '/controlador/controladores_adm/clientes/ClienteControlador.php');
+
 
 if(!isset($_GET['id'])) {
     die("No se especificó un cliente");
 }
 
-$controlador = new ClienteControlador();
+$controlador = new ClienteControlador($conn);
 $datos = $controlador->ver($_GET['id']);
 $cliente = $datos['cliente'];
 $puntos = $datos['puntos'];

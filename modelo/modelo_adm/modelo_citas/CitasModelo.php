@@ -8,7 +8,7 @@ require_once(ROOT_PATH . '/modelo/BD.php');
 
 
 class CitasModelo {
-     private $conn;
+    private $conn;
 
     public function __construct($conn) {
         $this->conn = $conn;
