@@ -5,6 +5,9 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once(__DIR__ . '/../../../variable_global.php');
+
+
 $detalles = $detalles ?? [];
 $lugares = $lugares ?? [];
 $id_cita = $id_cita ?? '';
@@ -36,7 +39,7 @@ $fecha_cita = $fecha_cita ?? '';
 
     <p class="mb-6">Fecha y Hora: <span class="font-semibold"><?= $fecha_cita ? date('d/m/Y H:i', strtotime($fecha_cita)) : '' ?></span></p>
 
-    <a href="index.php?accion=seleccionar" class="bg-pink-500 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-pink-600 transition-colors">
+    <a href="<?= BASE_URL ?>/vista/vista/cliente/vista_citas/layout.php?accion=seleccionar" class="bg-pink-500 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-pink-600 transition-colors">
         Volver
     </a>
 </div>

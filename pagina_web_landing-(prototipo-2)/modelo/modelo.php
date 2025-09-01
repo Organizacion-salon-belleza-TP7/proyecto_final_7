@@ -24,6 +24,15 @@ class pagina_landing{
 
     }
 
+    public function traer_inventario(){
+        $traer_inventario = "SELECT id_inventario, nombre_producto, imagen_producto FROM inventario WHERE 1
+        LIMIT 6";
+
+        $resultado_inventario = $this->conn->query($traer_inventario);
+
+        return $resultado_inventario;
+    }
+
 
 }
 

@@ -3,6 +3,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once(__DIR__ . '/../../../variable_global.php');
+
 $detalles = $detalles ?? [];
 $lugares = $lugares ?? [];
 ?>
@@ -10,7 +12,7 @@ $lugares = $lugares ?? [];
 <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
     <h2 class="text-3xl font-bold mb-6 text-center text-pink-600">Reservar Cita</h2>
 
-    <form method="POST" action="index.php?accion=guardar" class="space-y-6">
+    <form method="POST" action="<?= BASE_URL ?>vista/vista_cliente/vista_citas/layout.php?accion=guardar">
         <!-- Servicios -->
         <div>
             <h3 class="text-2xl font-semibold mb-4 text-gray-700">Servicios:</h3>

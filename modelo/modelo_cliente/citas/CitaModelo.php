@@ -3,24 +3,26 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once("conexion.php");
+require_once(__DIR__ . '/../../../variable_global.php');
+
+require_once(ROOT_PATH . '/modelo/BD.php');
 
 
 class CitaModelo {
-    private $conexion;
+     private $conn;
 
-    public function __construct() {
-        $this->conexion = Conexion::conectar();
+    public function __construct($conn) {
+        $this->conn = $conn;
     }
 
     public function obtenerServicios() {
         $sql = "SELECT id_servicios AS id, nombre, precio FROM servicios WHERE activo=1";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $this->conn->query($sql);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
     public function obtenerServiciosPorId($id) {
-        $stmt = $this->conexion->prepare("SELECT nombre, precio FROM servicios WHERE id_servicios=?");
+        $stmt = $this->conn->prepare("SELECT nombre, precio FROM servicios WHERE id_servicios=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -29,12 +31,12 @@ class CitaModelo {
 
     public function obtenerCombos() {
         $sql = "SELECT id_combos AS id, nombre, precio FROM combos WHERE activo=1";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $this->conn->query($sql);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
     public function obtenerCombosPorId($id) {
-        $stmt = $this->conexion->prepare("SELECT nombre, precio FROM combos WHERE id_combos=?");
+        $stmt = $this->conn->prepare("SELECT nombre, precio FROM combos WHERE id_combos=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -43,7 +45,7 @@ class CitaModelo {
 
     public function obtenerLugares() {
         $sql = "SELECT id_lugar, nombre_lugar FROM lugares";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $this->conn->query($sql);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
@@ -52,26 +54,26 @@ class CitaModelo {
         $activo = 1;
         $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
 
-        $stmt = $this->conexion->prepare(
+        $stmt = $this->conn->prepare(
             "INSERT INTO citas (id_cliente, fecha_cita, activo, hash_identificacion, id_lugar)
             VALUES (?, ?, ?, ?, ?)"
         );
-        if (!$stmt) die("Error prepare: ".$this->conexion->error);
+        if (!$stmt) die("Error prepare: ".$this->conn->error);
 
         $stmt->bind_param("isisi", $id_cliente, $fecha_cita, $activo, $hash, $id_lugar);
         $stmt->execute();
-        $id_cita = $this->conexion->insert_id;
+        $id_cita = $this->conn->insert_id;
 
         foreach ($servicios as $s) {
-            $stmtS = $this->conexion->prepare("INSERT INTO detalle_cita (id_cita, id_servicios) VALUES (?, ?)");
-            if (!$stmtS) die("Error detalle_servicios: ".$this->conexion->error);
+            $stmtS = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_servicios) VALUES (?, ?)");
+            if (!$stmtS) die("Error detalle_servicios: ".$this->conn->error);
             $stmtS->bind_param("ii", $id_cita, $s);
             $stmtS->execute();
         }
 
         foreach ($combos as $c) {
-            $stmtC = $this->conexion->prepare("INSERT INTO detalle_cita (id_cita, id_combos) VALUES (?, ?)");
-            if (!$stmtC) die("Error detalle_combos: ".$this->conexion->error);
+            $stmtC = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_combos) VALUES (?, ?)");
+            if (!$stmtC) die("Error detalle_combos: ".$this->conn->error);
             $stmtC->bind_param("ii", $id_cita, $c);
             $stmtC->execute();
         }

@@ -105,7 +105,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
         
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHNhbG9uJTIwZGUlMjBiZWxsZXphfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHNhbG9uJTIwZGUlMjBiellaXphfGVufDB8fDB8fHww&auto=format&fit=crop&w=1200&q=80') no-repeat center center/cover;
             height: 100vh;
             display: flex;
             align-items: center;
@@ -245,10 +245,65 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
             background: url('imagenes/liderar-exito-diversidad-equipo.jpg') no-repeat center center/cover;
         }
         
+        /* Equipo */
+        .team {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .equipo-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .miembro-equipo {
+            background-color: var(--light);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .miembro-equipo:hover {
+            transform: translateY(-10px);
+        }
+        
+        .foto-miembro {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .foto-miembro img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .miembro-info {
+            padding: 20px;
+        }
+        
+        .miembro-info h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        .cargo {
+            color: var(--secondary);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
         /* Testimonios */
         .testimonials {
             padding: 80px 0;
-            background-color: white;
+            background-color: var(--light);
         }
         
         .testimonials-grid {
@@ -258,7 +313,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
         }
         
         .testimonial-card {
-            background-color: var(--light);
+            background-color: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -290,7 +345,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
         /* Galería */
         .gallery {
             padding: 80px 0;
-            background-color: var(--light);
+            background-color: white;
         }
         
         .gallery-grid {
@@ -338,7 +393,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
         /* Contacto */
         .contact {
             padding: 80px 0;
-            background-color: white;
+            background-color: var(--light);
         }
         
         .contact-container {
@@ -503,6 +558,10 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
             .hero h1 {
                 font-size: 2.5rem;
             }
+            
+            .equipo-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
         }
     </style>
 </head>
@@ -519,6 +578,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#servicios">Servicios</a></li>
                     <li><a href="#nosotros">Nosotros</a></li>
+                    <li><a href="#equipo">Equipo</a></li>
                     <li><a href="#testimonios">Testimonios</a></li>
                     <li><a href="#galeria">Galería</a></li>
                     <li><a href="#contacto">Contacto</a></li>
@@ -576,13 +636,68 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
             <div class="about-content">
                 <div class="about-text">
                     <h2>Sobre Nosotros</h2>
-                    <p>En Rose Spa llevamos más de 10 años ofreciendo servicios de belleza de la más alta calidad. Nuestro equipo de profesionales está en constante formación para ofrecerte las últimas tendencias y técnicas.</p>
+                    <p>En Rose Spa llevamos más de 10 años de experiencia en el sector de la belleza, María lidera nuestro equipo con pasión y visión innovadora. Especialista en tratamientos faciales y gestión spa.</p>
                     <p>Nos enorgullece crear un ambiente relajante y acogedor donde nuestros clientes puedan desconectar de su rutina y sentirse consentidos. Utilizamos productos de primeras marcas que cuidan de tu salud y bienestar.</p>
                     <p>Nuestra filosofía se basa en realzar la belleza natural de cada persona, adaptándonos a sus necesidades y preferencias para lograr resultados que superen sus expectativas.</p>
                     <a href="#contacto" class="btn">Conócenos</a>
                 </div>
                 <div class="about-image">
                     <!-- Imagen del salón -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Nuestro Equipo -->
+    <section class="team" id="equipo">
+        <div class="container">
+            <div class="section-title">
+                <h2>Nuestro Equipo</h2>
+                <p>Conoce a los profesionales que harán que te sientas y luzcas increíble.</p>
+            </div>
+            <div class="equipo-container">
+                <div class="miembro-equipo">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/81285963-charming-woman-stylist-with-tools-in-hands-posing-on-camera-isolated-on-white-background.jpg" alt="María González">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>María González</h3>
+                        <div class="cargo">Directora General & Fundadora</div>
+                        <p>Con más de 15 años de experiencia en el sector de la belleza, María lidera nuestro equipo con pasión y visión innovadora. Especialista en tratamientos faciales y gestión spa.</p>
+                    </div>
+                </div>
+
+                <div class="miembro-equipo">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/23551074-male-hair-stylist-holding-three-brushes.jpg" alt="Carlos Mendoza">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>Carlos Mendoza</h3>
+                        <div class="cargo">Estilista Principal</div>
+                        <p>Maestro en cortes y colorimetría, Carlos aporta creatividad y técnica excepcional. Ha trabajado en las mejores peluquerías de la región y es especialista en tendencias contemporáneas.</p>
+                    </div>
+                </div>
+
+                <div class="miembro-equipo">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/¿Cual-es-la-diferencia-entre-un-psicologo-y-un-terapeuta-1024x536.png" alt="Ana Rodríguez">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>Ana Rodríguez</h3>
+                        <div class="cargo">Terapeuta Senior</div>
+                        <p>Especialista en masajes terapéuticos y tratamientos corporales. Con certificaciones internacionales, Ana combina técnicas ancestrales con enfoques modernos de bienestar.</p>
+                    </div>
+                </div>
+
+                <div class="miembro-equipo">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/dwd2.png" alt="Sofía Torres">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>Sofía Torres</h3>
+                        <div class="cargo">Maquilladora Profesional</div>
+                        <p>Artista del maquillaje con experiencia en eventos, fotografía y cine. Sofía crea looks únicos adaptados a cada personalidad y ocasión especial.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -730,6 +845,7 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
                         <li><a href="#inicio">Inicio</a></li>
                         <li><a href="#servicios">Servicios</a></li>
                         <li><a href="#nosotros">Nosotros</a></li>
+                        <li><a href="#equipo">Equipo</a></li>
                         <li><a href="#testimonios">Testimonios</a></li>
                         <li><a href="#galeria">Galería</a></li>
                         <li><a href="#contacto">Contacto</a></li>
@@ -758,8 +874,8 @@ $funcion_traer_servicios = $modelo_pagina_landing->traer_servicios();
             document.querySelector('nav ul').classList.toggle('active');
         });
         
-        // Cerrar menú al hacer clic en un enlace
-        document.querySelectorAll('nav ul li a').forEach(item => {
+        // Cerrar menú al hacer clic en anclas
+        document.querySelectorAll('nav ul li a[href^="#"]').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelector('nav ul').classList.remove('active');
             });
