@@ -279,8 +279,8 @@ require_once(__DIR__ . '/../../variable_global.php');
                 <div class="separator"><span>o</span></div>
                 
                 <div class="login-links">
-                    <a href="crear_cuenta">¿No tienes cuenta? Regístrate</a><br>
-                    <a href="#">¿Olvidaste tu contraseña?</a>
+                    <a href="<?= BASE_URL?>/vista/vista_login/vista_crear_usuario.php">¿No tienes cuenta? Regístrate</a><br>
+                    <a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/prueba_landing.php">Volver al inicio</a>
                 </div>
             </div>
         </div>

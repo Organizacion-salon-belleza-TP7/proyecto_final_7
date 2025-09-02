@@ -33,6 +33,15 @@ class pagina_landing{
         return $resultado_inventario;
     }
 
+    public function traer_lugares(){
+        $traer_lugares = "SELECT id_lugar, nombre_lugar, cooordenadas, imagen_lugar, activo FROM lugares WHERE 1
+        LIMIT 2";
+
+        $resultado_traer_lugares = $this->conn->query($traer_lugares);
+
+        return $resultado_traer_lugares;
+    }
+
 
 }
 
