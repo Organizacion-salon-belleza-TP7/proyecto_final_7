@@ -6,7 +6,12 @@
     <title>Document</title>
 </head>
 <body>
+    <img src="" alt="">
     <?php
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+
     require_once(__DIR__ . '/../../../variable_global.php');
     require_once(ROOT_PATH . '/modelo/BD.php');
     require_once(ROOT_PATH . '/modelo/modelo_adm/servicios_combos/modelo_inicio_adm.php');
@@ -37,6 +42,7 @@
                     <th>Trabajador</th>
                     <th>Activo</th>
                     <th>Tipo de servicio</th>
+                    <th>Imagen</th>
                     <th>Detalles del servicio</th>
                     <th>Modificar</th>
                     <th>Eliminar</th>
@@ -62,6 +68,8 @@
                         }
 
                         echo"<td>{$row['tipo_servicio']}</td>";
+
+                        echo "<td><img src='" . BASE_URL . "/imagenes/servicios/{$row['imagen']}' alt='Imagen Combo' width='150px' height='120px'></td>";
 
                         echo"
                             <td><a href='" . BASE_URL . "/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle del servicio</a></td>

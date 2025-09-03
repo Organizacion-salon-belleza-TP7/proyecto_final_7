@@ -67,13 +67,15 @@
         $trabajador_cargo = $_POST['trabajador_cargo'];
         $activo = ($_POST['activo'] === 'activo') ? 1 : 0;
         $tipo_servicio = $_POST['tipo_servicio'];
+        $imagen = $_FILES['imagen_servicio'];
+        $nombre_imagen = basename($_FILES['imagen_servicio']['name']);
 
         $productos_usados = $_POST['productos'];
         $cantidad_usada = $_POST['cantidades'];
 
         $servicio_modelo = new servicios($conn);
 
-        $id_servicio_insertado = $servicio_modelo->agregar_servicio($nombre, $descripcion, $duracion, $tiempo_servicio, $precio, $trabajador_cargo, $activo,$tipo_servicio);
+        $id_servicio_insertado = $servicio_modelo->agregar_servicio($nombre, $descripcion, $duracion, $tiempo_servicio, $precio, $trabajador_cargo, $activo,$tipo_servicio,$imagen,$nombre_imagen);
         
         if($id_servicio_insertado){
             $servicio_modelo->agregar_productos_usados_servicio($id_servicio_insertado,$productos_usados,$cantidad_usada);

@@ -26,7 +26,7 @@
 
     <h1>Agregar Servicio</h1>
     <div>
-        <form action="<?= BASE_URL ?>/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php" method = "post">
+        <form action="<?= BASE_URL ?>/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php" method = "post" enctype="multipart/form-data">
             <table border = '1'>
                 <input type="hidden" name="agregar" value="vista_agregar_servicio_adm">
                 <tr>
@@ -106,6 +106,10 @@
                             ?>
                         </select>
                     </td>
+                </tr>
+                <tr>
+                    <td>Imagen Servicio</td>
+                    <td><input type="file" name="imagen_servicio"></td>
                 </tr>
             
 

@@ -751,6 +751,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
         .gallery-item:nth-child(6) { background: url('imagenes/images.jpg') center/cover; }
         .gallery-item:nth-child(7) { background: url('imagenes/images_salon.jpg') center/cover; }
         .gallery-item:nth-child(8) { background: url('imagenes/istockphoto-511777075-612x612.jpg') center/cover; }
+        .gallery-item:nth-child(9) { background: url('imagenes/images_masaje.jpg') center/cover; }
 
         /* Contacto mejorado */
         .contact {
@@ -1481,6 +1482,28 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                         <p>Visionaria del maquillaje artístico con experiencia estelar en haute couture, fotografía editorial y producciones cinematográficas. Sofía crea obras maestras únicas que realzan la personalidad más auténtica de cada cliente.</p>
                     </div>
                 </div>
+
+                <div class="miembro-equipo fade-in">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/1718863511411.jpg" alt="Sofía Torres">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>Marilin Monteros</h3>
+                        <div class="cargo">Peluquera Profesional</div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil veniam consequuntur quae doloremque numquam voluptatem deserunt rerum aperiam iste? Dicta soluta repellendus ducimus autem odio doloremque, explicabo aliquid nulla quos.</p>
+                    </div>
+                </div>
+
+                <div class="miembro-equipo fade-in">
+                    <div class="foto-miembro">
+                        <img src="imagenes/equipo/masajista_empleado.jpg" alt="Sofía Torres">
+                    </div>
+                    <div class="miembro-info">
+                        <h3>Jose Martines</h3>
+                        <div class="cargo">Masajista Profesional</div>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil veniam consequuntur quae doloremque numquam voluptatem deserunt rerum aperiam iste? Dicta soluta repellendus ducimus autem odio doloremque, explicabo aliquid nulla quos.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1529,6 +1552,18 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                         </div>
                     </div>
                 </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-text">
+                        <p>"Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil veniam consequuntur quae doloremque numquam voluptatem deserunt rerum aperiam iste? Dicta soluta repellendus ducimus autem odio doloremque, explicabo aliquid nulla quos."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-img"></div>
+                        <div class="author-info">
+                            <h4>Carmen Rodríguez</h4>
+                            <p>Cliente Fascinada</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -1538,9 +1573,10 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
         <div class="container">
             <div class="section-title fade-in">
                 <h2 class="gradient-text">Galería de Transformaciones</h2>
-                <p>Descubre algunos ejemplos espectaculares de nuestros resultados más impresionantes y el ambiente de lujo absoluto de nuestras instalaciones premium.</p>
+                <p>Descubre algunos ejemplos espectaculares de nuestros resultados más impresionantes y el ambiente de lujo absoluto de nuestras instalaciones</p>
             </div>
             <div class="gallery-grid">
+                <div class="gallery-item fade-in"></div>
                 <div class="gallery-item fade-in"></div>
                 <div class="gallery-item fade-in"></div>
                 <div class="gallery-item fade-in"></div>

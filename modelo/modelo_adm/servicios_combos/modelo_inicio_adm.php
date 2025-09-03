@@ -14,7 +14,7 @@ class servicios{
     }
 
     public function mostrar_servicios(){
-        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio 
+        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio ,servicios.imagen
         FROM servicios
         INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
         INNER JOIN trabajadores 
@@ -126,9 +126,24 @@ class servicios{
 
     }
 
-    public function agregar_servicio($nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$id_trabajador,$activo,$tipo_servicio){
-        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio ,activo,id_tipo_servicio) VALUES (?,?,?,?,?,?,?)");
-        $insertar_nuevo_servicio->bind_param("ssiiiii",$nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$activo,$tipo_servicio);
+    public function agregar_servicio($nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$id_trabajador,$activo,$tipo_servicio,$imagen,$nombre_imagen){
+        if($imagen && $imagen['error'] === UPLOAD_ERR_OK){
+            $carpeta_destino = ROOT_PATH . "/imagenes/servicios/";
+
+        }
+
+        $ruta_destino = $carpeta_destino . $nombre_imagen;
+
+        if(move_uploaded_file($imagen['tmp_name'],$ruta_destino)){
+            $ruta_imagen = "/imagenes/servicios/" . $nombre_imagen;
+
+        }else{
+            echo "no se pudo enviar la imagen";
+            die();
+        }
+
+        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio ,activo,id_tipo_servicio,imagen) VALUES (?,?,?,?,?,?,?,?)");
+        $insertar_nuevo_servicio->bind_param("ssiiiiis",$nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$activo,$tipo_servicio,$nombre_imagen);
 
        if($insertar_nuevo_servicio->execute()){
         $id_servicio_insertado = $this->conn->insert_id;
