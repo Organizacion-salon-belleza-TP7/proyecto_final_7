@@ -1,15 +1,8 @@
 <?php
 require_once '../controlador/ClienteControlador.php';
-
-if(!isset($_GET['id'])) {
-    die("No se especificó un cliente");
-}
-
 $controlador = new ClienteControlador();
-$datos = $controlador->ver($_GET['id']);
-$cliente = $datos['cliente'];
-$puntos = $datos['puntos'];
-$servicios = $datos['servicios'];
+$id = $_GET['id'] ?? 0;
+$datos = $controlador->detalle($id);
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,22 +10,26 @@ $servicios = $datos['servicios'];
     <title>Detalle Cliente</title>
 </head>
 <body>
-<h1>Detalle de <?= $cliente['nombre'] ?> <?= $cliente['apellido'] ?></h1>
+    <h1>Detalle de Cliente</h1>
 
-<p><strong>Puntos acumulados:</strong> <?= $puntos['puntos_acumulados'] ?></p>
-<p><strong>Descuento:</strong> <?= $puntos['descuento'] ?>%</p>
+    <h2>Datos Personales</h2>
+    <p><b>Nombre:</b> <?= $datos['cliente']['nombre'] ?> <?= $datos['cliente']['apellido'] ?></p>
+    <p><b>DNI:</b> <?= $datos['cliente']['dni'] ?></p>
+    <p><b>Alergias:</b> <?= $datos['cliente']['alergias'] ?></p>
+    <p><b>Fecha Nac.:</b> <?= $datos['cliente']['fecha_nacimiento'] ?></p>
 
-<h2>Servicios contratados:</h2>
-<?php if(count($servicios) > 0): ?>
-<ul>
-<?php foreach($servicios as $s): ?>
-    <li><?= $s['nombre'] ?> - <?= $s['descripcion'] ?> - Precio: $<?= $s['precio'] ?></li>
-<?php endforeach; ?>
-</ul>
-<?php else: ?>
-<p>El cliente no ha contratado ningún servicio aún.</p>
-<?php endif; ?>
+    <h2>Puntos</h2>
+    <p><b>Puntos acumulados:</b> <?= $datos['puntos']['puntos_acumulados'] ?? 0 ?></p>
+    <p><b>Descuento:</b> <?= $datos['puntos']['descuento'] ?? 0 ?>%</p>
+ cx
+    <h2>Servicios Contratados</h2>
+    <ul>
+        <?php foreach ($datos['servicios'] as $s): ?>
+            <li><?= $s['servicio'] ?> - <?= $s['descripcion'] ?> (Fecha: <?= $s['fecha_cita'] ?>)</li>
+        <?php endforeach; ?>
+    </ul>
 
-<a href="clientes_lista.php">Volver a lista</a>
+    <br>
+    <a href="clientes_lista.php">Volver</a>
 </body>
 </html>
