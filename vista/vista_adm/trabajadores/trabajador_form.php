@@ -1,19 +1,24 @@
 <?php
-require_once "../controlador/TrabajadorControlador.php";
-require_once "../modelo/Conexion.php";
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$controlador = new TrabajadorControlador();
-$conexion = Conexion::getConexion();
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+require_once(ROOT_PATH . '/controlador/controladores_adm/trabajadores/TrabajadorControlador.php');
+
+// Crear controlador pasando la conexión
+$controlador = new TrabajadorControlador($conn);
 
 $id = $_GET['id'] ?? null;
 $trabajador = $id ? $controlador->ver($id) : null;
 
-// Traer niveles profesionales
-$result_niveles = $conexion->query("SELECT id_nivel_profesionalismo, nivel_profesionalismo FROM nivel_profesionalismo");
+// Traer niveles profesionales (usa tu conexión $conn)
+$result_niveles = $conn->query("SELECT id_nivel_profesionalismo, nivel_profesionalismo FROM nivel_profesionalismo");
 $niveles = $result_niveles->fetch_all(MYSQLI_ASSOC);
 
-// Traer tipos de trabajador
-$result_tipos = $conexion->query("SELECT id_tipo_trabajador, tipo_trabajador FROM tipo_trabajador");
+// Traer tipos de trabajador (usa tu conexión $conn)
+$result_tipos = $conn->query("SELECT id_tipo_trabajador, tipo_trabajador FROM tipo_trabajador");
 $tipos = $result_tipos->fetch_all(MYSQLI_ASSOC);
 
 // Guardar datos si se envía el formulario
@@ -27,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'activo' => isset($_POST['activo']) ? 1 : 0
     ];
     $controlador->guardar($datos, $id);
-    header("Location: trabajadores_lista.php");
+    header("Location:" . BASE_URL . "vista/vista_adm/trabajadores/trabajadores_lista.php");
     exit;
 }
 ?>
