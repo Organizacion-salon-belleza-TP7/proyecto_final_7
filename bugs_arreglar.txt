@@ -1,0 +1,10 @@
+1. Arreglar la bd en servicios y añadir imagenes a cada servicio X 
+
+2. Arreglar citas agregando la tabla combos_servicios_select 
+
+3. Arreglar la pagina landing y que traiga los servicios de la BD tambien los comentarios ,productos y lugares  X (falta los comentarios,productos)
+
+4. Unir el resto de pantallas
+
+5. Hacer venta
+
