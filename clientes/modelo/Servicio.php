@@ -1,24 +1,38 @@
 <?php
-require_once 'Conexion.php';
+require_once '../controlador/ClienteControlador.php';
 
-class Servicio {
-    private $conexion;
-
-    public function __construct() {
-        $this->conexion = Conexion::conectar();
-    }
-
-    // Solo los servicios contratados por el cliente
-    public function obtenerPorCliente($id_cliente) {
-        $sql = "SELECT DISTINCT s.* 
-                FROM servicios s
-                JOIN servicios_combos_select scs ON s.id_servicios = scs.id_servicio
-                JOIN citas c ON scs.id_servicio = c.id_servicio_combos_select
-                WHERE c.id_cliente = ?";
-        $stmt = $this->conexion->prepare($sql);
-        $stmt->bind_param("i", $id_cliente);
-        $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
+if(!isset($_GET['id'])) {
+    die("No se especificó un cliente");
 }
+
+$controlador = new ClienteControlador();
+$datos = $controlador->ver($_GET['id']);
+$cliente = $datos['cliente'];
+$puntos = $datos['puntos'];
+$servicios = $datos['servicios'];
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detalle Cliente</title>
+</head>
+<body>
+<h1>Detalle de <?= $cliente['nombre'] ?> <?= $cliente['apellido'] ?></h1>
+
+<p><strong>Puntos acumulados:</strong> <?= $puntos['puntos_acumulados'] ?></p>
+<p><strong>Descuento:</strong> <?= $puntos['descuento'] ?>%</p>
+
+<h2>Servicios contratados:</h2>
+<?php if(count($servicios) > 0): ?>
+<ul>
+<?php foreach($servicios as $s): ?>
+    <li><?= $s['nombre'] ?> - <?= $s['descripcion'] ?> - Precio: $<?= $s['precio'] ?></li>
+<?php endforeach; ?>
+</ul>
+<?php else: ?>
+<p>El cliente no ha contratado ningún servicio aún.</p>
+<?php endif; ?>
+
+<a href="clientes_lista.php">Volver a lista</a>
+</body>
+</html>

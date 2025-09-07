@@ -13,4 +13,3 @@ class Conexion {
         return $conn;
     }
 }
-?>
