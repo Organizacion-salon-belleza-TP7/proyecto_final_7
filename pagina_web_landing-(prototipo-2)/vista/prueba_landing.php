@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once(__DIR__ . '/../variable_global.php');
+require_once(__DIR__ . '/../../variable_global.php');
 require_once(ROOT_PATH . '/pagina_web_landing-(prototipo-2)/modelo/modelo.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 
@@ -511,7 +511,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
         .about-image {
             height: 500px;
             border-radius: 25px;
-            background: url('imagenes/liderar-exito-diversidad-equipo.jpg') no-repeat center center/cover;
+            background: url('../imagenes/liderar-exito-diversidad-equipo.jpg') no-repeat center center/cover;
             box-shadow: var(--shadow-heavy);
             position: relative;
             overflow: hidden;
@@ -743,15 +743,15 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
             box-shadow: var(--shadow-heavy);
         }
 
-        .gallery-item:nth-child(1) { background: url('imagenes/images_tintado_pelo.jpg') center/cover; }
-        .gallery-item:nth-child(2) { background: url('imagenes/images_uñas.jpg') center/cover; }
-        .gallery-item:nth-child(3) { background: url('imagenes/images_maquillaje.jpg') center/cover; }
-        .gallery-item:nth-child(4) { background: url('imagenes/116053406-front-view-of-stylish-barber-in-white-shirt-and-waistcoat-looking-at-camera-posing-and-smiling-in.jpg') center/cover; }
-        .gallery-item:nth-child(5) { background: url('imagenes/images_cortando_barba.jpg') center/cover; }
-        .gallery-item:nth-child(6) { background: url('imagenes/images.jpg') center/cover; }
-        .gallery-item:nth-child(7) { background: url('imagenes/images_salon.jpg') center/cover; }
-        .gallery-item:nth-child(8) { background: url('imagenes/istockphoto-511777075-612x612.jpg') center/cover; }
-        .gallery-item:nth-child(9) { background: url('imagenes/images_masaje.jpg') center/cover; }
+        .gallery-item:nth-child(1) { background: url('../imagenes/images_tintado_pelo.jpg') center/cover; }
+        .gallery-item:nth-child(2) { background: url('../imagenes/images_uñas.jpg') center/cover; }
+        .gallery-item:nth-child(3) { background: url('../imagenes/images_maquillaje.jpg') center/cover; }
+        .gallery-item:nth-child(4) { background: url('../imagenes/116053406-front-view-of-stylish-barber-in-white-shirt-and-waistcoat-looking-at-camera-posing-and-smiling-in.jpg') center/cover; }
+        .gallery-item:nth-child(5) { background: url('../imagenes/images_cortando_barba.jpg') center/cover; }
+        .gallery-item:nth-child(6) { background: url('../imagenes/images.jpg') center/cover; }
+        .gallery-item:nth-child(7) { background: url('../imagenes/images_salon.jpg') center/cover; }
+        .gallery-item:nth-child(8) { background: url('../imagenes/istockphoto-511777075-612x612.jpg') center/cover; }
+        .gallery-item:nth-child(9) { background: url('../imagenes/images_masaje.jpg') center/cover; }
 
         /* Contacto mejorado */
         .contact {
@@ -1308,7 +1308,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                     <li><a href="#testimonios">Testimonios</a></li>
                     <li><a href="#galeria">Galería</a></li>
                     <li><a href="#contacto">Contacto</a></li>
-                    <li><a href="<?= BASE_URL ?>/vista/vista_login/vista_login.php" class="btn" style="padding: 8px 20px; font-size: 0.9rem;">Iniciar Sesión</a></li>
+                    <li><a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/controlador/controlador.php?accion=login_nav" class="btn" style="padding: 8px 20px; font-size: 0.9rem;">Iniciar Sesión</a></li>
                 </ul>
             </nav>
         </div>
@@ -1320,7 +1320,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
         <div class="container hero-content">
             <h1 class="fade-in">Realza tu <span class="highlight">belleza natural</span></h1>
             <p class="fade-in">Descubre los mejores tratamientos de belleza con profesionales expertos que cuidan de ti y te ayudan a resaltar tu belleza única en un ambiente de lujo y relajación.</p>
-            <a href="<?= BASE_URL ?>/vista/vista_login/vista_login.php" class="btn fade-in">Reserva tu cita ahora</a>
+            <a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/controlador/controlador.php?accion=login_cita" class="btn fade-in">Reserva tu cita ahora</a>
         </div>
     </section>
 
@@ -1441,7 +1441,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
             <div class="equipo-container">
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/81285963-charming-woman-stylist-with-tools-in-hands-posing-on-camera-isolated-on-white-background.jpg" alt="María González">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/81285963-charming-woman-stylist-with-tools-in-hands-posing-on-camera-isolated-on-white-background.jpg" alt="María González">
                     </div>
                     <div class="miembro-info">
                         <h3>María González</h3>
@@ -1452,7 +1452,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
 
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/23551074-male-hair-stylist-holding-three-brushes.jpg" alt="Carlos Mendoza">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/23551074-male-hair-stylist-holding-three-brushes.jpg" alt="Carlos Mendoza">
                     </div>
                     <div class="miembro-info">
                         <h3>Carlos Mendoza</h3>
@@ -1463,7 +1463,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
 
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/¿Cual-es-la-diferencia-entre-un-psicologo-y-un-terapeuta-1024x536.png" alt="Ana Rodríguez">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/¿Cual-es-la-diferencia-entre-un-psicologo-y-un-terapeuta-1024x536.png" alt="Ana Rodríguez">
                     </div>
                     <div class="miembro-info">
                         <h3>Ana Rodríguez</h3>
@@ -1474,7 +1474,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
 
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/dwd2.png" alt="Sofía Torres">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/dwd2.png" alt="Sofía Torres">
                     </div>
                     <div class="miembro-info">
                         <h3>Sofía Torres</h3>
@@ -1485,7 +1485,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
 
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/1718863511411.jpg" alt="Sofía Torres">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/1718863511411.jpg" alt="Sofía Torres">
                     </div>
                     <div class="miembro-info">
                         <h3>Marilin Monteros</h3>
@@ -1496,7 +1496,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
 
                 <div class="miembro-equipo fade-in">
                     <div class="foto-miembro">
-                        <img src="imagenes/equipo/masajista_empleado.jpg" alt="Sofía Torres">
+                        <img src="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/equipo/masajista_empleado.jpg" alt="Sofía Torres">
                     </div>
                     <div class="miembro-info">
                         <h3>Jose Martines</h3>

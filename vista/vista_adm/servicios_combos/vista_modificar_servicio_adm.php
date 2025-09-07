@@ -63,7 +63,7 @@ while ($row = $datos_formulario_modificar['productosJS']->fetch_assoc()) {
 </script>
 
 <h1>Modificar servicio</h1>
-<form action="<?= BASE_URL ?>/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php" method="post">
+<form action="<?= BASE_URL ?>/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php" method="post" enctype="multipart/form-data">
     <input type="hidden" name="vista_modificar_servicio_adm" value="vista_modificar_servicio_adm">
     <input type="hidden" name="id_servicio" value="<?= htmlspecialchars($servicio['id_servicios']) ?>">
 
@@ -130,6 +130,10 @@ while ($row = $datos_formulario_modificar['productosJS']->fetch_assoc()) {
                 </select>
             </td>
         </tr>
+        <tr>
+            <td>Imagen</td>
+            <td><img src="<?= BASE_URL ?>/imagenes/servicios/<?= htmlspecialchars($servicio['imagen']) ?>" width="150" height="120" alt="Imagen del servicio"></td>
+            <td><input type="file" name="imagen_nueva"></td>
     </table>
 
     <h2>Productos a utilizar</h2>

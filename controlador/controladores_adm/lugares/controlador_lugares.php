@@ -1,8 +1,10 @@
 <?php
-require_once __DIR__ . "/../../variable_global.php";
-require_once __DIR__ . "/../../modelo/lugares/modelo_lugares.php";
+require_once __DIR__ . "/../../../variable_global.php";
+require_once __DIR__ . "/modelo/modelo_adm/lugares/modelo_lugares.php";
 
-$modelo = new Lugar();
+require_once(ROOT_PATH . '/modelo/BD.php');
+
+$modelo = new Lugar($conn);
 
 // Agregar lugar
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar'])) {
@@ -12,16 +14,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar'])) {
 
     $imagen = "";
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $carpeta = __DIR__ . "/../../uploads/";
+        $carpeta = ROOT_PATH  . "/../../uploads/";
         if (!is_dir($carpeta)) mkdir($carpeta, 0777, true);
 
         $imagen = basename($_FILES['imagen']['name']);
         move_uploaded_file($_FILES['imagen']['tmp_name'], $carpeta . $imagen);
-        $imagen = "uploads/" . $imagen;
+        $imagen = BASE_URL . "uploads/" . $imagen;
     }
 
     $modelo->agregarLugar($nombre, $coordenadas, $imagen, $activo);
-    header("Location: " . BASE_URL . "/vista/lugares/lugares.php");
+    header("Location: " . BASE_URL . "/vista/vista_adm/lugares/lugares.php");
     exit;
 }
 
@@ -29,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['agregar'])) {
 if (isset($_GET['eliminar'])) {
     $id = $_GET['eliminar'];
     $modelo->eliminarLugar($id);
-    header("Location: " . BASE_URL . "/vista/lugares/lugares.php");
+    header("Location: " . BASE_URL . "/vista/vista_adm/lugares/lugares.php");
     exit;
 }
 ?>

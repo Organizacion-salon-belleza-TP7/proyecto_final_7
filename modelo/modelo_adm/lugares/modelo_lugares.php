@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . "/../../variable_global.php";
+require_once(__DIR__ . '/../../../variable_global.php');
+
 
 class Lugar {
     private $conn;
 
-    public function __construct() {
-        global $conn;
+    public function __construct($conn) {
         $this->conn = $conn;
     }
 

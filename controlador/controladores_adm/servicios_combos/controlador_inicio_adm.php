@@ -109,12 +109,15 @@
 
         $tipo_servicio = $_POST['tipo_servicio'];
 
+        $nombre_imagen = basename($_FILES['imagen_nueva']['name']);
+        $imagen = $_FILES['imagen_nueva'];
+
         $productos = $_POST['productos'];
         $cantidad_usada = $_POST['cantidades'];
 
         $servicio_modelo = new servicios($conn);
 
-        $ejecutar_modificacion = $servicio_modelo->modificar_servicio($id_servicio,$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$trabajador_cargo,$activo,$productos,$cantidad_usada,$tipo_servicio);
+        $ejecutar_modificacion = $servicio_modelo->modificar_servicio($id_servicio,$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$trabajador_cargo,$activo,$productos,$cantidad_usada,$tipo_servicio,$nombre_imagen,$imagen);
 
         if ($ejecutar_modificacion === true) {
             echo '<script language = javascript>

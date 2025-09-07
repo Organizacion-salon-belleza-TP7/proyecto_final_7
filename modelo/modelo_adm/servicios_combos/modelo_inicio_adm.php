@@ -188,7 +188,7 @@ class servicios{
     }
 
     public function formulario_modificar($id_servicio){
-        $seleccionar_servicio = $this->conn->prepare("SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tiempo_servicio.id_tiempo_servicio, trabajadores.id_trabajador,tipo_servicio.id_tipo_servicio 
+        $seleccionar_servicio = $this->conn->prepare("SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tiempo_servicio.id_tiempo_servicio, trabajadores.id_trabajador,tipo_servicio.id_tipo_servicio,servicios.imagen 
         FROM servicios
         INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
         INNER JOIN trabajadores 
@@ -255,31 +255,57 @@ class servicios{
         
 	}
 
-	public function modificar_servicio($id_servicio,$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$trabajador,$activo,$productos,$cantidad_usada,$tipo_servicio) {
+	public function modificar_servicio($id_servicio,$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$trabajador,$activo,$productos,$cantidad_usada,$tipo_servicio,$nombre_imagen,$imagen) {
 
-        $insertar_modificacion_servicio = $this->conn->prepare("UPDATE servicios SET nombre = ?,descripcion = ?,duracion = ?,id_tiempo_servicio = ?,precio = ?,activo = ?,id_tipo_servicio = ? WHERE id_servicios = ?");
-        $insertar_modificacion_servicio->bind_param('ssiidiii',$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$activo,$tipo_servicio,$id_servicio);
-        
-        if($insertar_modificacion_servicio->execute()){
-            
+    // --- Manejo de imagen ---
+        $imagen_final = null;
 
+        if($imagen && $imagen['error'] === UPLOAD_ERR_OK){
+            $carpeta_destino = ROOT_PATH . "/imagenes/servicios/";
+            $ruta_destino = $carpeta_destino . $nombre_imagen;
+
+            if(move_uploaded_file($imagen['tmp_name'],$ruta_destino)){
+            $imagen_final = $nombre_imagen; // Guardamos nuevo nombre
+            } else {
+                echo "no se pudo enviar la imagen";
+                die();
+            }
+        }
+
+        // --- Armar query según corresponda ---
+        if($imagen_final){
+            // Con nueva imagen
+            $sql = "UPDATE servicios 
+                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio = ?, activo = ?, id_tipo_servicio = ?, imagen = ?
+                WHERE id_servicios = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param('ssiidiisi',$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$activo,$tipo_servicio,$imagen_final,$id_servicio);
+        } else {
+        // Sin nueva imagen
+            $sql = "UPDATE servicios 
+                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio = ?, activo = ?, id_tipo_servicio = ?
+                WHERE id_servicios = ?";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param('ssiidiii',$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$activo,$tipo_servicio,$id_servicio);
+        }
+
+        if($stmt->execute()){
+
+            // --- Actualizar trabajador asignado ---
             $updatear_trabajadores_servicios = $this->conn->prepare("UPDATE trabajadores_servicios SET id_trabajador = ? WHERE id_servicio = ?");
             $updatear_trabajadores_servicios->bind_param('ii',$trabajador,$id_servicio);
 
-            if($updatear_trabajadores_servicios->execute()){
+                if($updatear_trabajadores_servicios->execute()){
                 #Trae los productos actuales
-                $productos_actuales = [];
+                    $productos_actuales = [];
+                    $res = $this->conn->prepare("SELECT id_inventario FROM product_usados WHERE id_servicios = ?");
+                    $res->bind_param('i',$id_servicio);
+                    $res->execute();
+                    $resultado = $res->get_result();
 
-                $res = $this->conn->prepare("SELECT id_inventario FROM product_usados WHERE id_servicios = ?");
-                $res->bind_param('i',$id_servicio);
-                $res->execute();
-
-                $resultado = $res->get_result();
-
-                while ($row = $resultado->fetch_assoc()) {
-                    $productos_actuales[] = $row['id_inventario'];
-
-                }
+                    while ($row = $resultado->fetch_assoc()) {
+                        $productos_actuales[] = $row['id_inventario'];
+                    }
 
                 #Array que trae los nuevos productos
                 $nuevos_productos = $productos;
@@ -287,48 +313,41 @@ class servicios{
                 foreach($productos as $i => $id_inventario){
                     $cantidad = $cantidad_usada[$i];
 
-                    #Si exitia algun producto sigue igual
                     if(in_array($id_inventario,$productos_actuales)){
+                    // Ya existía, solo actualizo cantidad
                         $update = $this->conn->prepare("UPDATE product_usados SET cantidad_usada = ? WHERE id_servicios = ? AND id_inventario = ?");
                         $update->bind_param('iii',$cantidad,$id_servicio,$id_inventario);
                         $update->execute();
-
-
-                    }else{
-                        #Si el la modificacion agrego un nuevo producto se ejecuta esto
+                    } else {
+                    // Nuevo producto
                         $insert = $this->conn->prepare("INSERT INTO product_usados(id_servicios,id_inventario,cantidad_usada) VALUES (?,?,?)");
                         $insert->bind_param('iii',$id_servicio,$id_inventario,$cantidad);
                         $insert->execute();
                     }
-
                 }
 
+                // Eliminar productos quitados
                 foreach($productos_actuales as $id_existente){
                     if(!in_array($id_existente,$nuevos_productos)){
-                        #En caso de que elimino un producto en la modificacion
                         $delete = $this->conn->prepare("DELETE FROM product_usados WHERE id_servicios = ? AND id_inventario = ?");
                         $delete->bind_param('ii',$id_servicio,$id_existente);
                         $delete->execute();
-
                     }
-
                 }
 
                 return true;
-            }else{
-                echo '<script language = javascript>
+            } else {
+                echo '<script language=javascript>
                 alert("hubo un fallo updateando los datos de los trabajadores")
                 self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
                 </script>';
                 exit;
             }
-        }else{
+        } else {
             return false;
         }
+    }
 
-        
-		
-	}
 
 	public function mostrar_combos(){
 		$mostrar_combos = "SELECT id_combos, nombre,descripcion_combo,precio,imagen,activo,fecha_creacion 
