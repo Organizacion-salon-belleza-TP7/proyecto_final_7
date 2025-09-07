@@ -1,22 +1,26 @@
 <?php
-class ModeloProveedor {
-    private $conexion;
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
 
-    public function __construct() {
-        $this->conexion = new mysqli("localhost", "root", "", "trabajo_final_7");
-        if ($this->conexion->connect_error) {
-            die("Error de conexión: " . $this->conexion->connect_error);
-        }
+class ModeloProveedor {
+    private $conn;
+
+    public function __construct($conn){
+        $this->conn = $conn;
+
     }
 
     public function obtenerProveedores() {
         $sql = "SELECT * FROM proveedores";
-        $resultado = $this->conexion->query($sql);
+        $resultado = $this->conn->query($sql);
         return $resultado->fetch_all(MYSQLI_ASSOC);
     }
 
     public function agregarProveedor($nombre, $apellido, $dni) {
-        $stmt = $this->conexion->prepare(
+        $stmt = $this->conn->prepare(
             "INSERT INTO proveedores (nombre_proveedor, apellido_proveedor, dni) VALUES (?, ?, ?)"
         );
         $stmt->bind_param("sss", $nombre, $apellido, $dni);
@@ -24,7 +28,7 @@ class ModeloProveedor {
     }
 
     public function eliminarProveedor($id) {
-        $stmt = $this->conexion->prepare("DELETE FROM proveedores WHERE id_proveedor = ?");
+        $stmt = $this->conn->prepare("DELETE FROM proveedores WHERE id_proveedor = ?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }

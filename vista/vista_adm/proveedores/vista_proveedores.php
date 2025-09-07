@@ -1,6 +1,13 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-$modelo = new ModeloProveedor();
+require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/modelo_adm/proveedores/modelo_proveedor.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+
+$modelo = new ModeloProveedor($conn);
 $proveedores = $modelo->obtenerProveedores();
 ?>
 <!DOCTYPE html>
@@ -40,7 +47,7 @@ $proveedores = $modelo->obtenerProveedores();
                 <td><?= $p['apellido_proveedor'] ?></td>
                 <td><?= $p['dni'] ?></td>
                 <td>
-                    <a class="delete" href="../controlador/controlador_eliminar_proveedor.php?id=<?= $p['id_proveedor'] ?>">Eliminar</a>
+                    <a class="delete" href="<?= BASE_URL ?>/controlador/controladores_adm/proveedores/controlador_eliminar_proveedor.php?id=<?= $p['id_proveedor'] ?>">Eliminar</a>
                 </td>
             </tr>
             <?php endforeach; ?>
