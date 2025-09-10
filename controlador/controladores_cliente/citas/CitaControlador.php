@@ -48,7 +48,7 @@ class CitaControlador {
         $detalles = [];
         foreach ($servicios as $s) {
             $data = $this->modelo->obtenerServiciosPorId($s);
-            if ($data) $detalles[] = ['tipo'=>'servicio','nombre'=>$data['nombre'],'precio'=>$data['precio']];
+            if ($data) $detalles[] = ['tipo'=>'servicio','nombre'=>$data['nombre'],'precio'=>$data['precio_servicio']];
         }
         foreach ($combos as $c) {
             $data = $this->modelo->obtenerCombosPorId($c);

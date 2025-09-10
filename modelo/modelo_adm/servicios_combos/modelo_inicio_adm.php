@@ -14,7 +14,7 @@ class servicios{
     }
 
     public function mostrar_servicios(){
-        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio ,servicios.imagen
+        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio_servicio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio ,servicios.imagen
         FROM servicios
         INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
         INNER JOIN trabajadores 

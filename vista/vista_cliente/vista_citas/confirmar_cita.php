@@ -39,7 +39,13 @@ $fecha_cita = $fecha_cita ?? '';
 
     <p class="mb-6">Fecha y Hora: <span class="font-semibold"><?= $fecha_cita ? date('d/m/Y H:i', strtotime($fecha_cita)) : '' ?></span></p>
 
-    <a href="<?= BASE_URL ?>/vista/vista/cliente/vista_citas/layout.php?accion=seleccionar" class="bg-pink-500 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-pink-600 transition-colors">
-        Volver
-    </a>
+    <form action="<?= BASE_URL ?>/controlador/controladores_cliente/controlador_venta/controlador_venta.php" method="POST">
+        <input type="hidden" name="traer_id_cita" value="confirmar_cita">
+        <input type="hidden" name="id_cita" value="<?= $id_cita ?>">
+        <button type="submit"
+            class="bg-green-500 text-white font-semibold px-6 py-3 rounded-lg shadow hover:bg-green-600 transition-colors">
+            Ir a Pago
+        </button>
+    </form>
+
 </div>

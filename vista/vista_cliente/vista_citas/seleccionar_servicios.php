@@ -12,7 +12,7 @@ $lugares = $lugares ?? [];
 <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8">
     <h2 class="text-3xl font-bold mb-6 text-center text-pink-600">Reservar Cita</h2>
 
-    <form method="POST" action="<?= BASE_URL ?>vista/vista_cliente/vista_citas/layout.php?accion=guardar">
+    <form method="POST" action="<?= BASE_URL ?>/vista/vista_cliente/vista_citas/layout.php?accion=guardar">
         <!-- Servicios -->
         <div>
             <h3 class="text-2xl font-semibold mb-4 text-gray-700">Servicios:</h3>
@@ -23,7 +23,7 @@ $lugares = $lugares ?? [];
                             <input type="checkbox" name="servicios[]" value="<?= htmlspecialchars($item['id']) ?>" class="hidden peer">
                             <div class="border border-gray-200 rounded-lg p-4 shadow hover:shadow-lg transition-all peer-checked:bg-pink-100 peer-checked:border-pink-500">
                                 <h4 class="font-semibold text-lg mb-2"><?= htmlspecialchars($item['nombre']) ?></h4>
-                                <p class="text-pink-600 font-bold text-lg">$<?= htmlspecialchars($item['precio']) ?></p>
+                                <p class="text-pink-600 font-bold text-lg">$<?= htmlspecialchars($item['precio_servicio']) ?></p>
                             </div>
                         </label>
                     <?php endif; ?>

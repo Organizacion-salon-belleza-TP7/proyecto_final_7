@@ -16,13 +16,13 @@ class CitaModelo {
     }
 
     public function obtenerServicios() {
-        $sql = "SELECT id_servicios AS id, nombre, precio FROM servicios WHERE activo=1";
+        $sql = "SELECT id_servicios AS id, nombre, precio_servicio FROM servicios WHERE activo=1";
         $resultado = $this->conn->query($sql);
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
     public function obtenerServiciosPorId($id) {
-        $stmt = $this->conn->prepare("SELECT nombre, precio FROM servicios WHERE id_servicios=?");
+        $stmt = $this->conn->prepare("SELECT nombre, precio_servicio FROM servicios WHERE id_servicios=?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();

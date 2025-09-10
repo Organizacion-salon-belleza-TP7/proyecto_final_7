@@ -14,7 +14,7 @@ class pagina_landing{
     }
 
     public function traer_servicios(){
-        $traer_servicios = "SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio, activo, id_tipo_servicio, imagen 
+        $traer_servicios = "SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, activo, id_tipo_servicio, imagen 
         FROM servicios WHERE 1
         LIMIT 6";
 
