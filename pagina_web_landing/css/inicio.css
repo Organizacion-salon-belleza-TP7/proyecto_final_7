@@ -176,33 +176,32 @@ body .menu-links {
     padding: 10px; /* Para que el contenido no quede pegado al borde */
 }
 
-
 .carrusel {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    width: 100%;
-    height: auto;
-    max-height: 400px;
-    margin-top: 20px;
-    gap: 5px; /* flechas más cerca */
+    align-items: center;      /* Centra verticalmente las flechas con la imagen */
+    justify-content: center;  /* Centra horizontalmente el carrusel */
+    gap: 15px;                /* espacio entre flechas y la imagen */
+    margin: 30px auto;
+    max-width: 900px;         /* ancho máximo */
 }
 
 .imagenes {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: end;
-    position: relative; /* para que .texto se posicione encima de la imagen */
+    align-items: center;      /* Centra imagen y texto */
+    justify-content: center;
+    position: relative;
 }
 
 .img img {
-    height: 300px; /* antes 400px */
-    width: 550px;  /* antes 700px */
+    height: 350px;            /* un poco más grande */
+    width: 100%;              /* que use todo el ancho disponible */
+    max-width: 600px;         /* límite para que no se deforme */
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
 }
+
 
 .texto {
     overflow: hidden;

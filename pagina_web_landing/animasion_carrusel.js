@@ -1,7 +1,7 @@
 // Esperar a que el DOM esté listo (o usa <script defer>)
 document.addEventListener('DOMContentLoaded', () => {
   const imagenes = [
-    { url: "imagenes/images.jpg", nombre: "Productos a calidad precio", descripcion: "Los mejores servicios a calidad-precio en un solo lugar todos nuestros cliente siempre regresan que ¿esperas para venir?" },
+    { url: "imagenes/log.jpg", nombre: "Productos a calidad precio", descripcion: "Los mejores servicios a calidad-precio en un solo lugar todos nuestros cliente siempre regresan que ¿esperas para venir?" },
     { url: "imagenes/istockphoto-2149593400-612x612.jpg", nombre: "¿Estas en duda?", descripcion: "Si no sabes que elegir puedes consultar los servicios,productos o combos que te interesan si aun no quedas satisfecho contactate con nosotros" },
     { url: "imagenes/imagenes_productos/aceite_eucaliptus.jpg", nombre: "Aceite de eucaliptos", descripcion: "Aceite de eucalipto para un masaje fresco y relajante" },
     { url: "imagenes/imagenes_productos/images_crema_hidratante.jpg", nombre: "Crema Hidratante", descripcion: "Crema hidratante para poder revivir tu piel manteniendola firme y suave" }
