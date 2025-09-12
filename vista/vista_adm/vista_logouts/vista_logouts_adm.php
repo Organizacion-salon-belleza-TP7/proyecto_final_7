@@ -133,6 +133,13 @@ $traer_logueos = $logouts_modelo->mostrar_logueos();
         font-size:1.1rem;
         margin-top:20px;
     }
+
+    .title{
+      margin-left: 50px;
+    }
+     .titulo_menu{
+      margin-left: 20px;
+    }
 </style>
 </head>
 <body>
@@ -141,7 +148,7 @@ $traer_logueos = $logouts_modelo->mostrar_logueos();
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
-    <h2>RoseSpa</h2>
+    <h2 class="titulo_menu">RoseSpa</h2>
     <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
     <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php"><i class="fas fa-boxes"></i> Productos</a>
     <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
@@ -163,7 +170,6 @@ $traer_logueos = $logouts_modelo->mostrar_logueos();
         echo "<table>
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Usuario</th>
                         <th>Fecha Logueo</th>
                         <th>Fecha Logout</th>
@@ -172,7 +178,6 @@ $traer_logueos = $logouts_modelo->mostrar_logueos();
                 <tbody>";
         while($bucle_logouts = $traer_logueos->fetch_assoc()){
             echo "<tr>
-                    <td>{$bucle_logouts['id_historial_logueos']}</td>
                     <td>{$bucle_logouts['nombre_usuario']}</td>
                     <td>{$bucle_logouts['fecha_logueo']}</td>";
                     if($bucle_logouts['fecha_logout'] === null){
@@ -189,11 +194,6 @@ $traer_logueos = $logouts_modelo->mostrar_logueos();
     ?>
 </div>
 
-<script>
-function toggleSidebar(){
-    document.getElementById("sidebar").classList.toggle("hidden");
-    document.getElementById("content").classList.toggle("expanded");
-}
-</script>
+<script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
 </body>
 </html>
