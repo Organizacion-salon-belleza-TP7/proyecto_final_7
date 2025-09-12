@@ -28,7 +28,7 @@ class servicios{
     }
 
 	public function dar_baja_servicios($id_servicio){
-		$encontrar_servicio = $this->conn->prepare("SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio, id_trabajadores_servicios, activo 
+		$encontrar_servicio = $this->conn->prepare("SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, id_trabajadores_servicios, activo 
 		FROM servicios WHERE id_servicios = ?");
 
 		$encontrar_servicio->bind_param("i",$id_servicio);
@@ -142,7 +142,7 @@ class servicios{
             die();
         }
 
-        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio ,activo,id_tipo_servicio,imagen) VALUES (?,?,?,?,?,?,?,?)");
+        $insertar_nuevo_servicio = $this->conn->prepare("INSERT INTO servicios(nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio ,activo,id_tipo_servicio,imagen) VALUES (?,?,?,?,?,?,?,?)");
         $insertar_nuevo_servicio->bind_param("ssiiiiis",$nombre_servicio,$descripcion,$duracion,$id_tiempo_servicio,$precio,$activo,$tipo_servicio,$nombre_imagen);
 
        if($insertar_nuevo_servicio->execute()){
@@ -188,7 +188,7 @@ class servicios{
     }
 
     public function formulario_modificar($id_servicio){
-        $seleccionar_servicio = $this->conn->prepare("SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio, trabajadores.nombre_trabajador, servicios.activo,tiempo_servicio.id_tiempo_servicio, trabajadores.id_trabajador,tipo_servicio.id_tipo_servicio,servicios.imagen 
+        $seleccionar_servicio = $this->conn->prepare("SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio_servicio, trabajadores.nombre_trabajador, servicios.activo,tiempo_servicio.id_tiempo_servicio, trabajadores.id_trabajador,tipo_servicio.id_tipo_servicio,servicios.imagen 
         FROM servicios
         INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
         INNER JOIN trabajadores 
@@ -276,14 +276,14 @@ class servicios{
         if($imagen_final){
             // Con nueva imagen
             $sql = "UPDATE servicios 
-                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio = ?, activo = ?, id_tipo_servicio = ?, imagen = ?
+                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio_servicio = ?, activo = ?, id_tipo_servicio = ?, imagen = ?
                 WHERE id_servicios = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param('ssiidiisi',$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$activo,$tipo_servicio,$imagen_final,$id_servicio);
         } else {
         // Sin nueva imagen
             $sql = "UPDATE servicios 
-                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio = ?, activo = ?, id_tipo_servicio = ?
+                SET nombre = ?, descripcion = ?, duracion = ?, id_tiempo_servicio = ?, precio_servicio = ?, activo = ?, id_tipo_servicio = ?
                 WHERE id_servicios = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param('ssiidiii',$nombre,$descripcion,$duracion,$tiempo_servicio,$precio,$activo,$tipo_servicio,$id_servicio);
@@ -369,7 +369,7 @@ class servicios{
             s.id_servicios,
             s.nombre,
             s.descripcion,
-            s.precio,
+            s.precio_servicio,
             ts.tipo_servicio,
             ts.intereses,
             c.nombre as nombre_combo,
@@ -389,7 +389,7 @@ class servicios{
     }
 
     public function formulario_agregar_combo(){
-        $traer_servicios = "SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio, activo, id_tipo_servicio 
+        $traer_servicios = "SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, activo, id_tipo_servicio 
         FROM servicios WHERE activo = 1";
 
         $traer_servicios = $this->conn->query($traer_servicios);
