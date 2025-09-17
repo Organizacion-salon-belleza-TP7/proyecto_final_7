@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Probar API Login</title>
+</head>
+<body>
+  <button onclick="probarLogin()">Probar login</button>
+  <pre id="respuesta"></pre>
+
+ <script>
+  async function probarLogin() {
+    try {
+      const respuesta = await fetch("http://localhost/proyecto_final_7/app_movil/app_proyecto_7/api/controladores/controlador_login/controlador_login.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre_usuario: "julio",
+          contrasena: "787878"
+        })
+      });
+
+      const texto = await respuesta.text(); // 👈 primero como texto
+      console.log("Respuesta cruda:", texto);
+
+      let data;
+      try {
+        data = JSON.parse(texto); // intentar parsear
+      } catch (e) {
+        data = { error: "Respuesta no es JSON válido", detalle: texto };
+      }
+
+      document.getElementById("respuesta").textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      console.error("Error en fetch:", err);
+      document.getElementById("respuesta").textContent = "Error en fetch: " + err.message;
+    }
+  }
+</script>
+
+</body>
+</html>

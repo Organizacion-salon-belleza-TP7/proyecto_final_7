@@ -25,5 +25,5 @@
 ?>
 
 6)añadir un carrusel con imagenes del salon
-7)h1 de servicios tenga un margen con el menu de hamburguesa
+7)h1 de servicios tenga un margen con el menu de hamburguesa X
 8)varios trabjadores puedan en un servicio o combo en caso de imprevisto
