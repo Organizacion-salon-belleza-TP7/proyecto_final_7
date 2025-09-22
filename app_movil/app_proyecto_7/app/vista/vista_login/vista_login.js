@@ -1,17 +1,18 @@
-// app/views/LoginScreen.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
 import { login } from "../../../controladores/controladores_login/controlador_login.js";
+import { useRouter } from "expo-router";
 
 export default function LoginScreen() {
   const [usuario, setUsuario] = useState("");
   const [contrasena, setContrasena] = useState("");
+  const router = useRouter();
 
   const handleLogin = async () => {
     try {
       const user = await login(usuario, contrasena);
       Alert.alert("Bienvenido", `${user.nombre_usuario} (${user.tipo})`);
-      // acá puedes navegar a otra pantalla, ej: navigation.navigate("Home", { user })
+      router.replace("/vista/vista_adm/inicio/vista_inicio_adm");
     } catch (error) {
       Alert.alert("Error", error.message);
     }
