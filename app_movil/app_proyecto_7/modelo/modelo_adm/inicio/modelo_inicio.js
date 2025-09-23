@@ -8,7 +8,8 @@ export default class Producto {
     precio_producto,
     precio_venta,
     imagen_producto,
-    nombre_proveedor
+    nombre_proveedor,
+    id_proveedor // 👈 agregado
   ) {
     this.id_inventario = id_inventario;
     this.nombre_producto = nombre_producto;
@@ -18,5 +19,6 @@ export default class Producto {
     this.precio_venta = precio_venta;
     this.imagen_producto = imagen_producto;
     this.nombre_proveedor = nombre_proveedor;
+    this.id_proveedor = id_proveedor;
   }
 }

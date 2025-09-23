@@ -16,6 +16,10 @@ switch ($request) {
         // CORREGIDO: Asegúrate de que la ruta sea correcta
         require_once(__DIR__ . '/routes/adm/inicio/inicio.php');
         break;
+
+    case 'proveedores':
+        require_once(__DIR__ . '/routes/adm/inicio/proveedores.php');
+        break;
     
     default:
         header('Content-Type: application/json; charset=UTF-8');

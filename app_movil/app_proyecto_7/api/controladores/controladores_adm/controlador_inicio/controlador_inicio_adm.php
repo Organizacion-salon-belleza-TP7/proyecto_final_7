@@ -41,24 +41,41 @@ switch ($method) {
         }
         break;
 
-    case 'POST':
-        // Create product
-        $data = json_decode(file_get_contents('php://input'), true);
-
-        $nombre = $data['nombre_producto'];
-        $stock = $data['stock'];
-        $vencimiento = $data['vencimiento'];
-        $precio_compra = $data['precio_producto'];
-        $precio_venta = $data['precio_venta'];
-        $imagen = $data['imagen_producto'] ?? '';
-        $proveedor = $data['id_proveedor'];
+     case 'POST':
+        // Procesar datos de FormData
+        $nombre = $_POST['nombre_producto'];
+        $stock = $_POST['stock'];
+        $vencimiento = $_POST['vencimiento'] ?? null;
+        $precio_compra = $_POST['precio_producto'] ?? 0;
+        $precio_venta = $_POST['precio_venta'];
+        $proveedor = $_POST['id_proveedor'];
+        
+        $imagen = null;
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../../../../../imagenes/inventario/';
+            $imageFileType = strtolower(pathinfo($_FILES['imagen']['name'], PATHINFO_EXTENSION));
+            $newFileName = uniqid() . '.' . $imageFileType;
+            $uploadFile = $uploadDir . $newFileName;
+            
+            // Mueve el archivo temporal al destino final
+            if (move_uploaded_file($_FILES['imagen']['tmp_name'], $uploadFile)) {
+                $imagen = $newFileName;
+            } else {
+                echo json_encode(['error' => 'Error al subir la imagen.']);
+                exit;
+            }
+        } else {
+            // Manejar caso donde no se sube una imagen
+            echo json_encode(['error' => 'No se recibió una imagen válida.']);
+            exit;
+        }
 
         $id_insertado = $inventario->agregar_producto($nombre, $stock, $vencimiento, $precio_compra, $precio_venta, $imagen, $proveedor);
 
         if ($id_insertado) {
             echo json_encode(['message' => 'Producto agregado correctamente', 'id' => $id_insertado]);
         } else {
-            echo json_encode(['error' => 'Error al agregar el producto']);
+            echo json_encode(['error' => 'Error al agregar el producto.']);
         }
         break;
 

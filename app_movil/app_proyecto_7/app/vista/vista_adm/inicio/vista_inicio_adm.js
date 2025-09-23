@@ -1,10 +1,11 @@
 // app/vista/vista_adm/inventario/vista_inventario.js
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, FlatList, ActivityIndicator, Alert, StyleSheet, Button, Image } from "react-native";
 import { getInventario, deleteProducto } from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from '@react-navigation/native'; // Importa el hook
 
-// Base URL for images - CORREGIDA para usar la ruta correcta
+// Base URL para las imágenes
 const IMAGE_BASE_URL = "http://192.168.100.8/proyecto_final_7/imagenes/inventario/";
 
 export default function InventarioScreen() {
@@ -12,10 +13,6 @@ export default function InventarioScreen() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
-
-  useEffect(() => {
-    fetchProductos();
-  }, []);
 
   const fetchProductos = async () => {
     try {
@@ -36,6 +33,13 @@ export default function InventarioScreen() {
     }
   };
 
+  // ✅ SOLUCIÓN: Usar useFocusEffect para recargar los datos cuando la pantalla está en foco
+  useFocusEffect(
+    useCallback(() => {
+      fetchProductos();
+    }, [])
+  );
+
   const handleDelete = async (id) => {
     Alert.alert(
       "Confirmar Eliminación",
@@ -49,7 +53,7 @@ export default function InventarioScreen() {
             try {
               await deleteProducto(id);
               Alert.alert("Éxito", "Producto eliminado correctamente.");
-              fetchProductos(); // Refresh the list
+              fetchProductos(); // Refresca la lista después de eliminar
             } catch (err) {
               Alert.alert("Error", err.message);
             }
@@ -77,7 +81,7 @@ export default function InventarioScreen() {
       <View style={styles.buttonContainer}>
         <Button 
           title="Modificar" 
-          onPress={() => router.push(`/vista/vista_adm/inventario/vista_modificar_producto?id=${item.id_inventario}`)} 
+          onPress={() => router.push(`/vista/vista_adm/inicio/vista_modificar_producto?id=${item.id_inventario}`)} 
         />
         <Button 
           title="Eliminar" 
@@ -111,7 +115,7 @@ export default function InventarioScreen() {
       <Text style={styles.title}>Inventario de Productos</Text>
       <Button 
         title="Agregar Producto" 
-        onPress={() => router.push("/vista/vista_adm/inventario/vista_agregar_producto")} 
+        onPress={() => router.push("/vista/vista_adm/inicio/vista_agregar_producto")} 
       />
       
       <Text style={styles.subtitle}>

@@ -50,10 +50,7 @@ class Inventario {
         if ($stmt->execute()) {
             return $this->conn->insert_id;
         } else {
-            echo '<script>
-                    alert("Hubo un fallo al agregar el producto");
-                    self.location = "' . BASE_URL . '/vista/vista_adm/inventario/vista_inventario.php"
-                  </script>';
+            return false;
             exit;
         }
     }
