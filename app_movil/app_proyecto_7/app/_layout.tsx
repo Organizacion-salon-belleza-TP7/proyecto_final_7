@@ -1,31 +1,28 @@
-import { Drawer } from "expo-router/drawer";
+import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
     <>
-      <Drawer>
-         {/* Pantalla de Inventario */}
-        <Drawer.Screen
+      <Stack>
+        <Stack.Screen
           name="index"
-          options={{ title: "Index" }}
+          options={{ headerShown: false }}
         />
-
-        {/* Pantalla de Inventario */}
-        <Drawer.Screen
-          name="vista/vista_adm/inicio/vista_inicio_adm"
-          options={{ title: "Inicio" }}
+        <Stack.Screen
+          name="vista/vista_login/vista_login"
+          options={{ headerShown: false }}
         />
-
-        {/* Pantalla de Citas */}
-        <Drawer.Screen
-          name="vista/vista_adm/vista_citas/vista_citas"
-          options={{ title: "Citas" }}
+        {/* 👇 Todo lo de ADM queda dentro de su propio layout */}
+        <Stack.Screen
+          name="vista/vista_adm"
+          options={{ headerShown: false }}
         />
-      </Drawer>
+      </Stack>
       <StatusBar style="auto" />
     </>
   );
 }
+
 
 
