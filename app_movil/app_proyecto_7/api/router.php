@@ -21,6 +21,10 @@ switch ($request) {
         require_once(__DIR__ . '/routes/adm/inicio/proveedores.php');
         break;
     
+    case 'citas':
+        require_once(__DIR__ . '/routes/adm/citas/citas.php');
+        break;
+
     default:
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode([
