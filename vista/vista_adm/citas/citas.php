@@ -7,7 +7,7 @@ require_once(__DIR__ . '/../../../variable_global.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/modelo/modelo_adm/modelo_citas/CitasModelo.php');
 
-// Crear conexión y modelo
+// Crear conexión y modelo directamente aquí
 $citas_modelo = new CitasModelo($conn);
 $resultado_citas = $citas_modelo->listar();
 ?>
@@ -17,6 +17,11 @@ $resultado_citas = $citas_modelo->listar();
 <head>
   <meta charset="UTF-8">
   <title>Citas</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
 </head>
 <body>
     <!-- Menú de navegación -->
@@ -33,13 +38,13 @@ $resultado_citas = $citas_modelo->listar();
     <h1>Citas</h1>
     <?php
     if (!empty($resultado_citas)) {
-        echo "<table border='1'>
+        echo "<table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Cliente</th>
-                        <th>Servicio</th>
-                        <th>Combo</th>
+                        <th>Servicios</th>
+                        <th>Combos</th>
                         <th>Fecha</th>
                         <th>Activo</th>
                         <th>Detalle</th>
@@ -49,16 +54,16 @@ $resultado_citas = $citas_modelo->listar();
         foreach ($resultado_citas as $row) {
             echo "<tr>
                     <td>{$row['id_cita']}</td>
-                    <td>{$row['nombre']}</td>
-                    <td>" . ($row['nombre'] ?? '-') . "</td>
-                    <td>" . ($row['nombre_combo'] ?? '-') . "</td>
+                    <td>" . ($row['nombre_cliente'] ?? 'No asignado') . "</td>
+                    <td>" . ($row['servicios'] ?? '-') . "</td>
+                    <td>" . ($row['combos'] ?? '-') . "</td>
                     <td>{$row['fecha_cita']}</td>
                     <td>" . ($row['activo'] ? 'Sí' : 'No') . "</td>
-                    <td><a href='" . BASE_URL . "/controlador/controladores_adm/controlador_citas/CitasControlador.php?id={$row['id_cita']}&detalle=vista_citas'>Detalle</a></td>
+                    <td><a href='" . BASE_URL . "/controlador/controladores_adm/controlador_citas/CitasControlador.php?detalle=true&id={$row['id_cita']}'>Ver Detalle</a></td>
                 </tr>";
         }
         echo "</tbody></table>";
-        echo "<a href='" . BASE_URL . "/controlador/controladores_adm/controlador_citas/CitasControlador.php?agregar=vista_citas' class='add-btn'>Agendar Cita</a>";
+        
     } else {
         echo "<p>No hay citas registradas</p>";
     }
