@@ -298,7 +298,7 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
                 <td>".($row_combos['activo']==1?'Activo':'Inactivo')."</td>
                 <td>{$row_combos['fecha_creacion']}</td>
                 <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&detalle_combo=vista_inicio_adm'>Detalle</a></td>
-                <td><a class='btn btn-edit' href='#'>Editar</a></td>
+                <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&modificar_combo=vista_inicio_adm''>Editar</a></td>
                 <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&dar_baja_combo=vista_inicio_adm'>Borrar</a></td>
             </tr>";
         }

@@ -193,6 +193,37 @@
 
         }
 
+    }elseif(isset($_GET['modificar_combo']) && $_GET['modificar_combo'] === 'vista_inicio_adm'){
+        $id = $_GET['id'];
+
+        header("Location: " . BASE_URL . "/vista/vista_adm/servicios_combos/vista_modificar_combo_adm.php?id=$id");
+        exit;
+
+    }elseif(isset($_POST['modificar']) && $_POST['modificar'] === 'vista_modificar_combo_adm'){
+        $id_combo = $_POST['id'];
+        $nombre = $_POST['nombre_combo'];
+        $descripcion = $_POST['descripcion'];
+        $precio = $_POST['precio_combo'];
+        $imagen = $_FILES['imagen_nueva'];
+        $nombre_archivo = !empty($_FILES['imagen_nueva']['name'])
+        ? $_FILES['imagen_nueva']['name']
+        : $_POST['imagen_actual'];
+
+    
+        $estado = $_POST['estado'];
+        $servicios_combos = $_POST['servicios_combos'] ?? [];
+
+        $servicio_modelo = new servicios($conn);
+
+        $modelo_modificar_combo = $servicio_modelo->modificar_combo($id_combo,$nombre,$descripcion,$precio,$imagen,$nombre_archivo,$estado,$servicios_combos);
+
+        if($modelo_modificar_combo == TRUE){
+           echo '<script language="javascript">
+        alert("Combo modificado");
+        self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php";
+        </script>';
+        exit;
+        }
     }
     
     ?>

@@ -515,6 +515,97 @@ class servicios{
         }
     }
 
+    public function formulario_modificar_combo($id_combo){
+    // Traer información del combo y servicios asociados
+    $traer_combo = $this->conn->prepare("
+        SELECT comb.id_combos, comb.nombre, comb.descripcion_combo, comb.precio, comb.imagen, comb.activo, comb.fecha_creacion,
+               cs.id_servicios
+        FROM combos comb
+        LEFT JOIN combo_servicios cs ON comb.id_combos = cs.id_combos
+        WHERE comb.id_combos = ?
+    ");
+    $traer_combo->bind_param('i', $id_combo);
+
+    if($traer_combo->execute()){
+        $resultado = $traer_combo->get_result();
+
+        $combo = [];
+        $servicios_ids = [];
+
+        while($row = $resultado->fetch_assoc()){
+            // Solo llenamos datos del combo una vez
+            if(empty($combo)){
+                $combo = [
+                    'id_combos' => $row['id_combos'],
+                    'nombre' => $row['nombre'],
+                    'descripcion_combo' => $row['descripcion_combo'],
+                    'precio' => $row['precio'],
+                    'imagen' => $row['imagen'],
+                    'activo' => $row['activo'],
+                    'fecha_creacion' => $row['fecha_creacion'],
+                    'servicios' => []
+                ];
+            }
+
+            if($row['id_servicios']){
+                $servicios_ids[] = $row['id_servicios'];
+            }
+        }
+
+        // Traer datos completos de los servicios asociados
+        $servicios = [];
+        if(count($servicios_ids) > 0){
+            $ids_string = implode(',', $servicios_ids);
+            $query_servicios = "SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, activo, id_tipo_servicio, imagen
+                                FROM servicios
+                                WHERE id_servicios IN ($ids_string)";
+            $res_servicios = $this->conn->query($query_servicios);
+
+            while($row_serv = $res_servicios->fetch_assoc()){
+                $combo['servicios'][] = $row_serv;
+            }
+        }
+
+        return $combo;
+        }
+    }
+
+    public function modificar_combo($id_combo,$nombre,$descripcion,$precio,$imagen,$nombre_imagen,$estado,$servicios){
+        $modificar_combo = $this->conn->prepare("UPDATE combos SET 
+        nombre = '$nombre',descripcion_combo = '$descripcion',precio = $precio,imagen = '$nombre_imagen',activo = $estado
+        WHERE id_combos = ?");
+
+        $modificar_combo->bind_param('i',$id_combo);
+
+        if($modificar_combo->execute()){
+            if($imagen && $imagen['error'] === UPLOAD_ERR_OK){
+                $carpeta_destino = ROOT_PATH . "/imagenes/imagenes_combos/";
+                $ruta_destino = $carpeta_destino . $nombre_imagen;
+
+            if(move_uploaded_file($imagen['tmp_name'],$ruta_destino)){
+                $ruta_imagen = "/imagenes/imagenes_combos/" . $nombre_imagen;
+            }else{
+                echo "No se pudo enviar la imagen";
+                die();
+            }
+
+            }
+            $this->conn->query("DELETE FROM combo_servicios WHERE id_combos = $id_combo");
+
+            if(!empty($servicios)){
+                foreach($servicios as $id_servicio){
+                $insert = $this->conn->prepare("INSERT INTO combo_servicios(id_combos, id_servicios) VALUES (?, ?)");
+                $insert->bind_param("ii", $id_combo, $id_servicio);
+                $insert->execute();
+                }
+            }
+
+            return true;
+
+        }
+
+    }
+
     
 
 

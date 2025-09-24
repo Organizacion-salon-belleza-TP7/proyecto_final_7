@@ -4,7 +4,6 @@ import { StatusBar } from "expo-status-bar";
 export default function RootLayout() {
   return (
     <>
-      
       <Drawer>
          {/* Pantalla de Inventario */}
         <Drawer.Screen
