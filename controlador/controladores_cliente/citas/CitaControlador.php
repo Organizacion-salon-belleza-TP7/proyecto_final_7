@@ -9,6 +9,8 @@ require_once(ROOT_PATH . '/modelo/BD.php');
 
 require_once(ROOT_PATH . '/modelo/modelo_cliente/citas/CitaModelo.php');
 
+session_start();
+
 
 class CitaControlador {
     private $modelo;

@@ -37,7 +37,7 @@ export default function CitasScreen() {
       <View style={styles.textContainer}>
         <Text style={styles.cardTitle}>Cliente: {item.nombre_cliente}</Text>
         <Text>Fecha: {item.fecha_cita}</Text>
-        <Text>Estado: {item.activo === 1 ? "Activo" : "Inactivo"}</Text>
+        <Text>Estado: {item.activo === 1 ? "Inactivo" : "Activo"}</Text>
         <Text>Servicios: {item.servicios || "Ninguno"}</Text>
         <Text>Combos: {item.combos || "Ninguno"}</Text>
       </View>

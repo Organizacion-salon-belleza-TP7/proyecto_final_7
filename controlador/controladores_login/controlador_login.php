@@ -61,7 +61,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                 $_SESSION['id_cliente'] = $id_cli;
 
-                header("Location: " . BASE_URL . "/vista/vista_cliente/vista_inicio_cli.php");
+                header("Location: " . BASE_URL . "/vista/vista_cliente/vista_inicio/vista_inicio_cli.php");
                 exit;
 
             }else{

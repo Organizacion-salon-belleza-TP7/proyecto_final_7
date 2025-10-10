@@ -8,22 +8,78 @@
 
 5. Hacer venta
 
-<?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
-    require_once(__DIR__ . '/../../../variable_global.php');
-    require_once(ROOT_PATH . '/modelo/BD.php');
-    require_once(ROOT_PATH . '/modelo/modelo_adm/servicios_combos/modelo_inicio_adm.php');
-    $servicio_modelo = new servicios($conn);
-    $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
-    ?>
-
-     $resultado_traer_combos = $servicio_modelo->mostrar_combos();
-
-?>
-
 6)añadir un carrusel con imagenes del salon
 7)h1 de servicios tenga un margen con el menu de hamburguesa X
 8)varios trabjadores puedan en un servicio o combo en caso de imprevisto
+
+9)facturacion en el dia y ver un grafcio de ventas del mes
+10)alertas de stck
+11)reposicion de stock
+12)reporte de caja
+
+
+SELECT 
+            c.id_cita,
+            cli.nombre AS nombre_cliente,
+            c.fecha_cita,
+            c.activo,
+            c.hash_identificacion,
+            l.nombre_lugar AS lugar,
+            s.id_servicios,
+            s.nombre AS servicio_nombre,
+            s.precio_servicio AS servicio_precio,
+            co.id_combos,
+            co.nombre AS combo_nombre,
+            co.precio AS combo_precio,
+            tra.nombre_trabajador
+        FROM citas c
+        LEFT JOIN clientes cli ON c.id_cliente = cli.id_cliente
+        LEFT JOIN lugares l ON c.id_lugar = l.id_lugar
+        LEFT JOIN detalle_cita dc ON c.id_cita = dc.id_cita
+        LEFT JOIN servicios s ON dc.id_servicios = s.id_servicios
+        LEFT JOIN combos co ON dc.id_combos = co.id_combos
+        LEFT JOIN trabajadores tra ON tra.id_trabajador = tra.id_trabajador
+        LEFT JOIN trabajadores_servicios tra_Serv ON tra_Serv.id_trabajador =tra.nombre_trabajador
+        WHERE c.id_cita = 1;
+
+
+        
+
+
+
+        SELECT cit.id_cita, cit.id_cliente, cit.fecha_cita, cit.activo, cit.hash_identificacion, lug.id_lugar,hist_comp.id_caja,usr.id_usuario FROM citas cit
+INNER JOIN historial_compra hist_comp ON hist_comp.id_historial_compra = hist_comp.id_historial_compra
+INNER JOIN lugares lug ON lug.id_lugar = cit.id_lugar
+INNER JOIN usuarios usr ON hist_comp.id_usuario = usr.id_usuario;
+
+SELECT cit.id_cita, cit.id_cliente, cit.fecha_cita, cit.activo, cit.hash_identificacion, lug.id_lugar,hist_comp.id_caja,usr.id_usuario FROM citas cit
+INNER JOIN historial_compra hist_comp ON hist_comp.id_historial_compra = hist_comp.id_historial_compra
+INNER JOIN caja caj ON caj.id_caja = caj.id_caja
+INNER JOIN lugares lug ON lug.id_lugar = cit.id_lugar
+INNER JOIN usuarios usr ON hist_comp.id_usuario = usr.id_usuario
+INNER JOIN detalle_caja dtc ON cit.id_cita = caj.id_caja
+WHERE hist_comp.id_usuario = 3;
+
+
+SELECT
+    cit.id_cita,
+    cli.nombre, -- Podría ser NULL si no hay cliente coincidente
+    usr.nombre_usuario,
+    cit.fecha_cita,
+    cit.activo,
+    cit.hash_identificacion,
+    lug.id_lugar,
+    caj.id_caja,
+    hist_comp.id_historial_compra,
+    hist_comp.id_usuario
+FROM citas cit
+INNER JOIN caja caj ON caj.id_cita = cit.id_cita
+INNER JOIN historial_compra hist_comp ON hist_comp.id_caja = caj.id_caja
+INNER JOIN lugares lug ON lug.id_lugar = cit.id_lugar
+
+LEFT JOIN usuarios usr ON hist_comp.id_usuario = usr.id_usuario 
+-- Usamos LEFT JOIN para obtener la información del cliente si existe,
+-- pero no descartar la fila si no existe
+LEFT JOIN clientes cli ON usr.id_usuario = cli.id_usuario 
+
+WHERE hist_comp.id_usuario = 2;
