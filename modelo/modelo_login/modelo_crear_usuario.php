@@ -19,8 +19,8 @@ class crear_usuario{
         if($insertar_usuario->execute()){
             $ultimo_id_usuario = $this->conn->insert_id;
 
-            $agregar_cliente = $this->conn->prepare("INSERT INTO `clientes`(nombre, apellido, alergias, fecha_nacimiento, dni) VALUES (?,?,?,?,?)");
-            $agregar_cliente->bind_param('ssssi',$nombre_cliente,$apellido_cliente,$alergias_cliente,$fecha_nacimiento_cliente,$dni_cliente);
+            $agregar_cliente = $this->conn->prepare("INSERT INTO `clientes`(nombre, apellido, alergias, fecha_nacimiento, dni,id_usuario) VALUES (?,?,?,?,?,?)");
+            $agregar_cliente->bind_param('ssssii',$nombre_cliente,$apellido_cliente,$alergias_cliente,$fecha_nacimiento_cliente,$dni_cliente,$ultimo_id_usuario);
 
             if($agregar_cliente->execute()){
                 $ultimo_cliente_insertado = $this->conn->insert_id;
