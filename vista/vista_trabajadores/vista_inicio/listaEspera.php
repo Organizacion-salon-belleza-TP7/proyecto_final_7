@@ -1,7 +1,7 @@
-<?php 
-require_once __DIR__ . '/../controller/TrabajadorController.php';
-$lista = Trabajador::listaEspera(); // ⚠️ este método debe existir en tu modelo Trabajador.php
+<?php
+require_once(__DIR__ . '/../../../variable_global.php');
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -88,35 +88,40 @@ $lista = Trabajador::listaEspera(); // ⚠️ este método debe existir en tu mo
 </head>
 <body>
     <div class="container">
- <h1>Lista de Espera</h1>
-<table border="1" cellpadding="8" cellspacing="0">
-    <tr>
-        <th>Trabajador</th>
-        <th>DNI Trabajador</th>
-        <th>Cliente</th>
-        <th>DNI Cliente</th>
-        <th>Tiempo Estimado</th>
-        <th>Confirmación</th>
-        <th>Acciones</th>
-    </tr>
-    <?php foreach ($lista as $l): ?>
-        <tr>
-            <td><?= htmlspecialchars($l['nombre_trabajador'] . " " . $l['apellido_trabajador']) ?></td>
-            <td><?= htmlspecialchars($l['dni_trabajador']) ?></td>
-            <td><?= htmlspecialchars($l['nombre_cliente'] . " " . $l['apellido_cliente']) ?></td>
-            <td><?= htmlspecialchars($l['dni_cliente']) ?></td>
-            <td><?= htmlspecialchars($l['tiempo_estimado']) ?></td>
-            <td><?= $l['confirmacion'] == 1 ? '✔ Confirmado' : '❌ Pendiente' ?></td>
-            <td>
-                <a href="confirmar.php?id=<?= $l['id_lista_espera'] ?>">Confirmar</a> | 
-                <a href="cancelar.php?id=<?= $l['id_lista_espera'] ?>">Cancelar</a>
-            </td>
-        </tr>
-    <?php endforeach; ?>
-</table>
+        <h1>Lista de Espera</h1>
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Trabajador</th>
+                <th>DNI Trabajador</th>
+                <th>Cliente</th>
+                <th>DNI Cliente</th>
+                <th>Tiempo Estimado</th>
+                <th>Confirmación</th>
+                <th>Acciones</th>
+            </tr>
+            <?php if (!empty($lista)): ?>
+                <?php foreach ($lista as $l): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($l['nombre_trabajador'] . " " . $l['apellido_trabajador']) ?></td>
+                        <td><?= htmlspecialchars($l['dni_trabajador']) ?></td>
+                        <td><?= htmlspecialchars($l['nombre_cliente'] . " " . $l['apellido_cliente']) ?></td>
+                        <td><?= htmlspecialchars($l['dni_cliente']) ?></td>
+                        <td><?= htmlspecialchars($l['tiempo_estimado']) ?></td>
+                        <td><?= $l['confirmacion'] == 1 ? '✔ Confirmado' : '❌ Pendiente' ?></td>
+                        <td class="acciones">
+                            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/confirmar.php?id=<?= $l['id_lista_espera'] ?>" class="confirmar">Confirmar</a>
+                            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cancelar.php?id=<?= $l['id_lista_espera'] ?>" class="cancelar">Cancelar</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7">No hay registros en lista de espera</td>
+                </tr>
+            <?php endif; ?>
+        </table>
 
-
-        <a href="pantallaTrabajador.php" class="volver">⬅ Volver</a>
+        <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php" class="volver">⬅ Volver</a>
     </div>
 </body>
 </html>

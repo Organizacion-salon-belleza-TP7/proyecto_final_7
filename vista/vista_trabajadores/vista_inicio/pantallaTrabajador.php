@@ -1,6 +1,5 @@
-<?php 
-require_once __DIR__ . '/../controller/TrabajadorController.php';
-$trabajadores = Trabajador::obtenerTodos();
+<?php
+require_once(__DIR__ . '/../../../variable_global.php');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -78,18 +77,22 @@ $trabajadores = Trabajador::obtenerTodos();
         <h1>Pantalla del Trabajador</h1>
         
         <nav>
-            <a href="listaEspera.php">Lista de Espera</a> |
-            <a href="cerrarSesion.php">Cerrar Sesión</a>
+            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/listaEspera.php">Lista de Espera</a> |
+            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cerrarSesion.php">Cerrar Sesión</a>
         </nav>
 
         <h2>Control de Horarios</h2>
         <ul>
-            <?php foreach ($trabajadores as $t): ?>
-                <li>
-                    <?= htmlspecialchars($t['nombre_trabajador']) . " " . htmlspecialchars($t['apellido_trabajador']) ?>
-                    (DNI: <?= htmlspecialchars($t['dni']) ?>)
-                </li>
-            <?php endforeach; ?>
+            <?php if (!empty($trabajadores)): ?>
+                <?php foreach ($trabajadores as $t): ?>
+                    <li>
+                        <?= htmlspecialchars($t['nombre_trabajador']) . " " . htmlspecialchars($t['apellido_trabajador']) ?>
+                        (DNI: <?= htmlspecialchars($t['dni']) ?>)
+                    </li>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <li>No hay trabajadores activos</li>
+            <?php endif; ?>
         </ul>
     </div>
 </body>
