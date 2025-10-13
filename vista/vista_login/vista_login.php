@@ -447,7 +447,7 @@ require_once(__DIR__ . '/../../variable_global.php');
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/prueba_landing.php" class="logo">Rose<span>Spa</span></a>
+            <a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/vista/prueba_landing.php" class="logo">Rose<span>Spa</span></a>
         </div>
     </header>
 
@@ -493,7 +493,7 @@ require_once(__DIR__ . '/../../variable_global.php');
                 
                 <div class="login-links">
                     <a href="<?= BASE_URL?>/vista/vista_login/vista_crear_usuario.php">¿No tienes cuenta? Regístrate</a><br>
-                    <a href="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/prueba_landing.php">Volver al inicio</a>
+                    <a href="<?= BASE_URL ?>/vista/pagina_web_landing-(prototipo-2)/prueba_landing.php">Volver al inicio</a>
                 </div>
             </div>
         </div>

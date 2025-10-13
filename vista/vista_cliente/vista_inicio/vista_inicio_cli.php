@@ -76,6 +76,7 @@ $funcion_traer_citas = $modelo_inicio->traer_citas_compradas($id_usuario);
     ?>
 
     <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_citas/layout.php">Veni gato</a>
+    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_venta_productos/vista_venta.php">Veni a comprar gato</a>
     
 </body>
 </html>
