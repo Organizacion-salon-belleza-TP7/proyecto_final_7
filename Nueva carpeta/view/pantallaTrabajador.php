@@ -1,0 +1,96 @@
+<?php 
+require_once __DIR__ . '/../controller/TrabajadorController.php';
+$trabajadores = Trabajador::obtenerTodos();
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Pantalla Trabajador</title>
+    <style>
+        /* Fondo y fuente */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            margin: 0;
+            padding: 0;
+            color: #4a148c;
+        }
+
+        /* Contenedor principal */
+        .container {
+            width: 80%;
+            max-width: 900px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        /* Títulos */
+        h1, h2 {
+            text-align: center;
+            color: #ad1457;
+        }
+
+        /* Navegación */
+        nav {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #d81b60;
+            font-weight: bold;
+            margin: 0 10px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #880e4f;
+        }
+
+        /* Lista de trabajadores */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #f8bbd0;
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+
+        ul li:hover {
+            background: #f48fb1;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pantalla del Trabajador</h1>
+        
+        <nav>
+            <a href="listaEspera.php">Lista de Espera</a> |
+            <a href="cerrarSesion.php">Cerrar Sesión</a>
+        </nav>
+
+        <h2>Control de Horarios</h2>
+        <ul>
+            <?php foreach ($trabajadores as $t): ?>
+                <li>
+                    <?= htmlspecialchars($t['nombre_trabajador']) . " " . htmlspecialchars($t['apellido_trabajador']) ?>
+                    (DNI: <?= htmlspecialchars($t['dni']) ?>)
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</body>
+</html>
