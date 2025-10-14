@@ -47,7 +47,7 @@ require_once(__DIR__ . '/../../../variable_global.php');
 <body>
     <div class="container">
         <h1>Has cerrado sesión correctamente</h1>
-        <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php">Ir al login</a>
+        <a href="<?= BASE_URL ?>/vista/vista_login/vista_login.php">Ir al login</a>
     </div>
 </body>
 </html>

@@ -51,7 +51,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                 $_SESSION['id_emp'] = $id_emp;
 
-                header("Location: ". BASE_URL ."/vista/vista_empleados/vista_inicio_empleados.php");
+                header("Location: ". BASE_URL ."/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php");
                 exit;
                 
             }elseif($usuario['id_tipo_usuario'] == 2 && $resultado_cli['resultado_cli'] && $resultado_cli['resultado_cli']->num_rows > 0){
