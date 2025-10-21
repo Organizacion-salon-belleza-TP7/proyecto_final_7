@@ -29,6 +29,10 @@ switch ($request) {
         require_once(__DIR__ . '/routes/adm/logouts/logouts.php');
         break;
 
+    case 'client_interface':
+        require_once(__DIR__ . '/routes/cli/inicio_cli/inicio_cli.php');
+        break;
+
     default:
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode([

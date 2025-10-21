@@ -1,5 +1,7 @@
+// app/vista/vista_login/vista_login.js
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, Alert, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../../../controladores/controladores_login/controlador_login.js";
 import { useRouter } from "expo-router";
 
@@ -10,9 +12,34 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const user = await login(usuario, contrasena);
-      Alert.alert("Bienvenido", `${user.nombre_usuario} (${user.tipo})`);
-      router.replace("/vista/vista_adm/inicio/vista_inicio_adm");
+      const res = await login(usuario, contrasena);
+
+      if (res.success) {
+        const user = res.user;
+        const tipo = res.tipo;
+
+        // 🧠 Guardar usuario en almacenamiento local
+        await AsyncStorage.setItem("usuarioLogueado", JSON.stringify(user));
+
+        Alert.alert("Bienvenido", `${user.nombre_usuario} (${tipo})`);
+
+        // 🚦 Redirigir según tipo
+        switch (tipo) {
+          case "admin":
+            router.replace("/vista/vista_adm/inicio/vista_inicio_adm");
+            break;
+          case "empleado":
+            router.replace("/vista/vista_emp/inicio/vista_inicio_emp");
+            break;
+          case "cliente":
+            router.replace("/vista/vista_cli/vista_inicio/vista_inicio_cli");
+            break;
+          default:
+            Alert.alert("Error", "Tipo de usuario desconocido");
+        }
+      } else {
+        Alert.alert("Error", res.message);
+      }
     } catch (error) {
       Alert.alert("Error", error.message);
     }
