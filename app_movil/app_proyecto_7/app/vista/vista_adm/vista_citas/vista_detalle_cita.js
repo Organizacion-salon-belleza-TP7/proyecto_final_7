@@ -10,7 +10,7 @@ export default function VistaDetalleCita() {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=citas&id=${id}`)
+    fetch(`http://192.168.100.8/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=citas&id=${id}`)
       .then(res => res.json())
       .then(data => {
         setDetalle(data);
