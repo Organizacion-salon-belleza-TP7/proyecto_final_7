@@ -1,26 +1,21 @@
-// app/vista/vista_adm/inventario/vista_agregar_producto.js
 import React, { useState, useEffect } from "react";
 import { 
   View, 
   Text, 
   TextInput, 
-  Button, 
-  Alert, 
-  StyleSheet, 
   ScrollView,
   ActivityIndicator,
   Platform,
   TouchableOpacity,
-  Image
+  Image,
+  StyleSheet,
+  Alert
 } from "react-native";
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as ImagePicker from 'expo-image-picker';
 import { agregarProducto, getProveedores } from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
 import { useRouter } from "expo-router";
-
-// URL base para las imágenes
-const IMAGE_BASE_URL = "http://192.168.100.8/proyecto_final_7/imagenes/inventario/";
 
 export default function AgregarProductoScreen() {
   const [formData, setFormData] = useState({
@@ -35,7 +30,6 @@ export default function AgregarProductoScreen() {
   const [loading, setLoading] = useState(false);
   const [proveedoresLoading, setProveedoresLoading] = useState(true);
   const router = useRouter();
-
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [image, setImage] = useState(null);
@@ -53,7 +47,6 @@ export default function AgregarProductoScreen() {
           }));
         }
       } catch (error) {
-        console.error("Error cargando proveedores:", error);
         Alert.alert("Error", "No se pudieron cargar los proveedores.");
       } finally {
         setProveedoresLoading(false);
@@ -77,10 +70,8 @@ export default function AgregarProductoScreen() {
     handleChange('vencimiento', formattedDate);
   };
 
-  const showDatepicker = () => {
-    setShowDatePicker(true);
-  };
-  
+  const showDatepicker = () => setShowDatePicker(true);
+
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -95,9 +86,7 @@ export default function AgregarProductoScreen() {
       quality: 1,
     });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
+    if (!result.canceled) setImage(result.assets[0].uri);
   };
 
   const handleSubmit = async () => {
@@ -105,7 +94,6 @@ export default function AgregarProductoScreen() {
       Alert.alert("Error", "Por favor complete los campos obligatorios (*)");
       return;
     }
-
     if (!image) {
       Alert.alert("Error", "Por favor, seleccione una imagen para el producto.");
       return;
@@ -120,7 +108,6 @@ export default function AgregarProductoScreen() {
       data.append('precio_producto', parseFloat(formData.precio_producto || 0));
       data.append('precio_venta', parseFloat(formData.precio_venta));
       data.append('id_proveedor', parseInt(formData.id_proveedor));
-      
       data.append('imagen', {
         uri: image,
         name: `producto_${Date.now()}.jpg`,
@@ -128,10 +115,7 @@ export default function AgregarProductoScreen() {
       });
       
       await agregarProducto(data);
-
-      Alert.alert("Éxito", "Producto agregado correctamente", [
-        { text: "OK", onPress: () => router.back() }
-      ]);
+      Alert.alert("Éxito", "Producto agregado correctamente", [{ text: "OK", onPress: () => router.back() }]);
     } catch (error) {
       Alert.alert("Error", error.message);
     } finally {
@@ -142,24 +126,21 @@ export default function AgregarProductoScreen() {
   if (loading || proveedoresLoading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#ff6b9d" />
         <Text style={styles.loadingText}>{loading ? 'Agregando producto...' : 'Cargando proveedores...'}</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView 
-      style={styles.container}
-      // ✅ Agrega esta propiedad para crear un espacio al final de la lista
-      contentContainerStyle={{ paddingBottom: 100 }}
-    >
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
       <Text style={styles.title}>Agregar Nuevo Producto</Text>
       
       <Text style={styles.label}>Nombre del producto *</Text>
       <TextInput
         style={styles.input}
         placeholder="Ej: Leche Deslactosada"
+        placeholderTextColor="#999"
         value={formData.nombre_producto}
         onChangeText={(text) => handleChange('nombre_producto', text)}
       />
@@ -168,6 +149,7 @@ export default function AgregarProductoScreen() {
       <TextInput
         style={styles.input}
         placeholder="Ej: 50"
+        placeholderTextColor="#999"
         value={formData.stock}
         onChangeText={(text) => handleChange('stock', text)}
         keyboardType="numeric"
@@ -195,6 +177,7 @@ export default function AgregarProductoScreen() {
       <TextInput
         style={styles.input}
         placeholder="Ej: 15.50"
+        placeholderTextColor="#999"
         value={formData.precio_producto}
         onChangeText={(text) => handleChange('precio_producto', text)}
         keyboardType="numeric"
@@ -204,13 +187,16 @@ export default function AgregarProductoScreen() {
       <TextInput
         style={styles.input}
         placeholder="Ej: 25.00"
+        placeholderTextColor="#999"
         value={formData.precio_venta}
         onChangeText={(text) => handleChange('precio_venta', text)}
         keyboardType="numeric"
       />
       
       <Text style={styles.label}>Imagen del producto</Text>
-      <Button title="Seleccionar Imagen" onPress={pickImage} />
+      <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
+        <Text style={styles.buttonText}>Seleccionar Imagen</Text>
+      </TouchableOpacity>
       {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
       
       <Text style={styles.label}>Proveedor *</Text>
@@ -231,72 +217,30 @@ export default function AgregarProductoScreen() {
       </View>
       
       <View style={styles.buttonContainer}>
-        <Button title="Cancelar" onPress={() => router.back()} color="gray" />
-        <Button title="Agregar Producto" onPress={handleSubmit} />
+        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
+          <Text style={styles.buttonText}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Agregar Producto</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#333'
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-    fontWeight: 'bold',
-    color: '#555'
-  },
-  input: {
-    backgroundColor: 'white',
-    padding: 12,
-    marginBottom: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#ddd'
-  },
-  pickerContainer: {
-    backgroundColor: 'white',
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 12
-  },
-  picker: {
-    height: 50,
-    width: '100%',
-  },
-  imagePreview: {
-    width: 200,
-    height: 200,
-    resizeMode: 'cover',
-    marginTop: 10,
-    alignSelf: 'center',
-    borderRadius: 10
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666'
-  }
+  container: { flex: 1, padding: 16, backgroundColor: '#fdf0f5' },
+  title: { fontSize: 28, fontWeight: '700', marginBottom: 20, textAlign: 'center', color: '#000' },
+  label: { fontSize: 16, marginBottom: 5, fontWeight: '700', color: '#000' },
+  input: { backgroundColor: 'white', padding: 12, marginBottom: 12, borderRadius: 12, borderWidth: 1, borderColor: '#ff6b9d', color: '#000' },
+  pickerContainer: { backgroundColor: 'white', borderRadius: 12, borderWidth: 1, borderColor: '#ff6b9d', marginBottom: 12 },
+  picker: { height: 50, width: '100%' },
+  imagePreview: { width: 200, height: 200, resizeMode: 'cover', marginTop: 10, alignSelf: 'center', borderRadius: 10 },
+  buttonContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 },
+  imageButton: { backgroundColor: '#ff6b9d', paddingVertical: 12, borderRadius: 20, alignItems: 'center', marginBottom: 12 },
+  cancelButton: { backgroundColor: '#999', paddingVertical: 12, borderRadius: 20, alignItems: 'center', flex: 1, marginRight: 8 },
+  submitButton: { backgroundColor: '#ff6b9d', paddingVertical: 12, borderRadius: 20, alignItems: 'center', flex: 1, marginLeft: 8 },
+  buttonText: { color: '#fff', fontWeight: '700', textAlign: 'center' },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loadingText: { marginTop: 10, fontSize: 16, color: '#333' }
 });
