@@ -101,9 +101,8 @@ class ModeloVenta {
         $id_caja = $conn->insert_id;
 
         foreach ($items as $item) {
-            $hash = uniqid();
-            $conn->query("INSERT INTO detalle_caja_product (id_caja_product, id_multiple_pago, hash_identificacion)
-                          VALUES ($id_caja, $id_metodo_pago, '$hash')");
+            $conn->query("INSERT INTO detalle_caja_product (id_caja_product, id_multiple_pago)
+                          VALUES ($id_caja, $id_metodo_pago)");
         }
 
         self::vaciarCarrito($id_sesion);

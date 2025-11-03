@@ -106,11 +106,10 @@ class ControladorVenta {
 
             // Registrar cada item
             foreach ($carrito as $c) {
-                $hash = bin2hex(random_bytes(7));
-                $sql = "INSERT INTO detalle_caja_product (id_caja_product, id_multiple_pago, hash_identificacion) 
+                $sql = "INSERT INTO detalle_caja_product (id_caja_product, id_multiple_pago) 
                         VALUES (?, ?, ?)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$id_caja_product, $id_metodo_pago, $hash]);
+                $stmt->execute([$id_caja_product, $id_metodo_pago]);
 
                 // Restar stock
                 $sql = "UPDATE inventario SET stock = stock - ? WHERE id_inventario = ?";

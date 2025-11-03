@@ -41,8 +41,6 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
             <p><strong>Fecha:</strong> <?= $cita['fecha_cita'] ?></p>
             <p><strong>ID Lugar:</strong> <?= $cita['id_lugar'] ?? 'No especificado' ?></p>
             <p><strong>Estado:</strong> <?= $cita['activo'] ? 'Activa' : 'Inactiva' ?></p>
-            <p><strong>Hash Identificación:</strong> <?= $cita['hash_identificacion'] ?></p>
-        </div>
 
         <div class="info-section">
             <h3>Servicios Contratados</h3>

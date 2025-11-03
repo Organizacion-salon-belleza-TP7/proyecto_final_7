@@ -8,7 +8,7 @@ if (!$id_caja) die("Falta el ID de la compra.");
 $conn = Conexion::conectar();
 $venta = $conn->query("SELECT * FROM caja_product WHERE id_caja_product = $id_caja")->fetch_assoc();
 $detalle = $conn->query("
-    SELECT d.id_multiple_pago, p.nombre, dc.hash_identificacion, dc.id_caja_product
+    SELECT d.id_multiple_pago, p.nombre,dc.id_caja_product
     FROM detalle_caja_product dc
     INNER JOIN carrito c ON 1
     INNER JOIN productos p ON p.id_producto = 1

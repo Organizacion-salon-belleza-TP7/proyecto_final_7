@@ -35,20 +35,19 @@ class CitaModeloApi {
 
     // ✅ Guardar una cita
     public function guardarCita($id_cliente, $fecha_cita, $id_lugar, $servicios = [], $combos = []) {
-        $hash = md5(uniqid('', true));
         $activo = 1;
         $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
 
         // Insertar cita
         $stmt = $this->conn->prepare("
-            INSERT INTO citas (id_cliente, fecha_cita, activo, hash_identificacion, id_lugar)
+            INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar)
             VALUES (?, ?, ?, ?, ?)
         ");
         if (!$stmt) {
             return ['error' => 'Error al preparar la consulta de cita: ' . $this->conn->error];
         }
 
-        $stmt->bind_param("isisi", $id_cliente, $fecha_cita, $activo, $hash, $id_lugar);
+        $stmt->bind_param("isii", $id_cliente, $fecha_cita, $activo, $id_lugar);
         if (!$stmt->execute()) {
             return ['error' => 'Error al guardar la cita: ' . $stmt->error];
         }
@@ -73,7 +72,7 @@ class CitaModeloApi {
             }
         }
 
-        return ['id_cita' => $id_cita, 'hash' => $hash];
+        return ['id_cita' => $id_cita];
     }
 
     // ✅ Obtener los detalles de una cita por ID

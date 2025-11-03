@@ -75,7 +75,7 @@ class Inventario {
         $stmt = $this->conn->prepare("UPDATE inventario 
                                       SET nombre_producto=?, stock=?, vencimiento=?, precio_producto=?, precio_venta=?, imagen_producto=?, id_proveedor=? 
                                       WHERE id_inventario=?");
-        $stmt->bind_param("sissdsii", $nombre, $stock, $vencimiento, $precio_compra, $precio_venta, $imagen, $proveedor, $id);
+        $stmt->bind_param("sisddsii", $nombre, $stock, $vencimiento, $precio_compra, $precio_venta, $imagen, $proveedor, $id);
         return $stmt->execute();
     }
 

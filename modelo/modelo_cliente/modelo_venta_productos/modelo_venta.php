@@ -142,10 +142,9 @@ class ModeloVenta {
         $id_caja = $this->conn->insert_id;
 
         foreach ($items as $item) {
-            $hash = uniqid();
             $this->conn->query("
-                INSERT INTO detalle_caja_product (id_caja_product, id_metodo_pago, id_producto, cantidad, subtotal, hash_identificacion)
-                VALUES ($id_caja, $id_metodo_pago, {$item['id_producto']}, {$item['cantidad']}, {$item['subtotal']}, '$hash')
+                INSERT INTO detalle_caja_product (id_caja_product, id_metodo_pago, id_producto, cantidad, subtotal)
+                VALUES ($id_caja, $id_metodo_pago, {$item['id_producto']}, {$item['cantidad']}, {$item['subtotal']})
             ");
         }
 
