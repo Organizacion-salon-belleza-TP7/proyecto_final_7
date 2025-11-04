@@ -1,7 +1,7 @@
   // app/controladores/controladores_adm/inicio/controlador_inicio.js
   import Producto from "../../../modelo/modelo_adm/inicio/modelo_inicio";
 
-  const API_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+  const API_URL = "http://192.168.0.20/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
   // OBTENER INVENTARIO (ya funciona)
   export async function getInventario() {

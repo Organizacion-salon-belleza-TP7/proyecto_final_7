@@ -4,22 +4,28 @@ import {
   Text, 
   FlatList, 
   ActivityIndicator, 
-  Alert, 
-  StyleSheet, 
+  Alert,
   TouchableOpacity, 
   Image 
 } from "react-native";
 import { getInventario, deleteProducto } from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from "expo-router";
+// ⬇️ Importación clave para usar el safe area context
+import { useSafeAreaInsets } from 'react-native-safe-area-context'; 
 
-const IMAGE_BASE_URL = "http://10.0.2.206/proyecto_final_7/imagenes/inventario/";
+import { styles } from "../../css/inventario_styles"; 
+
+const IMAGE_BASE_URL = "http://192.168.0.20/proyecto_final_7/imagenes/inventario/";
 
 export default function InventarioScreen() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
+  
+  // ⬅️ Obtener los insets (márgenes de la zona segura)
+  const insets = useSafeAreaInsets(); 
 
   const fetchProductos = async () => {
     try {
@@ -115,7 +121,8 @@ export default function InventarioScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    // ⬅️ El estilo se aplica con los insets
+    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
       <Text style={styles.title}>Inventario de Productos</Text>
       <TouchableOpacity 
         style={styles.addButton} 
@@ -134,36 +141,3 @@ export default function InventarioScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#fdf0f5' },
-  title: { fontSize: 28, fontWeight: '700', marginBottom: 12, textAlign: 'center', color: '#000' },
-  subtitle: { fontSize: 16, marginBottom: 16, textAlign: 'center', color: '#333' },
-  card: { 
-    backgroundColor: 'white', 
-    padding: 16, 
-    borderRadius: 15, 
-    marginBottom: 12, 
-    elevation: 5, 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-  },
-  productImage: { width: 80, height: 80, resizeMode: 'cover', marginRight: 16, borderRadius: 10 },
-  textContainer: { flex: 1 },
-  cardTitle: { fontSize: 18, fontWeight: '700', marginBottom: 6, color: '#000' },
-  cardText: { fontSize: 14, color: '#333', marginBottom: 2 },
-  buttonContainer: { flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10 },
-  modifyButton: { backgroundColor: '#ff6b9d', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, marginBottom: 6 },
-  deleteButton: { backgroundColor: '#ff4c4c', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8 },
-  buttonText: { color: '#fff', fontWeight: '700', textAlign: 'center' },
-  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  loadingText: { marginTop: 10, fontSize: 16, color: '#333' },
-  errorText: { color: 'red', textAlign: 'center', marginBottom: 20, fontSize: 16 },
-  retryButton: { backgroundColor: '#ff6b9d', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12 },
-  addButton: { backgroundColor: '#ff6b9d', paddingVertical: 12, borderRadius: 20, marginBottom: 12, alignItems: 'center' },
-  list: { paddingBottom: 20 },
-});

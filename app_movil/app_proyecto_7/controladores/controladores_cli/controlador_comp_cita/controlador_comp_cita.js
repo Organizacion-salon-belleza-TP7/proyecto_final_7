@@ -1,7 +1,7 @@
 import Cita from "../../../modelo/modelo_cli/modelo_comp_cita/modelo_comp_cita";
 
 // 📌 URL base de la API
-const BASE_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+const BASE_URL = "http://192.168.0.20/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
 /**
  * 📅 Obtener todos los servicios activos
