@@ -4,306 +4,150 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once(__DIR__ . '/../../../variable_global.php');
-require_once(ROOT_PATH . '/modelo/BD.php');
+require_once(ROOT_PATH . '/modelo/BD.php'); // ✅ conexión $conn
+require_once(ROOT_PATH . '/modelo/modelo_cliente/modelo_venta_productos/modelo_venta.php');
 require_once(ROOT_PATH . '/controlador/controladores_cliente/controlador_venta_producto/controlador_venta.php');
 
 session_start();
 
-// Instanciamos el controlador con la conexión global
-$ventaCtrl = new ControladorVenta($conn);
-
-// Cargar datos iniciales
-$productos = $ventaCtrl->mostrarProductos();
-$carrito = $ventaCtrl->mostrarCarrito();
-$metodos = $ventaCtrl->mostrarMetodosPago();
-
-$resumen = false;
-$metodoSeleccionado = null;
-$compraFinalizada = false;
-$detalleCompra = null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['agregar'])) {
-        $ventaCtrl->agregarAlCarrito($_POST['id_producto'], $_POST['cantidad']);
-        header("Location: vista_venta.php");
-        exit;
-    } elseif (isset($_POST['eliminar'])) {
-        $ventaCtrl->eliminarDelCarrito($_POST['id_producto']);
-        header("Location: vista_venta.php");
-        exit;
-    } elseif (isset($_POST['vaciar_carrito'])) {
-        $ventaCtrl->vaciarCarrito();
-        header("Location: vista_venta.php");
-        exit;
-    } elseif (isset($_POST['ver_resumen'])) {
-        foreach ($metodos as $m) {
-            if ($m['id_metodo_pago'] == $_POST['metodo_pago']) {
-                $metodoSeleccionado = $m;
-                break;
-            }
-        }
-        $resumen = true;
-    } elseif (isset($_POST['confirmar_compra'])) {
-        $detalleCompra = $ventaCtrl->confirmarCompra($_POST['id_metodo_pago']);
-        if ($detalleCompra) $compraFinalizada = true;
-        $resumen = false;
-    }
+// ✅ Comprobar sesión activa
+if (!isset($_SESSION['user'])) {
+    header("Location: " . BASE_URL . "/vista/vista_login/vista_login.php");
+    exit;
 }
+
+$id_sesion = session_id();
+$modelo = new ModeloVenta($conn);
+$controlador = new ControladorVenta($modelo);
+
+$inventario = $controlador->mostrarInventario();
+$carrito = $controlador->mostrarCarrito($id_sesion);
+$metodos_pago = $controlador->mostrarMetodosPago();
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Sistema de Compras</title>
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-        background: #ffe6f2;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #333;
-    }
-
-    h2 {
-        color: #d63384;
-        text-align: center;
-        margin-top: 30px;
-    }
-
-    table {
-        border-collapse: collapse;
-        width: 80%;
-        background: white;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        margin: 20px auto;
-    }
-
-    th {
-        background: #ffb6c1;
-        color: #fff;
-        font-weight: bold;
-        padding: 10px;
-    }
-
-    td {
-        border-bottom: 1px solid #f2f2f2;
-        padding: 10px;
-        text-align: center;
-    }
-
-    tr:hover {
-        background: #fff0f5;
-    }
-
-    button {
-        background: #ff66b2;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        background: #ff3385;
-    }
-
-    input[type=number] {
-        width: 60px;
-        text-align: center;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        padding: 4px;
-    }
-
-    select {
-        padding: 8px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        background: #fff;
-        cursor: pointer;
-    }
-
-    .resumen, .gracias {
-        background: white;
-        padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        width: 70%;
-        margin: 20px auto;
-        text-align: center;
-    }
-
-    .resumen table, .gracias table {
-        width: 100%;
-        margin-top: 10px;
-    }
-
-    .resumen th, .gracias th {
-        background: #ff99cc;
-    }
-
-    .total {
-        font-size: 18px;
-        color: #d63384;
-        font-weight: bold;
-    }
-
-    form {
-        display: inline-block;
-        margin: 0;
-    }
-
-    .botones {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .vaciar {
-        background: #ff9999;
-    }
-
-    .vaciar:hover {
-        background: #ff6666;
-    }
-
-</style>
+    <meta charset="UTF-8">
+    <title>Venta de Productos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe4f2;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            background-color: #ff66b2;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #f8a1d1;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffb6c1;
+        }
+        button {
+            background-color: #ff66b2;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #ff3385; }
+        select, input[type="number"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
 
-<h2>🌷 Productos Disponibles 🌷</h2>
+<h2>🛍️ Inventario</h2>
 <table>
-<tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Cantidad</th><th>Agregar</th></tr>
-<?php if (!empty($productos)): ?>
-    <?php foreach ($productos as $p): ?>
     <tr>
-        <form method="POST">
-            <td><?= $p['id_producto'] ?></td>
-            <td><?= htmlspecialchars($p['nombre']) ?></td>
-            <td>$<?= number_format($p['precio'], 2) ?></td>
-            <td><input type="number" name="cantidad" value="1" min="1" max="<?= $p['stock'] ?>" required></td>
-            <input type="hidden" name="id_producto" value="<?= $p['id_producto'] ?>">
-            <td><button type="submit" name="agregar">Agregar</button></td>
-        </form>
+        <th>Nombre</th>
+        <th>Stock</th>
+        <th>Precio</th>
+        <th>Acción</th>
     </tr>
+    <?php foreach ($inventario as $prod): ?>
+        <tr>
+            <td><?= htmlspecialchars($prod['nombre_producto']) ?></td>
+            <td><?= htmlspecialchars($prod['stock']) ?></td>
+            <td>$<?= htmlspecialchars($prod['precio_venta']) ?></td>
+            <td>
+                <form method="POST" action="<?= BASE_URL ?>/controlador/controlador_cliente/controlador_venta_producto/controlador_venta.php">
+                    <input type="hidden" name="accion" value="agregar">
+                    <input type="hidden" name="id_producto" value="<?= $prod['id_inventario'] ?>">
+                    <input type="number" name="cantidad" value="1" min="1" max="<?= $prod['stock'] ?>" required>
+                    <button type="submit">Agregar</button>
+                </form>
+            </td>
+        </tr>
     <?php endforeach; ?>
-<?php else: ?>
-<tr><td colspan="5">No hay productos disponibles.</td></tr>
-<?php endif; ?>
 </table>
 
-<h2>🛍️ Carrito de Compras 🛍️</h2>
-<?php if (!empty($carrito)): ?>
-<div class="botones">
-    <form method="POST">
-        <button type="submit" name="vaciar_carrito" class="vaciar">Vaciar Carrito</button>
-    </form>
-</div>
-
+<h2>🛒 Carrito</h2>
 <table>
-<tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th><th>Eliminar</th></tr>
-<?php 
-$total = 0;
-foreach ($carrito as $c):
-    $total += $c['subtotal'];
-?>
-<tr>
-    <td><?= htmlspecialchars($c['nombre']) ?></td>
-    <td><?= $c['cantidad'] ?></td>
-    <td>$<?= number_format($c['precio_unitario'], 2) ?></td>
-    <td>$<?= number_format($c['subtotal'], 2) ?></td>
-    <td>
-        <form method="POST">
-            <input type="hidden" name="id_producto" value="<?= $c['id_producto'] ?>">
-            <button type="submit" name="eliminar">Eliminar</button>
-        </form>
-    </td>
-</tr>
-<?php endforeach; ?>
-<tr>
-    <td colspan="3" class="total">Total:</td>
-    <td colspan="2" class="total">$<?= number_format($total,2) ?></td>
-</tr>
+    <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acción</th>
+    </tr>
+    <?php
+    $total = 0;
+    foreach ($carrito as $item):
+        $subtotal = $item['cantidad'] * $item['precio_unitario'];
+        $total += $subtotal;
+    ?>
+        <tr>
+            <td><?= htmlspecialchars($item['nombre_producto']) ?></td>
+            <td><?= htmlspecialchars($item['cantidad']) ?></td>
+            <td>$<?= number_format($subtotal, 2) ?></td>
+            <td>
+                <form method="POST" action="<?= BASE_URL ?>/controlador/controlador_cliente/controlador_venta_producto/controlador_venta.php">
+                    <input type="hidden" name="accion" value="eliminar">
+                    <input type="hidden" name="id_producto" value="<?= $item['id_inventario'] ?>">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    <tr>
+        <th colspan="2">Total</th>
+        <th colspan="2">$<?= number_format($total, 2) ?></th>
+    </tr>
 </table>
 
-<?php if (!$compraFinalizada): ?>
-<div class="botones">
-<form method="POST">
-    <label for="metodo_pago"><b>Método de pago:</b></label>
-    <select name="metodo_pago" required>
-        <option value="">Seleccionar...</option>
-        <?php foreach ($metodos as $m): ?>
-            <?php if ($m['activo']): ?>
-            <option value="<?= $m['id_metodo_pago'] ?>"><?= htmlspecialchars($m['metodo_pago']) ?>
-                <?php if ($m['decremento'] > 0) echo "(Descuento {$m['decremento']}%)"; ?>
-                <?php if ($m['incremento'] > 0) echo "(Recargo {$m['incremento']}%)"; ?>
+<h2>💳 Finalizar Compra</h2>
+<form method="POST" action="<?= BASE_URL ?>/controlador/controlador_cliente/controlador_venta_producto/controlador_venta.php">
+    <input type="hidden" name="accion" value="finalizar">
+    <label for="id_metodo_pago">Método de pago:</label>
+    <select name="id_metodo_pago" id="id_metodo_pago" required>
+        <option value="">Seleccione...</option>
+        <?php foreach ($metodos_pago as $m): ?>
+            <option value="<?= $m['id_metodo_pago'] ?>">
+                <?= htmlspecialchars($m['metodo_pago']) ?>
             </option>
-            <?php endif; ?>
         <?php endforeach; ?>
     </select>
-    <button type="submit" name="ver_resumen">caja</button>
+    <button type="submit">Pagar</button>
 </form>
-</div>
-<?php endif; ?>
-<?php endif; ?>
-
-<?php if ($resumen && $metodoSeleccionado): ?>
-<div class="resumen">
-    <h2>💗 Resumen de la Compra 💗</h2>
-    <p><b>Método de pago:</b> <?= htmlspecialchars($metodoSeleccionado['metodo_pago']) ?>
-        <?php if ($metodoSeleccionado['decremento'] > 0) echo "(Descuento {$metodoSeleccionado['decremento']}%)"; ?>
-        <?php if ($metodoSeleccionado['incremento'] > 0) echo "(Recargo {$metodoSeleccionado['incremento']}%)"; ?>
-    </p>
-    <table>
-        <tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr>
-        <?php foreach ($carrito as $c): ?>
-        <tr>
-            <td><?= htmlspecialchars($c['nombre']) ?></td>
-            <td><?= $c['cantidad'] ?></td>
-            <td>$<?= number_format($c['precio_unitario'], 2) ?></td>
-            <td>$<?= number_format($c['subtotal'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-        <tr><td colspan="3" class="total">Total:</td><td class="total">$<?= number_format($total,2) ?></td></tr>
-        <?php
-        $totalFinal = $total;
-        if ($metodoSeleccionado['incremento'] > 0) $totalFinal += $total * $metodoSeleccionado['incremento']/100;
-        if ($metodoSeleccionado['decremento'] > 0) $totalFinal -= $total * $metodoSeleccionado['decremento']/100;
-        ?>
-        <tr><td colspan="3" class="total">Total Final:</td><td class="total">$<?= number_format($totalFinal,2) ?></td></tr>
-    </table>
-    <form method="POST">
-        <input type="hidden" name="id_metodo_pago" value="<?= $metodoSeleccionado['id_metodo_pago'] ?>">
-        <button type="submit" name="confirmar_compra">Confirmar Compra 💖</button>
-    </form>
-</div>
-<?php endif; ?>
-
-<?php if ($compraFinalizada && $detalleCompra): ?>
-<div class="gracias">
-    <h2>🎀 ¡Gracias por su compra! 🎀</h2>
-    <p><b>Método de pago:</b> <?= htmlspecialchars($detalleCompra['metodo']['metodo_pago']) ?></p>
-    <table>
-        <tr><th>Producto</th><th>Cantidad</th><th>Precio Unitario</th><th>Subtotal</th></tr>
-        <?php foreach ($detalleCompra['items'] as $item): ?>
-        <tr>
-            <td><?= htmlspecialchars($item['nombre']) ?></td>
-            <td><?= $item['cantidad'] ?></td>
-            <td>$<?= number_format($item['precio_unitario'], 2) ?></td>
-            <td>$<?= number_format($item['subtotal'], 2) ?></td>
-        </tr>
-        <?php endforeach; ?>
-        <tr><td colspan="3" class="total">Total Final:</td><td class="total">$<?= number_format($detalleCompra['total'],2) ?></td></tr>
-    </table>
-</div>
-<?php endif; ?>
 
 </body>
 </html>

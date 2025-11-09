@@ -66,6 +66,8 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
       top:0;left:0;bottom:0;
       transition: transform .3s ease;
       z-index: 1000;
+      padding-bottom: 20px; /* 👈 Espacio extra para que no quede pegado al pie */
+      overflow-y: auto; /* 👈 Permite hacer scroll interno */
     }
     .sidebar h2{
       color: var(--primary);
