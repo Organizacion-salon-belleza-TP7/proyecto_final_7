@@ -52,7 +52,6 @@ class CitasModelo {
             cli.nombre AS nombre_cliente,
             c.fecha_cita,
             c.activo,
-            c.hash_identificacion,
             l.nombre_lugar AS lugar,
             s.id_servicios,
             s.nombre AS servicio_nombre,

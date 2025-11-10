@@ -6,14 +6,14 @@ import {
   ActivityIndicator, 
   Alert, 
   StyleSheet, 
-  Button, 
+  TouchableOpacity, 
   Image 
 } from "react-native";
 import { getInventario, deleteProducto } from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 
-const IMAGE_BASE_URL = "http://192.168.100.8/proyecto_final_7/imagenes/inventario/";
+const IMAGE_BASE_URL = "http://10.0.2.206/proyecto_final_7/imagenes/inventario/";
 
 export default function InventarioScreen() {
   const [productos, setProductos] = useState([]);
@@ -71,22 +71,25 @@ export default function InventarioScreen() {
       />
       <View style={styles.textContainer}>
         <Text style={styles.cardTitle}>{item.nombre_producto}</Text>
-        <Text>Stock: {item.stock}</Text>
-        <Text>Vencimiento: {item.vencimiento}</Text>
-        <Text>Precio Compra: ${item.precio_producto}</Text>
-        <Text>Precio Venta: ${item.precio_venta}</Text>
-        <Text>Proveedor: {item.nombre_proveedor}</Text>
+        <Text style={styles.cardText}>Stock: {item.stock}</Text>
+        <Text style={styles.cardText}>Vencimiento: {item.vencimiento}</Text>
+        <Text style={styles.cardText}>Precio Compra: ${item.precio_producto}</Text>
+        <Text style={styles.cardText}>Precio Venta: ${item.precio_venta}</Text>
+        <Text style={styles.cardText}>Proveedor: {item.nombre_proveedor}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <Button 
-          title="Modificar" 
-          onPress={() => router.push(`/vista/vista_adm/inicio/vista_modificar_producto?id=${item.id_inventario}`)} 
-        />
-        <Button 
-          title="Eliminar" 
-          onPress={() => handleDelete(item.id_inventario)} 
-          color="red" 
-        />
+        <TouchableOpacity 
+          style={styles.modifyButton} 
+          onPress={() => router.push(`/vista/vista_adm/inicio/vista_modificar_producto?id=${item.id_inventario}`)}
+        >
+          <Text style={styles.buttonText}>Modificar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.deleteButton} 
+          onPress={() => handleDelete(item.id_inventario)}
+        >
+          <Text style={styles.buttonText}>Eliminar</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -94,7 +97,7 @@ export default function InventarioScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#ff6b9d" />
         <Text style={styles.loadingText}>Cargando inventario...</Text>
       </View>
     );
@@ -104,7 +107,9 @@ export default function InventarioScreen() {
     return (
       <View style={styles.centerContainer}>
         <Text style={styles.errorText}>Error: {error}</Text>
-        <Button title="Reintentar" onPress={fetchProductos} />
+        <TouchableOpacity style={styles.retryButton} onPress={fetchProductos}>
+          <Text style={styles.buttonText}>Reintentar</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -112,10 +117,12 @@ export default function InventarioScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Inventario de Productos</Text>
-      <Button 
-        title="Agregar Producto" 
-        onPress={() => router.push("/vista/vista_adm/inicio/vista_agregar_producto")} 
-      />
+      <TouchableOpacity 
+        style={styles.addButton} 
+        onPress={() => router.push("/vista/vista_adm/inicio/vista_agregar_producto")}
+      >
+        <Text style={styles.buttonText}>Agregar Producto</Text>
+      </TouchableOpacity>
       <Text style={styles.subtitle}>Total de productos: {productos.length}</Text>
       <FlatList
         data={productos}
@@ -129,16 +136,34 @@ export default function InventarioScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f5f5f5' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 16, textAlign: 'center', color: '#333' },
-  subtitle: { fontSize: 16, marginBottom: 16, textAlign: 'center', color: '#666' },
-  card: { backgroundColor: 'white', padding: 16, borderRadius: 8, marginBottom: 12, elevation: 3, flexDirection: 'row', alignItems: 'center' },
-  productImage: { width: 80, height: 80, resizeMode: 'cover', marginRight: 16, borderRadius: 4 },
+  container: { flex: 1, padding: 16, backgroundColor: '#fdf0f5' },
+  title: { fontSize: 28, fontWeight: '700', marginBottom: 12, textAlign: 'center', color: '#000' },
+  subtitle: { fontSize: 16, marginBottom: 16, textAlign: 'center', color: '#333' },
+  card: { 
+    backgroundColor: 'white', 
+    padding: 16, 
+    borderRadius: 15, 
+    marginBottom: 12, 
+    elevation: 5, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+  },
+  productImage: { width: 80, height: 80, resizeMode: 'cover', marginRight: 16, borderRadius: 10 },
   textContainer: { flex: 1 },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4, color: '#333' },
-  buttonContainer: { flexDirection: 'column', justifyContent: 'space-around', marginLeft: 10, height: 80 },
+  cardTitle: { fontSize: 18, fontWeight: '700', marginBottom: 6, color: '#000' },
+  cardText: { fontSize: 14, color: '#333', marginBottom: 2 },
+  buttonContainer: { flexDirection: 'column', justifyContent: 'space-between', marginLeft: 10 },
+  modifyButton: { backgroundColor: '#ff6b9d', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8, marginBottom: 6 },
+  deleteButton: { backgroundColor: '#ff4c4c', paddingVertical: 6, paddingHorizontal: 10, borderRadius: 8 },
+  buttonText: { color: '#fff', fontWeight: '700', textAlign: 'center' },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-  loadingText: { marginTop: 10, fontSize: 16, color: '#666' },
+  loadingText: { marginTop: 10, fontSize: 16, color: '#333' },
   errorText: { color: 'red', textAlign: 'center', marginBottom: 20, fontSize: 16 },
-  list: { paddingBottom: 20 }
+  retryButton: { backgroundColor: '#ff6b9d', paddingVertical: 10, paddingHorizontal: 20, borderRadius: 12 },
+  addButton: { backgroundColor: '#ff6b9d', paddingVertical: 12, borderRadius: 20, marginBottom: 12, alignItems: 'center' },
+  list: { paddingBottom: 20 },
 });

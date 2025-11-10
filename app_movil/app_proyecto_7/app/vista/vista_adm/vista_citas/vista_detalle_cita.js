@@ -10,7 +10,7 @@ export default function VistaDetalleCita() {
   useEffect(() => {
     if (!id) return;
 
-    fetch(`http://192.168.100.8/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=citas&id=${id}`)
+    fetch(`http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=citas&id=${id}`)
       .then(res => res.json())
       .then(data => {
         setDetalle(data);
@@ -22,36 +22,62 @@ export default function VistaDetalleCita() {
       });
   }, [id]);
 
-  if (loading) return <ActivityIndicator size="large" />;
+  if (loading) return (
+    <View style={styles.centerContainer}>
+      <ActivityIndicator size="large" color="#ff6b9d" />
+      <Text style={styles.loadingText}>Cargando detalle de la cita...</Text>
+    </View>
+  );
 
   if (!detalle || detalle.length === 0) {
-    return <Text>No se pudo cargar el detalle de la cita</Text>;
+    return (
+      <View style={styles.centerContainer}>
+        <Text style={styles.errorText}>No se pudo cargar el detalle de la cita</Text>
+      </View>
+    );
   }
+
+  const cita = detalle[0];
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.titulo}>Detalle de la cita</Text>
-      <Text>ID: {detalle[0].id_cita}</Text>
-      <Text>Cliente: {detalle[0].nombre_cliente}</Text>
-      <Text>Fecha: {detalle[0].fecha_cita}</Text>
-      <Text>Estado: {detalle[0].activo ? "Activo" : "Inactivo"}</Text>
-      <Text>Lugar: {detalle[0].lugar}</Text>
+      <Text style={styles.title}>Detalle de la cita</Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>ID:</Text>
+        <Text style={styles.text}>{cita.id_cita}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Cliente:</Text>
+        <Text style={styles.text}>{cita.nombre_cliente}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Fecha:</Text>
+        <Text style={styles.text}>{cita.fecha_cita}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Estado:</Text>
+        <Text style={styles.text}>{cita.activo ? "Activo" : "Inactivo"}</Text>
+      </View>
+      <View style={styles.infoContainer}>
+        <Text style={styles.label}>Lugar:</Text>
+        <Text style={styles.text}>{cita.lugar}</Text>
+      </View>
 
-      <Text style={styles.subtitulo}>Servicios</Text>
+      <Text style={styles.subtitle}>Servicios</Text>
       {detalle.map((d, i) =>
         d.servicio_nombre ? (
-          <Text key={`serv-${i}`}>
-            {d.servicio_nombre} - ${d.servicio_precio}
-          </Text>
+          <View key={`serv-${i}`} style={styles.itemContainer}>
+            <Text style={styles.text}>{d.servicio_nombre} - ${d.servicio_precio}</Text>
+          </View>
         ) : null
       )}
 
-      <Text style={styles.subtitulo}>Combos</Text>
+      <Text style={styles.subtitle}>Combos</Text>
       {detalle.map((d, i) =>
         d.combo_nombre ? (
-          <Text key={`combo-${i}`}>
-            {d.combo_nombre} - ${d.combo_precio}
-          </Text>
+          <View key={`combo-${i}`} style={styles.itemContainer}>
+            <Text style={styles.text}>{d.combo_nombre} - ${d.combo_precio}</Text>
+          </View>
         ) : null
       )}
     </ScrollView>
@@ -59,7 +85,59 @@ export default function VistaDetalleCita() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  titulo: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  subtitulo: { fontSize: 16, fontWeight: "bold", marginTop: 15 }
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#fdf0f5"
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#333"
+  },
+  errorText: {
+    fontSize: 16,
+    color: "red",
+    textAlign: "center"
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 15,
+    textAlign: "center",
+    color: "#000"
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    marginTop: 20,
+    marginBottom: 10,
+    color: "#000"
+  },
+  infoContainer: {
+    flexDirection: "row",
+    marginBottom: 6
+  },
+  label: {
+    fontWeight: "700",
+    marginRight: 5,
+    color: "#333"
+  },
+  text: {
+    color: "#333",
+    fontSize: 16
+  },
+  itemContainer: {
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 6,
+    elevation: 2
+  }
 });

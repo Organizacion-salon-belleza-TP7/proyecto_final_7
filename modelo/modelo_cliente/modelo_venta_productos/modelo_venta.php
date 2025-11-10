@@ -14,116 +14,169 @@ class ModeloVenta {
     }
 
     public function obtenerProductos() {
-        $sql = "SELECT * FROM productos WHERE stock > 0";
+        $sql = "SELECT * FROM inventario WHERE stock > 0";
         $result = $this->conn->query($sql);
-        $productos = [];
 
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $productos[] = $row;
-            }
+        if (!$result) {
+            throw new Exception("Error al obtener productos: " . $this->conn->error);
+        }
+
+        $productos = [];
+        while ($row = $result->fetch_assoc()) {
+            $productos[] = $row;
         }
 
         return $productos;
     }
 
     public function agregarAlCarrito($id_sesion, $id_producto, $cantidad) {
-        $id_producto = intval($id_producto);
-        $id_sesion = $this->conn->real_escape_string($id_sesion);
+        // Obtener producto
+        $stmt = $this->conn->prepare("SELECT precio, stock FROM inventario WHERE id_inventario = ?");
+        $stmt->bind_param('i', $id_producto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $producto = $result->fetch_assoc();
+        $stmt->close();
 
-        $sql = "SELECT precio, stock FROM productos WHERE id_producto = $id_producto";
-        $producto = $this->conn->query($sql)->fetch_assoc();
-        if (!$producto) return;
+        if (!$producto) return false;
 
         if ($cantidad > $producto['stock']) $cantidad = $producto['stock'];
         $precio = $producto['precio'];
         $subtotal = $precio * $cantidad;
 
-        $check = $this->conn->query("SELECT * FROM carrito WHERE id_sesion='$id_sesion' AND id_producto=$id_producto");
+        // Verificar si ya existe en el carrito
+        $stmt = $this->conn->prepare("SELECT * FROM carrito WHERE id_sesion = ? AND id_inventario = ?");
+        $stmt->bind_param('si', $id_sesion, $id_producto);
+        $stmt->execute();
+        $check = $stmt->get_result();
+        $stmt->close();
 
-        if ($check && $check->num_rows > 0) {
-            $this->conn->query("
-                UPDATE carrito 
-                SET cantidad = cantidad + $cantidad, subtotal = subtotal + $subtotal 
-                WHERE id_sesion='$id_sesion' AND id_producto=$id_producto
-            ");
+        if ($check->num_rows > 0) {
+            $stmt = $this->conn->prepare("UPDATE carrito SET cantidad = cantidad + ?, subtotal = subtotal + ? 
+                                          WHERE id_sesion = ? AND id_inventario = ?");
+            $stmt->bind_param('iisi', $cantidad, $subtotal, $id_sesion, $id_producto);
         } else {
-            $this->conn->query("
-                INSERT INTO carrito (id_sesion, id_producto, cantidad, precio_unitario, subtotal)
-                VALUES ('$id_sesion', $id_producto, $cantidad, $precio, $subtotal)
-            ");
+            $stmt = $this->conn->prepare("INSERT INTO carrito (id_sesion, id_inventario, cantidad, precio_unitario, subtotal)
+                                          VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param('siiid', $id_sesion, $id_producto, $cantidad, $precio, $subtotal);
         }
+        
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new Exception("Error al agregar al carrito: " . $stmt->error);
+        }
+        $stmt->close();
 
-        $this->conn->query("UPDATE productos SET stock = stock - $cantidad WHERE id_producto = $id_producto");
+        // Actualizar stock
+        $stmt = $this->conn->prepare("UPDATE inventario SET stock = stock - ? WHERE id_inventario = ?");
+        $stmt->bind_param('ii', $cantidad, $id_producto);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new Exception("Error al actualizar stock: " . $stmt->error);
+        }
+        $stmt->close();
+
+        return true;
     }
 
     public function obtenerCarrito($id_sesion) {
-        $id_sesion = $this->conn->real_escape_string($id_sesion);
+        $stmt = $this->conn->prepare("
+            SELECT c.*, i.nombre 
+            FROM carrito c 
+            INNER JOIN inventario i ON c.id_inventario = i.id_inventario
+            WHERE c.id_sesion = ?");
+        $stmt->bind_param('s', $id_sesion);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        $sql = "SELECT c.*, p.nombre 
-                FROM carrito c 
-                INNER JOIN productos p ON c.id_producto = p.id_producto
-                WHERE c.id_sesion = '$id_sesion'";
-        $result = $this->conn->query($sql);
         $carrito = [];
-
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $carrito[] = $row;
-            }
+        while ($row = $result->fetch_assoc()) {
+            $carrito[] = $row;
         }
+        $stmt->close();
 
         return $carrito;
     }
 
     public function obtenerMetodosPago() {
         $sql = "SELECT id_metodo_pago, metodo_pago, incremento, decremento, activo 
-                FROM metodos_pagos 
-                WHERE activo = 1";
+                FROM metodos_pagos WHERE activo = 1";
         $result = $this->conn->query($sql);
-        $metodos = [];
 
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $metodos[] = $row;
-            }
+        if (!$result) {
+            throw new Exception("Error al obtener métodos de pago: " . $this->conn->error);
+        }
+
+        $metodos = [];
+        while ($row = $result->fetch_assoc()) {
+            $metodos[] = $row;
         }
 
         return $metodos;
     }
 
     public function eliminarDelCarrito($id_sesion, $id_producto) {
-        $id_producto = intval($id_producto);
-        $id_sesion = $this->conn->real_escape_string($id_sesion);
+        // Recuperar cantidad antes de eliminar
+        $stmt = $this->conn->prepare("SELECT cantidad FROM carrito WHERE id_sesion = ? AND id_inventario = ?");
+        $stmt->bind_param('si', $id_sesion, $id_producto);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $res = $result->fetch_assoc();
+        $stmt->close();
 
-        $sql = "SELECT cantidad FROM carrito WHERE id_sesion='$id_sesion' AND id_producto=$id_producto";
-        $res = $this->conn->query($sql)->fetch_assoc();
         if ($res) {
             $cantidad = $res['cantidad'];
-            $this->conn->query("UPDATE productos SET stock = stock + $cantidad WHERE id_producto=$id_producto");
-            $this->conn->query("DELETE FROM carrito WHERE id_sesion='$id_sesion' AND id_producto=$id_producto");
+
+            // Devolver stock
+            $stmt = $this->conn->prepare("UPDATE inventario SET stock = stock + ? WHERE id_inventario = ?");
+            $stmt->bind_param('ii', $cantidad, $id_producto);
+            $success = $stmt->execute();
+            if (!$success) {
+                throw new Exception("Error al devolver stock: " . $stmt->error);
+            }
+            $stmt->close();
+
+            // Eliminar del carrito
+            $stmt = $this->conn->prepare("DELETE FROM carrito WHERE id_sesion = ? AND id_inventario = ?");
+            $stmt->bind_param('si', $id_sesion, $id_producto);
+            $success = $stmt->execute();
+            if (!$success) {
+                throw new Exception("Error al eliminar del carrito: " . $stmt->error);
+            }
+            $stmt->close();
         }
     }
 
     public function vaciarCarrito($id_sesion) {
-        $id_sesion = $this->conn->real_escape_string($id_sesion);
+        // Recuperar productos
+        $stmt = $this->conn->prepare("SELECT id_inventario, cantidad FROM carrito WHERE id_sesion = ?");
+        $stmt->bind_param('s', $id_sesion);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        $sql = "SELECT id_producto, cantidad FROM carrito WHERE id_sesion='$id_sesion'";
-        $result = $this->conn->query($sql);
-
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $this->conn->query("UPDATE productos SET stock = stock + {$row['cantidad']} WHERE id_producto={$row['id_producto']}");
+        while ($row = $result->fetch_assoc()) {
+            $stmt2 = $this->conn->prepare("UPDATE inventario SET stock = stock + ? WHERE id_inventario = ?");
+            $stmt2->bind_param('ii', $row['cantidad'], $row['id_inventario']);
+            $success = $stmt2->execute();
+            if (!$success) {
+                throw new Exception("Error al devolver stock: " . $stmt2->error);
             }
+            $stmt2->close();
         }
 
-        $this->conn->query("DELETE FROM carrito WHERE id_sesion='$id_sesion'");
+        $stmt->close();
+
+        // Vaciar carrito
+        $stmt = $this->conn->prepare("DELETE FROM carrito WHERE id_sesion = ?");
+        $stmt->bind_param('s', $id_sesion);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new Exception("Error al vaciar carrito: " . $stmt->error);
+        }
+        $stmt->close();
     }
 
     public function finalizarCompra($id_sesion, $id_metodo_pago) {
-        $id_metodo_pago = intval($id_metodo_pago);
-        $id_sesion = $this->conn->real_escape_string($id_sesion);
-
         $items = $this->obtenerCarrito($id_sesion);
         if (empty($items)) return null;
 
@@ -132,23 +185,43 @@ class ModeloVenta {
             $total += $item['subtotal'];
         }
 
-        $metodo = $this->conn->query("SELECT * FROM metodos_pagos WHERE id_metodo_pago = $id_metodo_pago")->fetch_assoc();
-        if (!$metodo) return null;
+        $stmt = $this->conn->prepare("SELECT * FROM metodos_pagos WHERE id_metodo_pago = ?");
+        $stmt->bind_param('i', $id_metodo_pago);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $metodo = $result->fetch_assoc();
+        $stmt->close();
+
+        if (!$metodo) {
+            throw new Exception("Método de pago no encontrado");
+        }
 
         if ($metodo['incremento']) $total += $total * $metodo['incremento'] / 100;
         if ($metodo['decremento']) $total -= $total * $metodo['decremento'] / 100;
 
-        $this->conn->query("INSERT INTO caja_product (fecha_venta, monto_total) VALUES (NOW(), $total)");
-        $id_caja = $this->conn->insert_id;
-
-        foreach ($items as $item) {
-            $hash = uniqid();
-            $this->conn->query("
-                INSERT INTO detalle_caja_product (id_caja_product, id_metodo_pago, id_producto, cantidad, subtotal, hash_identificacion)
-                VALUES ($id_caja, $id_metodo_pago, {$item['id_producto']}, {$item['cantidad']}, {$item['subtotal']}, '$hash')
-            ");
+        // Insertar venta
+        $stmt = $this->conn->prepare("INSERT INTO caja_product (fecha_venta, monto_total) VALUES (NOW(), ?)");
+        $stmt->bind_param('d', $total);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new Exception("Error al insertar venta: " . $stmt->error);
         }
+        $id_caja = $stmt->insert_id;
+        $stmt->close();
 
+        // Detalle de venta - Insertar cada producto del carrito
+        $stmt = $this->conn->prepare("INSERT INTO detalle_caja_product (id_caja_product, id_inventario, cantidad, precio_unitario, subtotal, id_multiple_pago) VALUES (?, ?, ?, ?, ?, ?)");
+        
+        foreach ($items as $item) {
+            $stmt->bind_param('iiiidi', $id_caja, $item['id_inventario'], $item['cantidad'], $item['precio_unitario'], $item['subtotal'], $id_metodo_pago);
+            $success = $stmt->execute();
+            if (!$success) {
+                throw new Exception("Error al insertar detalle de venta: " . $stmt->error);
+            }
+        }
+        $stmt->close();
+
+        // Vaciar carrito
         $this->vaciarCarrito($id_sesion);
 
         return [

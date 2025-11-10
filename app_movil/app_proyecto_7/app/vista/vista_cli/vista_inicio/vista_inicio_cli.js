@@ -7,13 +7,15 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { traerCitasCompradas, cancelarCita } from "../../../../controladores/controladores_cli/controlador_inicio/controlador_inicio_cli";
 
-export default function VistaInicioCliente() {
+export default function VistaInicioCliente({ navigation }) {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [usuario, setUsuario] = useState(null);
 
   useEffect(() => {
     cargarCitas();
@@ -25,6 +27,7 @@ export default function VistaInicioCliente() {
       if (!userData) throw new Error("No hay usuario logueado");
 
       const user = JSON.parse(userData);
+      setUsuario(user); // Guardamos el usuario para usarlo luego
       const data = await traerCitasCompradas(user.id_usuario);
       setCitas(data);
     } catch (error) {
@@ -52,7 +55,7 @@ export default function VistaInicioCliente() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Mis Citas Compradas</Text>
 
       {citas.length === 0 ? (
@@ -87,7 +90,23 @@ export default function VistaInicioCliente() {
           )}
         />
       )}
-    </View>
+
+      {/* 🔹 Botón para comprar nueva cita */}
+      <TouchableOpacity
+        style={styles.btnComprar}
+        onPress={() => {
+          if (!usuario) {
+            Alert.alert("Error", "No se encontró información del usuario");
+            return;
+          }
+          navigation.navigate("SeleccionarServiciosScreen", {
+            id_cliente: usuario.id_usuario,
+          });
+        }}
+      >
+        <Text style={styles.btnComprarText}>Comprar Nueva Cita</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
@@ -126,4 +145,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnText: { color: "#fff", fontWeight: "bold" },
+  btnComprar: {
+    marginTop: 25,
+    backgroundColor: "#e91e63",
+    padding: 14,
+    borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 4,
+  },
+  btnComprarText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 18,
+  },
 });

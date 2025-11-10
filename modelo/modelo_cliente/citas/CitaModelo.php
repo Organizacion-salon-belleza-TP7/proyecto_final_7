@@ -50,17 +50,16 @@ class CitaModelo {
     }
 
     public function guardarCitaConLugar($id_cliente, $fecha_cita, $id_lugar, $servicios = [], $combos = []) {
-        $hash = md5(uniqid());
         $activo = 1;
         $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO citas (id_cliente, fecha_cita, activo, hash_identificacion, id_lugar)
+            "INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar)
             VALUES (?, ?, ?, ?, ?)"
         );
         if (!$stmt) die("Error prepare: ".$this->conn->error);
 
-        $stmt->bind_param("isisi", $id_cliente, $fecha_cita, $activo, $hash, $id_lugar);
+        $stmt->bind_param("isisi", $id_cliente, $fecha_cita, $activo, $id_lugar);
         $stmt->execute();
         $id_cita = $this->conn->insert_id;
 

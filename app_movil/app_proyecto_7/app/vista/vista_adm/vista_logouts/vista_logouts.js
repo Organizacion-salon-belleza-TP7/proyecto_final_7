@@ -17,34 +17,71 @@ export default function VistaLogouts() {
     });
   }, []);
 
-  if (loading) return <ActivityIndicator size="large" />;
+  if (loading) return (
+    <View style={styles.centerContainer}>
+      <ActivityIndicator size="large" color="#ff6b9d" />
+      <Text style={styles.loadingText}>Cargando historial de logueos...</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Historial de logueos</Text>
+      <Text style={styles.title}>Historial de Logueos</Text>
       <FlatList
         data={logueos}
         keyExtractor={(item) => item.id_historial_logueos.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.nombre}>{item.nombre_usuario}</Text>
-            <Text>Login: {item.fecha_logueo}</Text>
-            <Text>Logout: {item.fecha_logout ?? "No cerró sesión"}</Text>
+            <Text style={styles.userName}>{item.nombre_usuario}</Text>
+            <Text style={styles.infoText}>Login: {item.fecha_logueo}</Text>
+            <Text style={styles.infoText}>Logout: {item.fecha_logout ?? "No cerró sesión"}</Text>
           </View>
         )}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 15, backgroundColor: "#fff" },
-  titulo: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
-  card: {
-    backgroundColor: "#f2f2f2",
-    padding: 10,
-    marginBottom: 8,
-    borderRadius: 8,
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#fdf0f5"
   },
-  nombre: { fontSize: 16, fontWeight: "bold" },
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#666"
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "700",
+    marginBottom: 15,
+    textAlign: "center",
+    color: "#000"
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 10,
+    elevation: 3
+  },
+  userName: {
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 4,
+    color: "#333"
+  },
+  infoText: {
+    fontSize: 14,
+    color: "#555"
+  }
 });

@@ -2,7 +2,7 @@
 import User from "../../modelo/modelo_login/modelo_login.js";
 
 const API_URL =
-  "http://192.168.100.8/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=login";
+  "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=login";
 
 export async function login(nombre_usuario, contrasena) {
   const response = await fetch(API_URL, {

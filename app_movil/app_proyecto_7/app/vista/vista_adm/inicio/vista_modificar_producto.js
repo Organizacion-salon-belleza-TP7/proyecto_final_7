@@ -1,35 +1,41 @@
-// app/vista/vista_adm/inventario/vista_modificar_producto.js
 import React, { useState, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  Button, 
-  Alert, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  TextInput,
   ScrollView,
-  ActivityIndicator 
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
 } from "react-native";
-import { getProductoById, modificarProducto } from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
+import { Picker } from "@react-native-picker/picker";
+import {
+  getProductoById,
+  modificarProducto,
+  getProveedores,
+} from "../../../../controladores/controladores_adm/inicio/controlador_inicio";
 import { useRouter, useLocalSearchParams } from "expo-router";
 
 export default function ModificarProductoScreen() {
   const { id } = useLocalSearchParams();
   const [formData, setFormData] = useState({
-    nombre_producto: '',
-    stock: '',
-    vencimiento: '',
-    precio_producto: '',
-    precio_venta: '',
-    imagen_producto: '',
-    id_proveedor: ''
+    nombre_producto: "",
+    stock: "",
+    vencimiento: "",
+    precio_producto: "",
+    precio_venta: "",
+    imagen_producto: "",
+    id_proveedor: "",
   });
+  const [proveedores, setProveedores] = useState([]); // 👈 lista de proveedores
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     cargarProducto();
+    cargarProveedores(); // 👈 carga proveedores al iniciar
   }, [id]);
 
   const cargarProducto = async () => {
@@ -43,7 +49,7 @@ export default function ModificarProductoScreen() {
         precio_producto: producto.precio_producto.toString(),
         precio_venta: producto.precio_venta.toString(),
         imagen_producto: producto.imagen_producto,
-        id_proveedor: producto.id_proveedor?.toString() || ''
+        id_proveedor: producto.id_proveedor?.toString() || "",
       });
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -53,10 +59,20 @@ export default function ModificarProductoScreen() {
     }
   };
 
+  const cargarProveedores = async () => {
+    try {
+      const data = await getProveedores();
+      setProveedores(data);
+    } catch (error) {
+      console.error("Error al cargar proveedores:", error);
+      Alert.alert("Error", "No se pudieron cargar los proveedores");
+    }
+  };
+
   const handleChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -70,7 +86,7 @@ export default function ModificarProductoScreen() {
     try {
       await modificarProducto(id, formData);
       Alert.alert("Éxito", "Producto modificado correctamente", [
-        { text: "OK", onPress: () => router.back() }
+        { text: "OK", onPress: () => router.back() },
       ]);
     } catch (error) {
       Alert.alert("Error", error.message);
@@ -79,123 +95,148 @@ export default function ModificarProductoScreen() {
     }
   };
 
-  if (loading) {
+  if (loading || saving) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Cargando producto...</Text>
-      </View>
-    );
-  }
-
-  if (saving) {
-    return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Guardando cambios...</Text>
+        <ActivityIndicator size="large" color="#ff6b9d" />
+        <Text style={styles.loadingText}>
+          {loading ? "Cargando producto..." : "Guardando cambios..."}
+        </Text>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
       <Text style={styles.title}>Modificar Producto</Text>
       <Text style={styles.productId}>ID: {id}</Text>
-      
+
+      <Text style={styles.label}>Nombre del producto *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nombre del producto *"
+        placeholder="Nombre del producto"
+        placeholderTextColor="#999"
         value={formData.nombre_producto}
-        onChangeText={(text) => handleChange('nombre_producto', text)}
+        onChangeText={(text) => handleChange("nombre_producto", text)}
       />
-      
+
+      <Text style={styles.label}>Stock *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Stock *"
+        placeholder="Stock"
+        placeholderTextColor="#999"
         value={formData.stock}
-        onChangeText={(text) => handleChange('stock', text)}
+        onChangeText={(text) => handleChange("stock", text)}
         keyboardType="numeric"
       />
-      
+
+      <Text style={styles.label}>Fecha de vencimiento</Text>
       <TextInput
         style={styles.input}
-        placeholder="Fecha de vencimiento (YYYY-MM-DD)"
+        placeholder="YYYY-MM-DD"
+        placeholderTextColor="#999"
         value={formData.vencimiento}
-        onChangeText={(text) => handleChange('vencimiento', text)}
+        onChangeText={(text) => handleChange("vencimiento", text)}
       />
-      
+
+      <Text style={styles.label}>Precio de compra</Text>
       <TextInput
         style={styles.input}
         placeholder="Precio de compra"
+        placeholderTextColor="#999"
         value={formData.precio_producto}
-        onChangeText={(text) => handleChange('precio_producto', text)}
+        onChangeText={(text) => handleChange("precio_producto", text)}
         keyboardType="numeric"
       />
-      
+
+      <Text style={styles.label}>Precio de venta *</Text>
       <TextInput
         style={styles.input}
-        placeholder="Precio de venta *"
+        placeholder="Precio de venta"
+        placeholderTextColor="#999"
         value={formData.precio_venta}
-        onChangeText={(text) => handleChange('precio_venta', text)}
+        onChangeText={(text) => handleChange("precio_venta", text)}
         keyboardType="numeric"
       />
-      
+
+      <Text style={styles.label}>Nombre de la imagen</Text>
       <TextInput
         style={styles.input}
-        placeholder="Nombre de la imagen"
+        placeholder="Imagen"
+        placeholderTextColor="#999"
         value={formData.imagen_producto}
-        onChangeText={(text) => handleChange('imagen_producto', text)}
+        onChangeText={(text) => handleChange("imagen_producto", text)}
       />
-      
-      <TextInput
-        style={styles.input}
-        placeholder="ID del proveedor"
-        value={formData.id_proveedor}
-        onChangeText={(text) => handleChange('id_proveedor', text)}
-        keyboardType="numeric"
-      />
-      
+
+      {/* 🔽 Selector de proveedor */}
+      <Text style={styles.label}>Proveedor</Text>
+      <View style={styles.pickerContainer}>
+        <Picker
+          selectedValue={formData.id_proveedor}
+          onValueChange={(value) => handleChange("id_proveedor", value)}
+        >
+          <Picker.Item label="Seleccione un proveedor" value="" />
+          {proveedores.map((prov) => (
+            <Picker.Item
+              key={prov.id_proveedor}
+              label={prov.nombre_proveedor}
+              value={prov.id_proveedor.toString()}
+            />
+          ))}
+        </Picker>
+      </View>
+
       <View style={styles.buttonContainer}>
-        <Button title="Cancelar" onPress={() => router.back()} color="gray" />
-        <Button title="Guardar Cambios" onPress={handleSubmit} />
+        <TouchableOpacity style={styles.cancelButton} onPress={() => router.back()}>
+          <Text style={styles.buttonText}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Guardar Cambios</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#f5f5f5'
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center'
-  },
-  productId: {
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#666'
-  },
+  container: { flex: 1, padding: 16, backgroundColor: "#fdf0f5" },
+  title: { fontSize: 28, fontWeight: "700", textAlign: "center", marginBottom: 10, color: "#000" },
+  productId: { textAlign: "center", marginBottom: 20, color: "#666" },
+  label: { fontSize: 16, marginBottom: 5, fontWeight: "700", color: "#000" },
   input: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 12,
     marginBottom: 12,
-    borderRadius: 6,
+    borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#ddd'
+    borderColor: "#ff6b9d",
+    color: "#000",
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20
+  pickerContainer: {
+    backgroundColor: "white",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#ff6b9d",
+    marginBottom: 12,
   },
-  centerContainer: {
+  buttonContainer: { flexDirection: "row", justifyContent: "space-between", marginTop: 20 },
+  cancelButton: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
+    backgroundColor: "#999",
+    paddingVertical: 12,
+    borderRadius: 20,
+    alignItems: "center",
+    marginRight: 8,
+  },
+  submitButton: {
+    flex: 1,
+    backgroundColor: "#ff6b9d",
+    paddingVertical: 12,
+    borderRadius: 20,
+    alignItems: "center",
+    marginLeft: 8,
+  },
+  buttonText: { color: "#fff", fontWeight: "700", textAlign: "center" },
+  centerContainer: { flex: 1, justifyContent: "center", alignItems: "center" },
+  loadingText: { marginTop: 10, fontSize: 16, color: "#333" },
 });

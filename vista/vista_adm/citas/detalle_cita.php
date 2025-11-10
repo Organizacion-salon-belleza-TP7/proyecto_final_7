@@ -310,7 +310,70 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
     </div>
   </div>
 
+<<<<<<< HEAD
   <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
+=======
+    <div class="detalle-container">
+        <h1>Detalle de Cita #<?= $cita['id_cita'] ?></h1>
+        
+        <div class="info-section">
+            <h3>Información General</h3>
+            <p><strong>Cliente:</strong> <?= $cita['nombre_cliente'] ?? 'No asignado' ?></p>
+            <p><strong>Fecha:</strong> <?= $cita['fecha_cita'] ?></p>
+            <p><strong>ID Lugar:</strong> <?= $cita['id_lugar'] ?? 'No especificado' ?></p>
+            <p><strong>Estado:</strong> <?= $cita['activo'] ? 'Activa' : 'Inactiva' ?></p>
+
+        <div class="info-section">
+            <h3>Servicios Contratados</h3>
+            <?php
+            $servicios = array_filter($detalle_cita, function($item) {
+                return !empty($item['id_servicios']);
+            });
+            
+            if (!empty($servicios)) {
+                foreach ($servicios as $servicio) {
+                    if (!empty($servicio['servicio_nombre'])) {
+                        echo "<div class='servicio-item'>";
+                        echo "<strong>{$servicio['servicio_nombre']}</strong>";
+                        if (isset($servicio['servicio_precio'])) {
+                            echo " - $" . $servicio['servicio_precio'];
+                        }
+                        echo "</div>";
+                    }
+                }
+            } else {
+                echo "<p>No hay servicios contratados</p>";
+            }
+            ?>
+        </div>
+
+        <div class="info-section">
+            <h3>Combos Contratados</h3>
+            <?php
+            $combos = array_filter($detalle_cita, function($item) {
+                return !empty($item['id_combos']);
+            });
+            
+            if (!empty($combos)) {
+                foreach ($combos as $combo) {
+                    if (!empty($combo['combo_nombre'])) {
+                        echo "<div class='combo-item'>";
+                        echo "<strong>{$combo['combo_nombre']}</strong>";
+                        if (isset($combo['combo_precio'])) {
+                            echo " - $" . $combo['combo_precio'];
+                        }
+                        echo "</div>";
+                    }
+                }
+            } else {
+                echo "<p>No hay combos contratados</p>";
+            }
+            ?>
+        </div>
+
+        <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php" class="volver-btn">Volver a la lista</a>
+    </div>
+>>>>>>> 28c84d613320e0a8fb8f38eab8c47c0293a8c38e
 </body>
 </html>
