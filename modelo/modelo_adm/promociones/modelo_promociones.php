@@ -20,7 +20,8 @@ class promociones {
         serv.nombre AS nombre_servicio, 
         prom.dias_promocion, 
         prom.descuento, 
-        prom.puntos 
+        prom.puntos,
+        prom.activo 
         FROM promociones prom
         LEFT JOIN combos comb ON prom.id_combos = comb.id_combos
         LEFT JOIN servicios serv ON serv.id_servicios = prom.id_servicios";
@@ -148,6 +149,48 @@ class promociones {
             }else{
                 return false;
 
+            }
+
+        }
+
+    }
+
+    public function dar_baja_promo($id_promocion){
+        $buscar_promo = $this->conn->prepare("SELECT id_promocion, id_combos, id_servicios, dias_promocion, descuento, puntos, activo FROM promociones WHERE id_promocion = ?");
+        $buscar_promo->bind_param('i',$id_promocion);
+
+        if($buscar_promo->execute()){
+            $resultado_buscar_promo = $buscar_promo->get_result();
+
+            $array_promos = $resultado_buscar_promo->fetch_assoc();
+
+            if($array_promos['activo'] == 1){
+                $inactivo = intval(0);
+                $updatear_estado_promo = $this->conn->prepare("UPDATE promociones SET activo = ? WHERE id_promocion = ?");
+                $updatear_estado_promo->bind_param('ii',$inactivo,$id_promocion);
+
+                if($updatear_estado_promo->execute()){
+                    return true;
+
+                }else{
+                    return false;
+                }
+
+            }elseif($array_promos['activo'] == 0){
+                $activo = intval(1);
+                $updatear_estado_promo = $this->conn->prepare("UPDATE promociones SET activo = ? WHERE id_promocion = ?");
+                $updatear_estado_promo->bind_param('ii',$activo,$id_promocion);
+
+                if($updatear_estado_promo->execute()){
+                    return true;
+
+                }else{
+                    return false;
+                }
+
+
+            }else{
+                echo "hubo un fallo trayendo el estado";
             }
 
         }

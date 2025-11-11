@@ -32,6 +32,7 @@ $resultado_traer_promociones = $clase_promociones->traer_servicios_combos_promoc
                     <th>Días de promoción</th>
                     <th>Descuento</th>
                     <th>Puntos</th>
+                    <th>Activo</th>
                     <th colspan='3'>Acciones</th>
                 </tr>
             </thead>
@@ -59,9 +60,17 @@ $resultado_traer_promociones = $clase_promociones->traer_servicios_combos_promoc
                 <td>{$row['dias_promocion']}</td>
                 <td>{$row['descuento']}%</td>
                 <td>{$row['puntos']}</td>
+                ";
+                if($row['activo'] == 1){
+                    echo "<td>Activo</td>";
+
+                }else{
+                    echo "<td>Inactivo</td>";
+                }
+                echo"
                 <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
                 <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&modificar=vista_promociones'>Modificar</a></td>
-                <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&eliminar=vista_inicio_adm'>Borrar</a></td>
+                <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&cambiar_estado=vista_promociones'>Dar baja Promo</a></td>
             </tr>";
         }
 
