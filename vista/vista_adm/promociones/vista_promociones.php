@@ -68,7 +68,7 @@ $resultado_traer_promociones = $clase_promociones->traer_servicios_combos_promoc
                     echo "<td>Inactivo</td>";
                 }
                 echo"
-                <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
+                <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&detalle_promo=vista_promociones'>Detalle</a></td>
                 <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&modificar=vista_promociones'>Modificar</a></td>
                 <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&cambiar_estado=vista_promociones'>Dar baja Promo</a></td>
             </tr>";

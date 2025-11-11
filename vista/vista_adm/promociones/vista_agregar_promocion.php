@@ -68,6 +68,8 @@ $dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domin
         </table>
     </form>
 
+    <a href="<?= BASE_URL ?>/vista/vista_adm/promociones/vista_promociones.php">Volver</a>
+
     <script>
         const selectTipo = document.getElementById('tipo_promocion');
         const contenedor = document.getElementById('contenedor-opciones');

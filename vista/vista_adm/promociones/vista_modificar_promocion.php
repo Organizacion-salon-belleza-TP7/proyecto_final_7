@@ -104,6 +104,7 @@ $datos_resultado = $promo['resultado']->fetch_assoc();
             </tr>
         </table>
     </form>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/promociones/vista_promociones.php">Volver</a>
 
     <script>
         const selectTipo = document.getElementById('tipo_promocion');
