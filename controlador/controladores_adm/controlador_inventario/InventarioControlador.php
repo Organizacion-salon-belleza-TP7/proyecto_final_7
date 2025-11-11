@@ -46,27 +46,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($accion === 'modificar') {
-        $modificado = $inventario_modelo->modificar_producto(
-            $_POST['id'],
-            $_POST['nombre'],
-            $_POST['stock'],
-            $_POST['vencimiento'],
-            $_POST['precio_producto'],
-            $_POST['precio_venta'],
-            $imagen,
-            $_POST['proveedor']
-        );
+ if ($accion === 'modificar') {
+    $imagen = '';
 
-        if ($modificado) {
-            echo '<script>
-                alert("Producto modificado correctamente");
-                window.location = "' . BASE_URL . '/vista/vista_adm/inventario/InventarioVista.php";
-            </script>';
-            exit;
-        }
+    // Manejo de imagen
+    if (!empty($_FILES['imagen']['name'])) {
+        $nombreImagen = basename($_FILES['imagen']['name']);
+        $ruta = ROOT_PATH . "/inventario_mvc/uploads/" . $nombreImagen;
+        move_uploaded_file($_FILES['imagen']['tmp_name'], $ruta);
+        $imagen = $nombreImagen;
+    } else {
+        $imagen = $_POST['imagen_existente'] ?? '';
     }
 
+    // AQUÍ ESTABA EL ERROR: FALTABA $_POST['id']
+    $modificado = $inventario_modelo->modificar_producto(
+        $_POST['id'],                    // CORREGIDO: agregado
+        $_POST['nombre'],
+        $_POST['stock'],
+        $_POST['vencimiento'],
+        $_POST['precio_producto'],
+        $_POST['precio_venta'],
+        $imagen,
+        $_POST['proveedor']
+    );
+
+    if ($modificado) {
+        echo '<script>
+            alert("Producto modificado correctamente");
+            window.location = "' . BASE_URL . '/vista/vista_adm/inventario/InventarioVista.php";
+        </script>';
+        exit;
+    } else {
+        echo '<script>
+            alert("Error al modificar el producto");
+            window.location = "' . BASE_URL . '/vista/vista_adm/inventario/InventarioVista.php";
+        </script>';
+        exit;
+    }
+}
     
 }
 

@@ -20,14 +20,14 @@ if (isset($_GET['eliminar'])) {
 // Obtener todos los trabajadores
 $trabajadores = $controlador->listar();
 
-// Traer tipos de trabajador (usa tu conexión $conn)
+// Traer tipos de trabajador
 $result_tipos = $conn->query("SELECT id_tipo_trabajador, tipo_trabajador FROM tipo_trabajador");
 $tipos = [];
 while($row = $result_tipos->fetch_assoc()) {
     $tipos[$row['id_tipo_trabajador']] = $row['tipo_trabajador'];
 }
 
-// Traer niveles profesionales (usa tu conexión $conn)
+// Traer niveles profesionales
 $result_niveles = $conn->query("SELECT id_nivel_profesionalismo, nivel_profesionalismo FROM nivel_profesionalismo");
 $niveles = [];
 while($row = $result_niveles->fetch_assoc()) {
@@ -35,32 +35,304 @@ while($row = $result_niveles->fetch_assoc()) {
 }
 ?>
 
-<h1>Lista de Trabajadores</h1>
-<a href="trabajador_form.php">Agregar Trabajador</a>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>DNI</th>
-        <th>Tipo de Trabajador</th>
-        <th>Nivel Profesional</th>
-        <th>Activo</th>
-        <th>Acciones</th>
-    </tr>
-    <?php foreach($trabajadores as $trabajador): ?>
-    <tr>
-        <td><?= $trabajador['id_trabajador'] ?></td>
-        <td><?= $trabajador['nombre_trabajador'] ?></td>
-        <td><?= $trabajador['apellido_trabajador'] ?></td>
-        <td><?= $trabajador['dni'] ?></td>
-        <td><?= $tipos[$trabajador['id_tipo_trabajador']] ?? 'Sin definir' ?></td>
-        <td><?= $niveles[$trabajador['id_nivel_profesionalismo']] ?? 'Sin definir' ?></td>
-        <td><?= $trabajador['activo'] ? 'Sí' : 'No' ?></td>
-        <td>
-            <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajador_form.php?id=<?= $trabajador['id_trabajador'] ?>">Editar</a> | 
-            <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php?eliminar=<?= $trabajador['id_trabajador'] ?>" onclick="return confirm('¿Desea eliminar este trabajador?')">Eliminar</a>
-        </td>
-    </tr>
-    <?php endforeach; ?>
-</table>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trabajadores - RoseSpa</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #1e1e2f;
+      --bg-sidebar: #2a2a3d;
+      --primary: #ff6b9d;
+      --primary-dark: #e05585;
+      --text: #f1f1f1;
+      --text-muted: #aaa;
+      --card: #2e2e44;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --success: #27ae60;
+      --shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family: 'Segoe UI', sans-serif;
+      background: url('../../../imagenes/lugares/istockphoto-1856117770-612x612.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      z-index: -1;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      width: 240px;
+      background: rgba(42,42,61,0.9);
+      padding: 20px;
+      display:flex;
+      flex-direction:column;
+      box-shadow: var(--shadow);
+      position: fixed;
+      top:0;left:0;bottom:0;
+      transition: transform .3s ease;
+      z-index: 1000;
+    }
+    .sidebar h2{
+      color: var(--primary);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .sidebar a{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      color: var(--text);
+      text-decoration:none;
+      padding:12px;
+      border-radius:6px;
+      margin-bottom:6px;
+      transition:.3s;
+    }
+    .sidebar a:hover{
+      background: var(--primary);
+      color:#fff;
+    }
+    .sidebar.hidden { transform: translateX(-100%); }
+
+    /* Toggle */
+    .toggle-btn{
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 107, 157, 0.6);
+      color:#fff;
+      border:none;
+      padding:10px 14px;
+      font-size:1.4rem;
+      border-radius:8px;
+      cursor:pointer;
+      z-index:1100;
+      transition:.3s;
+      box-shadow: var(--shadow);
+    }
+    .toggle-btn:hover{ background: rgba(224, 85, 133, 0.8); }
+
+    /* Content */
+    .content{
+      margin-left: 240px;
+      flex:1;
+      padding:30px;
+      transition: margin-left .3s ease;
+      width: 100%;
+    }
+    .content.expanded{ margin-left: 0; }
+    h1{
+      font-size:2rem;
+      margin-bottom:20px;
+      color: var(--primary);
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+    }
+
+    /* Card */
+    .card{
+      background: rgba(46,46,68,0.9);
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+
+    /* Tabla */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background: rgba(37,37,56,0.9);
+      border-radius:8px;
+      overflow:hidden;
+      box-shadow: var(--shadow);
+    }
+    th,td{
+      padding:14px 16px;
+      text-align:center;
+      font-size:0.95rem;
+    }
+    th{
+      background: var(--primary-dark);
+      color:#fff;
+      font-weight:600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+    }
+    tr:nth-child(even){background: rgba(37,37,56,0.9);}
+    tr:hover{background: rgba(255,107,157,0.1);}
+
+    /* Estado Activo */
+    .activo {
+      color: var(--success);
+      font-weight: 600;
+    }
+    .inactivo {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    /* Botones */
+    .btn{
+      padding:6px 12px;
+      border-radius:6px;
+      font-size:0.85rem;
+      font-weight:600;
+      text-decoration:none;
+      display:inline-block;
+      margin:0 3px;
+      transition:.3s;
+    }
+    .btn-edit{
+      background: var(--warning);
+      color:#fff;
+    }
+    .btn-edit:hover{
+      background: #e67e22;
+      opacity: .9;
+    }
+    .btn-delete{
+      background: var(--danger);
+      color:#fff;
+    }
+    .btn-delete:hover{
+      background: #c82333;
+      opacity: .9;
+    }
+    .add-btn{
+      display:inline-block;
+      padding:10px 18px;
+      background: var(--primary);
+      color:#fff;
+      text-decoration:none;
+      border-radius:6px;
+      font-weight:600;
+      transition:.3s;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .add-btn:hover{
+      background: var(--primary-dark);
+    }
+
+    /* Empty */
+    .empty-message{
+      text-align: center;
+      padding: 50px 20px;
+      background: rgba(46,46,68,0.9);
+      border-radius: 8px;
+      color: var(--text-muted);
+      box-shadow: var(--shadow);
+    }
+    .empty-message i{
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toggle -->
+  <button class="toggle-btn" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <h2 class="titulo_menu">RoseSpa</h2>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/vista_inventario.php"><i class="fas fa-boxes"></i> Productos</a>
+    <a href="#"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php"><i class="fas fa-map-marker-alt"></i> Lugares</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php"><i class="fas fa-truck"></i> Proveedores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php"><i class="fas fa-user-tie"></i> Trabajadores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php"><i class="fas fa-users"></i> Clientes</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php"><i class="fas fa-history"></i> Logeos y Movimientos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php"><i class="fas fa-calendar-check"></i> Citas</a>
+    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_trabajadores"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="content">
+    <h1>Lista de Trabajadores</h1>
+
+    <div class="card">
+      <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajador_form.php" class="add-btn">
+        + Agregar Trabajador
+      </a>
+
+      <?php if (!empty($trabajadores)): ?>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>DNI</th>
+              <th>Tipo de Trabajador</th>
+              <th>Nivel Profesional</th>
+              <th>Activo</th>
+              <th colspan="2">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach($trabajadores as $trabajador): ?>
+              <tr>
+                <td>#<?= $trabajador['id_trabajador'] ?></td>
+                <td><?= htmlspecialchars($trabajador['nombre_trabajador']) ?></td>
+                <td><?= htmlspecialchars($trabajador['apellido_trabajador']) ?></td>
+                <td><?= htmlspecialchars($trabajador['dni']) ?></td>
+                <td><?= $tipos[$trabajador['id_tipo_trabajador']] ?? 'Sin definir' ?></td>
+                <td><?= $niveles[$trabajador['id_nivel_profesionalismo']] ?? 'Sin definir' ?></td>
+                <td class="<?= $trabajador['activo'] ? 'activo' : 'inactivo' ?>">
+                  <?= $trabajador['activo'] ? 'Sí' : 'No' ?>
+                </td>
+                <td>
+                  <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajador_form.php?id=<?= $trabajador['id_trabajador'] ?>" class="btn btn-edit">
+                    Editar
+                  </a>
+                </td>
+                <td>
+                  <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php?eliminar=<?= $trabajador['id_trabajador'] ?>"
+                     class="btn btn-delete"
+                     onclick="return confirm('¿Desea eliminar este trabajador?')">
+                     Eliminar
+                  </a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <div class="empty-message">
+          <i class="fas fa-user-tie"></i>
+          <p>No hay trabajadores registrados</p>
+          <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajador_form.php" class="add-btn">
+            + Agregar Primer Trabajador
+          </a>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
+</body>
+</html>
