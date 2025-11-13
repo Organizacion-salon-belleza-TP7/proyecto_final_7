@@ -243,7 +243,7 @@ if ($resultado && $resultado->num_rows > 0) {
     <div class="imagen-producto">
       <?php 
       $img_path = ROOT_PATH . "/imagenes/inventario/{$producto['imagen_producto']}";
-      $default_img = BASE_URL . "/imagenes/inventario/imagenes/inventario/Shampoo-Alfakeratin-Altamoda-300-Ml-1-33663.webp.";
+      $default_img = BASE_URL . "/imagenes/inventario/default.jpg";
       $img_src = (file_exists($img_path) && $producto['imagen_producto']) ? BASE_URL . "/imagenes/inventario/{$producto['imagen_producto']}" : $default_img;
       ?>
       <img src="<?= $img_src ?>" alt="<?= htmlspecialchars($producto['nombre_producto']) ?>">

@@ -7,30 +7,30 @@ require_once(__DIR__ . '/../../../variable_global.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/controlador/controladores_adm/trabajadores/TrabajadorControlador.php');
 
-// Crear controlador pasando la conexión
+// Crear controlador
 $controlador = new TrabajadorControlador($conn);
 
-// Eliminar si se recibe parámetro
+// Eliminar si viene por GET
 if (isset($_GET['eliminar'])) {
     $controlador->borrar($_GET['eliminar']);
-    header("Location:" . BASE_URL ."/vista/vista_adm/trabajadores/trabajadores_lista.php");
+    header("Location: " . BASE_URL . "/vista/vista_adm/trabajadores/trabajadores_lista.php");
     exit;
 }
 
-// Obtener todos los trabajadores
+// Listar trabajadores
 $trabajadores = $controlador->listar();
 
-// Traer tipos de trabajador
+// Tipos de trabajador
 $result_tipos = $conn->query("SELECT id_tipo_trabajador, tipo_trabajador FROM tipo_trabajador");
 $tipos = [];
-while($row = $result_tipos->fetch_assoc()) {
+while ($row = $result_tipos->fetch_assoc()) {
     $tipos[$row['id_tipo_trabajador']] = $row['tipo_trabajador'];
 }
 
-// Traer niveles profesionales
+// Niveles profesionales
 $result_niveles = $conn->query("SELECT id_nivel_profesionalismo, nivel_profesionalismo FROM nivel_profesionalismo");
 $niveles = [];
-while($row = $result_niveles->fetch_assoc()) {
+while ($row = $result_niveles->fetch_assoc()) {
     $niveles[$row['id_nivel_profesionalismo']] = $row['nivel_profesionalismo'];
 }
 ?>
@@ -75,7 +75,7 @@ while($row = $result_niveles->fetch_assoc()) {
       z-index: -1;
     }
 
-    /* Sidebar */
+    /* Sidebar - 100% IGUAL QUE EN VISTA_INICIO_ADM */
     .sidebar{
       width: 240px;
       background: rgba(42,42,61,0.9);
@@ -87,6 +87,8 @@ while($row = $result_niveles->fetch_assoc()) {
       top:0;left:0;bottom:0;
       transition: transform .3s ease;
       z-index: 1000;
+      padding-bottom: 20px;
+      overflow-y: auto;
     }
     .sidebar h2{
       color: var(--primary);
@@ -110,7 +112,7 @@ while($row = $result_niveles->fetch_assoc()) {
     }
     .sidebar.hidden { transform: translateX(-100%); }
 
-    /* Toggle */
+    /* Botón toggle */
     .toggle-btn{
       position: fixed;
       top: 20px;
@@ -137,12 +139,18 @@ while($row = $result_niveles->fetch_assoc()) {
       width: 100%;
     }
     .content.expanded{ margin-left: 0; }
+
+    /* TÍTULO QUE NUNCA SE TAPA */
     h1{
       font-size:2rem;
       margin-bottom:20px;
       color: var(--primary);
       text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-left: 60px !important;
     }
+
+    .title{margin-left: 50px;}
+    .titulo_menu{margin-left: 20px;}
 
     /* Card */
     .card{
@@ -178,15 +186,9 @@ while($row = $result_niveles->fetch_assoc()) {
     tr:nth-child(even){background: rgba(37,37,56,0.9);}
     tr:hover{background: rgba(255,107,157,0.1);}
 
-    /* Estado Activo */
-    .activo {
-      color: var(--success);
-      font-weight: 600;
-    }
-    .inactivo {
-      color: var(--danger);
-      font-weight: 600;
-    }
+    /* Estados */
+    .activo { color: var(--success); font-weight: 600; }
+    .inactivo { color: var(--danger); font-weight: 600; }
 
     /* Botones */
     .btn{
@@ -199,22 +201,10 @@ while($row = $result_niveles->fetch_assoc()) {
       margin:0 3px;
       transition:.3s;
     }
-    .btn-edit{
-      background: var(--warning);
-      color:#fff;
-    }
-    .btn-edit:hover{
-      background: #e67e22;
-      opacity: .9;
-    }
-    .btn-delete{
-      background: var(--danger);
-      color:#fff;
-    }
-    .btn-delete:hover{
-      background: #c82333;
-      opacity: .9;
-    }
+    .btn-edit{background: var(--warning);color:#fff;}
+    .btn-edit:hover{background: #e67e22;opacity:.9;}
+    .btn-delete{background: var(--danger);color:#fff;}
+    .btn-delete:hover{background: #c82333;opacity:.9;}
     .add-btn{
       display:inline-block;
       padding:10px 18px;
@@ -227,9 +217,7 @@ while($row = $result_niveles->fetch_assoc()) {
       box-shadow: var(--shadow);
       margin-bottom: 20px;
     }
-    .add-btn:hover{
-      background: var(--primary-dark);
-    }
+    .add-btn:hover{background: var(--primary-dark);}
 
     /* Empty */
     .empty-message{
@@ -254,22 +242,22 @@ while($row = $result_niveles->fetch_assoc()) {
     <i class="fas fa-bars"></i>
   </button>
 
-  <!-- Sidebar -->
+  <!-- Sidebar - MENÚ OFICIAL DEL ADMIN -->
   <div class="sidebar" id="sidebar">
     <h2 class="titulo_menu">RoseSpa</h2>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/vista_inventario.php"><i class="fas fa-boxes"></i> Productos</a>
-    <a href="#"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php"><i class="fas fa-map-marker-alt"></i> Lugares</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php"><i class="fas fa-truck"></i> Proveedores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php"><i class="fas fa-user-tie"></i> Trabajadores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php"><i class="fas fa-users"></i> Clientes</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php"><i class="fas fa-history"></i> Logeos y Movimientos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php"><i class="fas fa-calendar-check"></i> Citas</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_trabajadores"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php">Servicios y Combos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php">Productos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php">Ventas y Compras</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php">Lugares</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php">Proveedores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php">Trabajadores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php">Clientes</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php">Citas</a>
+    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm">Cerrar sesión</a>
   </div>
 
-  <!-- Content -->
+  <!-- Contenido -->
   <div class="content" id="content">
     <h1>Lista de Trabajadores</h1>
 
@@ -278,7 +266,7 @@ while($row = $result_niveles->fetch_assoc()) {
         + Agregar Trabajador
       </a>
 
-      <?php if (!empty($trabajadores)): ?>
+      <?php if (!empty($trabajadores) && count($trabajadores) > 0): ?>
         <table>
           <thead>
             <tr>
@@ -286,14 +274,14 @@ while($row = $result_niveles->fetch_assoc()) {
               <th>Nombre</th>
               <th>Apellido</th>
               <th>DNI</th>
-              <th>Tipo de Trabajador</th>
-              <th>Nivel Profesional</th>
+              <th>Tipo</th>
+              <th>Nivel</th>
               <th>Activo</th>
               <th colspan="2">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach($trabajadores as $trabajador): ?>
+            <?php foreach ($trabajadores as $trabajador): ?>
               <tr>
                 <td>#<?= $trabajador['id_trabajador'] ?></td>
                 <td><?= htmlspecialchars($trabajador['nombre_trabajador']) ?></td>
@@ -312,7 +300,7 @@ while($row = $result_niveles->fetch_assoc()) {
                 <td>
                   <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php?eliminar=<?= $trabajador['id_trabajador'] ?>"
                      class="btn btn-delete"
-                     onclick="return confirm('¿Desea eliminar este trabajador?')">
+                     onclick="return confirm('¿Eliminar este trabajador?')">
                      Eliminar
                   </a>
                 </td>
@@ -334,5 +322,11 @@ while($row = $result_niveles->fetch_assoc()) {
 
   <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('hidden');
+      document.getElementById('content').classList.toggle('expanded');
+    }
+  </script>
 </body>
 </html>

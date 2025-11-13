@@ -80,18 +80,17 @@ class modelo_venta{
 
     }
 
-    public function formulario_modificar_medios_pagos($id_medio_pago){
-        $buscar_medio_pago = $this->conn->prepare("SELECT id_metodo_pago, metodo_pago, incremento, decremento FROM metodos_pagos WHERE id_metodo_pago = ?");
-        $buscar_medio_pago->bind_param('i',$id_medio_pago);
+public function formulario_modificar_medios_pagos($id_medio_pago){
+    $buscar_medio_pago = $this->conn->prepare("SELECT id_metodo_pago, metodo_pago, incremento, decremento, activo FROM metodos_pagos WHERE id_metodo_pago = ?");
+    $buscar_medio_pago->bind_param('i',$id_medio_pago);
 
-        if($buscar_medio_pago->execute()){
-            $resultado_traer_medios_pagos = $buscar_medio_pago->get_result();
-            return $resultado_traer_medios_pagos;
-        }else{
-            echo "hubo un fallo trayendo los datos del medio de pago";
-        }
-
+    if($buscar_medio_pago->execute()){
+        $resultado_traer_medios_pagos = $buscar_medio_pago->get_result();
+        return $resultado_traer_medios_pagos;
+    } else {
+        return false;
     }
+}
 
     public function modificar_medios_pagos($id_medio_pago,$nombre_metodo_pago,$importe,$cantidad_importe){
         if($importe == 1){

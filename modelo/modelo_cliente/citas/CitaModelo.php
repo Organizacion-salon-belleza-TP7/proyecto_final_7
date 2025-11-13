@@ -49,34 +49,60 @@ class CitaModelo {
         return $resultado ? $resultado->fetch_all(MYSQLI_ASSOC) : [];
     }
 
-    public function guardarCitaConLugar($id_cliente, $fecha_cita, $id_lugar, $servicios = [], $combos = []) {
-        $activo = 1;
-        $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
+   public function guardarCitaConLugar($id_cliente, $fecha_cita, $id_lugar, $servicios = [], $combos = []) {
+    $activo = 1;
+    $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
 
-        $stmt = $this->conn->prepare(
-            "INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar)
-            VALUES (?, ?, ?, ?, ?)"
-        );
-        if (!$stmt) die("Error prepare: ".$this->conn->error);
+    // CORREGIDO: AHORA SON 4 ? Y 4 COLUMNAS
+    $stmt = $this->conn->prepare(
+        "INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar) 
+         VALUES (?, ?, ?, ?)"
+    );
+    
+    if (!$stmt) {
+        error_log("Error prepare citas: " . $this->conn->error);
+        return false;
+    }
 
-        $stmt->bind_param("isisi", $id_cliente, $fecha_cita, $activo, $id_lugar);
-        $stmt->execute();
-        $id_cita = $this->conn->insert_id;
+    // CORREGIDO: "isii" → i (int), s (string), i (int), i (int)
+    $stmt->bind_param("isii", $id_cliente, $fecha_cita, $activo, $id_lugar);
+    
+    if (!$stmt->execute()) {
+        error_log("Error execute citas: " . $stmt->error);
+        return false;
+    }
 
+    $id_cita = $this->conn->insert_id;
+    $stmt->close();
+
+    // Insertar servicios
+    if (!empty($servicios)) {
+        $stmtS = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_servicios) VALUES (?, ?)");
+        if (!$stmtS) {
+            error_log("Error prepare detalle_servicios: " . $this->conn->error);
+            return $id_cita;
+        }
         foreach ($servicios as $s) {
-            $stmtS = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_servicios) VALUES (?, ?)");
-            if (!$stmtS) die("Error detalle_servicios: ".$this->conn->error);
             $stmtS->bind_param("ii", $id_cita, $s);
             $stmtS->execute();
         }
+        $stmtS->close();
+    }
 
+    // Insertar combos
+    if (!empty($combos)) {
+        $stmtC = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_combos) VALUES (?, ?)");
+        if (!$stmtC) {
+            error_log("Error prepare detalle_combos: " . $this->conn->error);
+            return $id_cita;
+        }
         foreach ($combos as $c) {
-            $stmtC = $this->conn->prepare("INSERT INTO detalle_cita (id_cita, id_combos) VALUES (?, ?)");
-            if (!$stmtC) die("Error detalle_combos: ".$this->conn->error);
             $stmtC->bind_param("ii", $id_cita, $c);
             $stmtC->execute();
         }
-
-        return $id_cita;
+        $stmtC->close();
     }
+
+    return $id_cita;
+}
 }

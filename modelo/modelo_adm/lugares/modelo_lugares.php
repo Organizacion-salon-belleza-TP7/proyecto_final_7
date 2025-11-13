@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__ . '/../../../variable_global.php');
 
-
 class Lugar {
     private $conn;
 
@@ -16,7 +15,7 @@ class Lugar {
     }
 
     public function obtenerLugares() {
-        return $this->conn->query("SELECT * FROM lugares");
+        return $this->conn->query("SELECT * FROM lugares ORDER BY id_lugar DESC");
     }
 
     public function eliminarLugar($id) {
@@ -26,5 +25,3 @@ class Lugar {
     }
 }
 ?>
-
-

@@ -55,6 +55,8 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       position: relative;
       z-index: 1;
     }
+
+    /* Overlay oscuro */
     body::before {
       content: "";
       position: fixed;
@@ -63,7 +65,7 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       z-index: -1;
     }
 
-    /* Sidebar */
+    /* Sidebar - EXACTAMENTE IGUAL QUE EN EL PANEL PRINCIPAL */
     .sidebar{
       width: 240px;
       background: rgba(42,42,61,0.9);
@@ -75,6 +77,8 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       top:0;left:0;bottom:0;
       transition: transform .3s ease;
       z-index: 1000;
+      padding-bottom: 20px;
+      overflow-y: auto;
     }
     .sidebar h2{
       color: var(--primary);
@@ -96,9 +100,11 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       background: var(--primary);
       color:#fff;
     }
-    .sidebar.hidden { transform: translateX(-100%); }
+    .sidebar.hidden {
+      transform: translateX(-100%);
+    }
 
-    /* Toggle */
+    /* Botón toggle - IGUAL QUE EN EL PANEL */
     .toggle-btn{
       position: fixed;
       top: 20px;
@@ -114,7 +120,9 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       transition:.3s;
       box-shadow: var(--shadow);
     }
-    .toggle-btn:hover{ background: rgba(224, 85, 133, 0.8); }
+    .toggle-btn:hover{
+      background: rgba(224, 85, 133, 0.8);
+    }
 
     /* Content */
     .content{
@@ -124,12 +132,25 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       transition: margin-left .3s ease;
       width: 100%;
     }
-    .content.expanded{ margin-left: 0; }
+    .content.expanded{
+      margin-left: 0;
+    }
+
+    /* TÍTULO CON MARGEN PARA QUE NO SE TAPE */
     h1{
       font-size:2rem;
       margin-bottom:20px;
       color: var(--primary);
       text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-left: 60px !important; /* ← ESTO EVITA QUE EL BOTÓN LO TAPE */
+    }
+
+    .title{
+      margin-left: 50px;
+    }
+
+    .titulo_menu{
+      margin-left: 20px;
     }
 
     /* Filtros */
@@ -199,7 +220,6 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
     tr:nth-child(even){background: rgba(37,37,56,0.9);}
     tr:hover{background: rgba(255,107,157,0.1);}
 
-    /* Stock bajo */
     .stock-bajo{
       color: var(--danger);
       font-weight: 700;
@@ -269,7 +289,7 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
       color: #fff;
     }
 
-    /* Empty */
+    /* Sin productos */
     .empty-message{
       text-align: center;
       padding: 50px 20px;
@@ -287,27 +307,27 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
 </head>
 <body>
 
-  <!-- Toggle -->
+  <!-- Botón Toggle -->
   <button class="toggle-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
   </button>
 
-  <!-- Sidebar -->
+  <!-- Sidebar - 100% IGUAL AL PANEL PRINCIPAL -->
   <div class="sidebar" id="sidebar">
     <h2 class="titulo_menu">RoseSpa</h2>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/vista_inventario.php"><i class="fas fa-boxes"></i> Productos</a>
-    <a href="#"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php"><i class="fas fa-map-marker-alt"></i> Lugares</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php"><i class="fas fa-truck"></i> Proveedores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php"><i class="fas fa-user-tie"></i> Trabajadores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php"><i class="fas fa-users"></i> Clientes</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php"><i class="fas fa-history"></i> Logeos y Movimientos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php"><i class="fas fa-calendar-check"></i> Citas</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inventario"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php">Servicios y Combos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php">Productos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php">Ventas y Compras</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php">Lugares</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php">Proveedores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php">Trabajadores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php">Clientes</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php">Citas</a>
+    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm">Cerrar sesión</a>
   </div>
 
-  <!-- Content -->
+  <!-- Contenido -->
   <div class="content" id="content">
     <h1>Inventario de Productos</h1>
 
@@ -431,5 +451,6 @@ $total_paginas = ceil($total_productos / $items_por_pagina);
     });
     proveedorSelect.addEventListener('change', filtrar);
   </script>
+  
 </body>
 </html>
