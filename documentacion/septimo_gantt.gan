@@ -1,18 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Proyecto_septimo_final" company="" webLink="http://" view-date="2025-05-22" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3316" locale="es_AR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Proyecto_septimo_final" company="" webLink="http://" view-date="2025-04-01" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3316" locale="es_ES">
     <description/>
-    <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd15" name="Notes" width="20" order="-1"/>
-        <field id="tpd3" name="Name" width="200" order="0"/>
-        <field id="tpd4" name="Begin date" width="75" order="1"/>
-        <field id="tpd5" name="End date" width="75" order="2"/>
+    <view zooming-state="default:9" id="gantt-chart">
+        <field id="tpd3" name="Nombre" width="200" order="0"/>
+        <field id="tpd4" name="Fecha de inicio" width="75" order="1"/>
+        <field id="tpd5" name="Fecha de fin" width="75" order="2"/>
+        <field id="tpd15" name="Notas" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
         <option id="filter.overdueTasks" value="false"/>
         <option id="filter.inProgressTodayTasks" value="false"/>
     </view>
     <view id="resource-table">
-        <field id="0" name="Name" width="210" order="0"/>
-        <field id="1" name="Default role" width="86" order="1"/>
+        <field id="0" name="Nombre" width="210" order="0"/>
+        <field id="1" name="Función" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars>
@@ -38,7 +38,7 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" uid="73c14af55f324c4bb1ec6616f9236ec8" name="Documentacion" meeting="false" start="2025-05-07" duration="6" complete="0" expand="false">
+        <task id="0" uid="73c14af55f324c4bb1ec6616f9236ec8" name="Documentacion" meeting="false" start="2025-05-07" duration="6" complete="0" expand="true">
             <task id="1" uid="b0cccec007f6465ebe86f02d73455b19" name="Diagrama ER" meeting="false" start="2025-05-07" duration="1" complete="0" expand="true"/>
             <task id="2" uid="960023d6b4234aa98304d621501bd94f" name="Diccionario de BD" meeting="false" start="2025-05-08" duration="1" complete="0" expand="true"/>
             <task id="3" uid="1ce8b5e917a54305a6b003feca04993d" name="Caso De Uso" meeting="false" start="2025-05-09" duration="1" complete="0" expand="true"/>
@@ -46,13 +46,13 @@
             <task id="5" uid="9171cc5e7f0e4d3db8b3f6de64d2af48" name="Caso de uso de especificaciones" meeting="false" start="2025-05-13" duration="1" complete="0" expand="true"/>
             <task id="6" uid="a95b17c5fb8d4eaf85dae899d700507e" name="Analisis FODA" meeting="false" start="2025-05-14" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="8" uid="8c2751b685d443a3a011b6f0b8152c2d" name="Desarrollo del Sistema web" meeting="false" start="2025-05-15" duration="21" complete="0" expand="false">
+        <task id="8" uid="8c2751b685d443a3a011b6f0b8152c2d" name="Desarrollo del Sistema web" meeting="false" start="2025-05-15" duration="101" complete="0" expand="true">
             <task id="9" uid="16020e37399147a8bf769d6a9e695677" name="Creacion de la BD" meeting="false" start="2025-05-15" duration="1" complete="0" expand="true"/>
-            <task id="10" uid="d88b8caddfca4576a74b6ddc502295d5" name="Desarrollo de pantallas y funcionalidades" meeting="false" start="2025-05-16" duration="20" complete="0" expand="true"/>
+            <task id="10" uid="d88b8caddfca4576a74b6ddc502295d5" name="Desarrollo de pantallas y funcionalidades" meeting="false" start="2025-05-16" duration="100" complete="0" expand="true"/>
         </task>
-        <task id="11" uid="c784a963d4aa4fc58185252a59e6b98a" name="Testeo y mantenimiento" meeting="false" start="2025-05-14" duration="23" complete="0" expand="false">
-            <task id="12" uid="65c0a4c96c6642a3b20381fab19cfdd6" name="Prueba de errores y fallos" meeting="false" start="2025-06-13" duration="1" complete="0" expand="true"/>
-            <task id="13" uid="acdc09ba8bbd47ae8c1985d6bf0b82cb" name="Mejoras en el sistema" meeting="false" start="2025-05-14" duration="4" complete="0" expand="true"/>
+        <task id="11" uid="c784a963d4aa4fc58185252a59e6b98a" name="Testeo y mantenimiento" meeting="false" start="2025-10-03" duration="40" complete="0" expand="true">
+            <task id="12" uid="65c0a4c96c6642a3b20381fab19cfdd6" name="Prueba de errores y fallos" meeting="false" start="2025-10-03" duration="20" complete="0" expand="true"/>
+            <task id="13" uid="acdc09ba8bbd47ae8c1985d6bf0b82cb" name="Mejoras en el sistema" meeting="false" start="2025-10-31" duration="20" complete="0" expand="true"/>
         </task>
     </tasks>
     <resources/>
