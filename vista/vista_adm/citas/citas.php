@@ -51,7 +51,7 @@ $resultado_citas = $citas_modelo->listar();
       z-index: -1;
     }
 
-    /* Sidebar */
+    /* Sidebar - 100% IGUAL QUE EN VISTA_INICIO_ADM */
     .sidebar{
       width: 240px;
       background: rgba(42,42,61,0.9);
@@ -63,6 +63,8 @@ $resultado_citas = $citas_modelo->listar();
       top:0;left:0;bottom:0;
       transition: transform .3s ease;
       z-index: 1000;
+      padding-bottom: 20px;
+      overflow-y: auto;
     }
     .sidebar h2{
       color: var(--primary);
@@ -86,7 +88,7 @@ $resultado_citas = $citas_modelo->listar();
     }
     .sidebar.hidden { transform: translateX(-100%); }
 
-    /* Toggle */
+    /* Botón toggle - EXACTO IGUAL */
     .toggle-btn{
       position: fixed;
       top: 20px;
@@ -113,12 +115,18 @@ $resultado_citas = $citas_modelo->listar();
       width: 100%;
     }
     .content.expanded{ margin-left: 0; }
+
+    /* TÍTULO QUE NO SE TAPA NUNCA */
     h1{
       font-size:2rem;
       margin-bottom:25px;
       color: var(--primary);
       text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-left: 60px !important;
     }
+
+    .title{margin-left: 50px;}
+    .titulo_menu{margin-left: 20px;}
 
     /* Card */
     .card{
@@ -195,32 +203,32 @@ $resultado_citas = $citas_modelo->listar();
 </head>
 <body>
 
-  <!-- Toggle -->
+  <!-- Botón Toggle -->
   <button class="toggle-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
   </button>
 
-  <!-- Sidebar -->
+  <!-- Sidebar - 100% IGUAL AL PANEL PRINCIPAL -->
   <div class="sidebar" id="sidebar">
     <h2 class="titulo_menu">RoseSpa</h2>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/vista_inventario.php"><i class="fas fa-boxes"></i> Productos</a>
-    <a href="#"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php"><i class="fas fa-map-marker-alt"></i> Lugares</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php"><i class="fas fa-truck"></i> Proveedores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php"><i class="fas fa-user-tie"></i> Trabajadores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php"><i class="fas fa-users"></i> Clientes</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php"><i class="fas fa-history"></i> Logeos y Movimientos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php"><i class="fas fa-calendar-check"></i> Citas</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_citas"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php">Servicios y Combos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php">Productos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php">Ventas y Compras</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php">Lugares</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php">Proveedores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php">Trabajadores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php">Clientes</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php">Citas</a>
+    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm">Cerrar sesión</a>
   </div>
 
-  <!-- Content -->
+  <!-- Contenido -->
   <div class="content" id="content">
     <h1>Citas</h1>
 
     <div class="card">
-      <?php if (!empty($resultado_citas)): ?>
+      <?php if (!empty($resultado_citas) && count($resultado_citas) > 0): ?>
         <table>
           <thead>
             <tr>
@@ -264,5 +272,12 @@ $resultado_citas = $citas_modelo->listar();
 
   <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
+  <script>
+    // Aseguramos que el toggle funcione
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('hidden');
+      document.getElementById('content').classList.toggle('expanded');
+    }
+  </script>
 </body>
 </html>

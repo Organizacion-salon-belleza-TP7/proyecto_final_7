@@ -52,7 +52,6 @@ $lugares = $modelo->obtenerLugares();
       z-index: -1;
     }
 
-    /* Sidebar */
     .sidebar{
       width: 240px;
       background: rgba(42,42,61,0.9);
@@ -64,30 +63,13 @@ $lugares = $modelo->obtenerLugares();
       top:0;left:0;bottom:0;
       transition: transform .3s ease;
       z-index: 1000;
+      overflow-y: auto;
     }
-    .sidebar h2{
-      color: var(--primary);
-      margin-bottom: 30px;
-      text-align: center;
-    }
-    .sidebar a{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color: var(--text);
-      text-decoration:none;
-      padding:12px;
-      border-radius:6px;
-      margin-bottom:6px;
-      transition:.3s;
-    }
-    .sidebar a:hover{
-      background: var(--primary);
-      color:#fff;
-    }
+    .sidebar h2{color: var(--primary); margin-bottom: 30px; text-align: center;}
+    .sidebar a{display:flex; align-items:center; gap:10px; color: var(--text); text-decoration:none; padding:12px; border-radius:6px; margin-bottom:6px; transition:.3s;}
+    .sidebar a:hover{background: var(--primary); color:#fff;}
     .sidebar.hidden { transform: translateX(-100%); }
 
-    /* Toggle */
     .toggle-btn{
       position: fixed;
       top: 20px;
@@ -100,28 +82,26 @@ $lugares = $modelo->obtenerLugares();
       border-radius:8px;
       cursor:pointer;
       z-index:1100;
-      transition:.3s;
       box-shadow: var(--shadow);
     }
     .toggle-btn:hover{ background: rgba(224, 85, 133, 0.8); }
 
-    /* Content */
     .content{
       margin-left: 240px;
       flex:1;
       padding:30px;
       transition: margin-left .3s ease;
-      width: 100%;
     }
     .content.expanded{ margin-left: 0; }
+
     h1{
       font-size:2rem;
       margin-bottom:20px;
       color: var(--primary);
       text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+      margin-left: 60px !important;
     }
 
-    /* Formulario */
     .form-card{
       background: rgba(46,46,68,0.9);
       padding: 20px;
@@ -158,7 +138,6 @@ $lugares = $modelo->obtenerLugares();
       box-shadow: var(--shadow);
     }
 
-    /* Tablas */
     table{
       width:100%;
       border-collapse:collapse;
@@ -168,26 +147,12 @@ $lugares = $modelo->obtenerLugares();
       box-shadow: var(--shadow);
       margin-bottom:25px;
     }
-    th,td{
-      padding:14px 16px;
-      text-align:left;
-      font-size:0.95rem;
-    }
-    th{
-      background: var(--primary-dark);
-      color:#fff;
-      font-weight:600;
-    }
+    th,td{padding:14px 16px; text-align:left; font-size:0.95rem;}
+    th{background: var(--primary-dark); color:#fff; font-weight:600;}
     tr:nth-child(even){background: rgba(37,37,56,0.9);}
     tr:hover{background: rgba(255,107,157,0.1);}
-    td img{
-      border-radius:6px;
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-    }
+    td img{border-radius:6px; width: 60px; height: 60px; object-fit: cover;}
 
-    /* Botones */
     .btn{
       padding:6px 12px;
       border-radius:6px;
@@ -216,7 +181,6 @@ $lugares = $modelo->obtenerLugares();
     }
     .add-btn:hover{background: var(--primary-dark);}
 
-    /* Geolocalización */
     .geo-btn{
       background: var(--primary);
       color: #fff;
@@ -230,40 +194,49 @@ $lugares = $modelo->obtenerLugares();
       gap: 8px;
       margin-top: 8px;
     }
-    .geo-btn:hover{
-      background: var(--primary-dark);
+    .geo-btn:hover{background: var(--primary-dark);}
+
+    .success-msg {
+      background: rgba(39, 174, 96, 0.9);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-  <!-- Toggle -->
   <button class="toggle-btn" onclick="toggleSidebar()">
     <i class="fas fa-bars"></i>
   </button>
 
-  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <h2 class="titulo_menu">RoseSpa</h2>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php"><i class="fas fa-spa"></i> Servicios y Combos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php"><i class="fas fa-boxes"></i> Productos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php"><i class="fas fa-cash-register"></i> Ventas y Compras</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php"><i class="fas fa-map-marker-alt"></i> Lugares</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php"><i class="fas fa-truck"></i> Proveedores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php"><i class="fas fa-user-tie"></i> Trabajadores</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php"><i class="fas fa-users"></i> Clientes</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php"><i class="fas fa-history"></i> Logeos y Movimientos</a>
-    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php"><i class="fas fa-calendar-check"></i> Citas</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php">Servicios y Combos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/inventario/InventarioVista.php">Productos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/venta/vista_medios_pagos.php">Ventas y Compras</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/lugares/lugares.php">Lugares</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/proveedores/vista_proveedores.php">Proveedores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/trabajadores/trabajadores_lista.php">Trabajadores</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/clientes/clientes_lista.php">Clientes</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/vista_logouts/vista_logouts_adm.php">Logeos y Movimientos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php">Citas</a>
+    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm">Cerrar sesión</a>
   </div>
 
-  <!-- Content -->
   <div class="content" id="content">
     <h1>Lugares</h1>
 
-    <!-- Formulario -->
+    <?php if (isset($_GET['exito'])): ?>
+      <div class="success-msg">¡Lugar agregado con éxito!</div>
+    <?php endif; ?>
+
+    <!-- FORMULARIO CORREGIDO -->
     <div class="form-card">
-      <form method="POST" action="<?= BASE_URL ?>/controlador/lugares/controlador_lugares.php" enctype="multipart/form-data">
+      <form method="POST" action="../../../controlador/controladores_adm/lugares/controlador_lugares.php" enctype="multipart/form-data">
         <div class="form-grid">
           <div class="form-group">
             <label>Nombre del lugar</label>
@@ -297,7 +270,7 @@ $lugares = $modelo->obtenerLugares();
       </form>
     </div>
 
-    <!-- Tabla -->
+    <!-- TABLA CON BOTÓN BORRAR CORREGIDO -->
     <?php if ($lugares && $lugares->num_rows > 0): ?>
       <table>
         <thead>
@@ -326,11 +299,11 @@ $lugares = $modelo->obtenerLugares();
                 <?php endif; ?>
               </td>
               <td>
-                <?php if ($row['imagen_lugar']): ?>
-                  <img src="<?= BASE_URL . '/' . $row['imagen_lugar'] ?>" alt="Lugar">
+                <?php if ($row['imagen_lugar'] && file_exists(ROOT_PATH . '/' . $row['imagen_lugar'])): ?>
+                  <img src="<?= BASE_URL ?>/<?= $row['imagen_lugar'] ?>" alt="Lugar">
                 <?php else: ?>
-                  <div style="width:60px;height:60px;background:#444;border-radius:6px;display:flex;align-items:center;justify-content:center;">
-                    <i class="fas fa-image" style="color:#666;"></i>
+                  <div style="width:60px;height:60px;background:#444;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.7rem;">
+                    Sin imagen
                   </div>
                 <?php endif; ?>
               </td>
@@ -339,7 +312,7 @@ $lugares = $modelo->obtenerLugares();
               <td><a class="btn btn-edit" href="#">Editar</a></td>
               <td>
                 <a class="btn btn-delete" 
-                   href="<?= BASE_URL ?>/controlador/lugares/controlador_lugares.php?eliminar=<?= $row['id_lugar'] ?>"
+                   href="../../../controlador/controladores_adm/lugares/controlador_lugares.php?eliminar=<?= $row['id_lugar'] ?>"
                    onclick="return confirm('¿Eliminar este lugar?')">
                    Borrar
                 </a>
@@ -349,18 +322,21 @@ $lugares = $modelo->obtenerLugares();
         </tbody>
       </table>
     <?php else: ?>
-      <p style="color: var(--text-muted); text-align:center;">No hay lugares registrados.</p>
+      <p style="color: var(--text-muted); text-align:center; padding:40px; background:rgba(46,46,68,0.9); border-radius:8px;">
+        No hay lugares registrados aún.
+      </p>
     <?php endif; ?>
   </div>
 
-  <!-- Leaflet + JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
   <script>
-    // Mapa
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('hidden');
+      document.getElementById('content').classList.toggle('expanded');
+    }
+
     const map = L.map('map').setView([-26.1858, -58.1750], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
     const marker = L.marker([-26.1858, -58.1750], { draggable: true }).addTo(map);
 
     function updateCoords(lat, lng) {
@@ -378,10 +354,7 @@ $lugares = $modelo->obtenerLugares();
     });
 
     function usarMiUbicacion() {
-      if (!navigator.geolocation) {
-        alert('Geolocalización no soportada');
-        return;
-      }
+      if (!navigator.geolocation) return alert('Geolocalización no soportada');
       navigator.geolocation.getCurrentPosition(pos => {
         const { latitude, longitude } = pos.coords;
         map.setView([latitude, longitude], 16);

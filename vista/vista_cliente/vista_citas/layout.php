@@ -33,9 +33,8 @@ switch ($accion) {
         break;
 
     case 'guardar':
-        $data = $controlador->guardar();
-        extract($data);
-        $vista = 'confirmar_cita';
+        $controlador->guardar(); // ← YA MUESTRA confirmar_cita.php
+        exit; // ← PARA QUE NO SIGA
         break;
 
     default:
@@ -44,7 +43,6 @@ switch ($accion) {
         $vista = 'seleccionar_servicios';
         break;
 }
-
 
 
 ?>
@@ -73,6 +71,8 @@ switch ($accion) {
 
     <footer class="bg-gray-200 text-center py-4 mt-10">
     </footer>
+      <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
+
 
 </body>
 </html>

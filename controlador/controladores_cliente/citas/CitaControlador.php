@@ -39,27 +39,69 @@ class CitaControlador {
     }
 
     public function guardar() {
-        $id_cliente = $_POST['id_cliente'] ?? 1;
-        $fecha_cita = $_POST['fecha_hora'] ?? '';
-        $id_lugar = $_POST['id_lugar'] ?? '';
-        $servicios = $_POST['servicios'] ?? [];
-        $combos = $_POST['combos'] ?? [];
-
-        $id_cita = $this->modelo->guardarCitaConLugar($id_cliente, $fecha_cita, $id_lugar, $servicios, $combos);
-
-        $detalles = [];
-        foreach ($servicios as $s) {
-            $data = $this->modelo->obtenerServiciosPorId($s);
-            if ($data) $detalles[] = ['tipo'=>'servicio','nombre'=>$data['nombre'],'precio'=>$data['precio_servicio']];
-        }
-        foreach ($combos as $c) {
-            $data = $this->modelo->obtenerCombosPorId($c);
-            if ($data) $detalles[] = ['tipo'=>'combo','nombre'=>$data['nombre'],'precio'=>$data['precio']];
-        }
-
-        $lugares = $this->modelo->obtenerLugares();
-
-        return compact('id_cita','fecha_cita','id_lugar','detalles','lugares');
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        header("Location: layout.php");
+        exit;
     }
+
+    $id_cliente = $_SESSION['id_cliente'] ?? $_SESSION['user_id'] ?? $_SESSION['id'] ?? 1;
+
+    $fecha_cita = $_POST['fecha_hora'] ?? '';
+    $id_lugar = $_POST['id_lugar'] ?? '';
+    $servicios = $_POST['servicios'] ?? [];
+    $combos = $_POST['combos'] ?? [];
+
+    // VALIDACIONES
+    if (empty($fecha_cita) || empty($id_lugar)) {
+        $error = "Faltan datos obligatorios";
+        include __DIR__ . '/../../../vista/vista_cliente/vista_citas/seleccionar_servicios.php';
+        return;
+    }
+
+    // GUARDAR CITA
+    $id_cita = $this->modelo->guardarCitaConLugar($id_cliente, $fecha_cita, $id_lugar, $servicios, $combos);
+
+    if (!$id_cita) {
+        $error = "Error al guardar la cita";
+        include __DIR__ . '/../../../vista/vista_cliente/vista_citas/seleccionar_servicios.php';
+        return;
+    }
+
+    // OBTENER DETALLES
+    $detalles = [];
+    foreach ($servicios as $s) {
+        $data = $this->modelo->obtenerServiciosPorId($s);
+        if ($data) {
+            $detalles[] = [
+                'tipo' => 'servicio',
+                'nombre' => $data['nombre'],
+                'precio' => $data['precio_servicio'] ?? 0
+            ];
+        }
+    }
+    foreach ($combos as $c) {
+        $data = $this->modelo->obtenerCombosPorId($c);
+        if ($data) {
+            $detalles[] = [
+                'tipo' => 'combo',
+                'nombre' => $data['nombre'],
+                'precio' => $data['precio'] ?? 0
+            ];
+        }
+    }
+
+    // OBTENER LUGARES PARA EL NOMBRE
+    $lugares = $this->modelo->obtenerLugares();
+
+    // ASIGNAR VARIABLES PARA LA VISTA
+    $GLOBALS['id_cita'] = $id_cita;
+    $GLOBALS['fecha_cita'] = $fecha_cita;
+    $GLOBALS['id_lugar'] = $id_lugar;
+    $GLOBALS['detalles'] = $detalles;
+    $GLOBALS['lugares'] = $lugares;
+
+    // INCLUIR LA VISTA DE CONFIRMACIÓN
+    include __DIR__ . '/../../../vista/vista_cliente/vista_citas/confirmar_cita.php';
+}
 }
 
