@@ -209,6 +209,7 @@ $funcion_traer_citas = $modelo_inicio->traer_citas_compradas($id_usuario);
     <h2>RoseSpa</h2>
     <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_citas/layout.php"><i class="fas fa-spa"></i> Reservar cita</a>
     <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_venta_productos/vista_venta.php"><i class="fas fa-boxes"></i>Comprar Productos</a>
+    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_promociones/vista_promociones.php"><i class="fas fa-boxes"></i>Promociones</a>
     <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 

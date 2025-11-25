@@ -69,7 +69,7 @@ $funcion_traer_datos_carrito = $clase_promos->traer_servicios_combos_promocionad
                 <td>{$row['descuento']}%</td>
                 <td>{$row['puntos']}</td>
                 <td>
-                    <a href='".BASE_URL."/controlador/controladores_cliente/controlador_promociones/eliminar_carrito.php?id={$row['id_promocion']}'>
+                    <a href='".BASE_URL."/controlador/controladores_cliente/controlador_promociones/controlador_promociones.php?id={$row['id_promocion']}&eliminar_prom_carrito=vista_carrito_promos'>
                         Eliminar
                     </a>
                 </td>
@@ -84,7 +84,7 @@ $funcion_traer_datos_carrito = $clase_promos->traer_servicios_combos_promocionad
 
     <br>
     <a href="<?= BASE_URL ?>/controlador/controladores_cliente/controlador_promociones/controlador_promociones.php?carrito=vista_carrito_promos">Terminar Compra</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_cliente/controlador_promociones/controlador_promociones.php">Seguir comprando</a>
+    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_promociones/vista_promociones.php">Seguir comprando</a>
     
 </body>
 </html>
