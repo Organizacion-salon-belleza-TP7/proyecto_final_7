@@ -86,6 +86,28 @@ if(isset($_GET['agregar_carrito']) && $_GET['agregar_carrito'] === 'vista_promoc
                 if(!empty($insertar_caja)){
                     $insertar_detalle_caja = $clase_promociones->insertar_detalle_caja_promociones($insertar_caja,$total_sin_pago,$id_metodo_pago);
 
+                    $id_strings = implode(",", $_SESSION['carrito_promos']);
+                    $total_puntos = $clase_promociones->obtener_puntos_promociones($id_strings);
+    
+                    if($total_puntos > 0){
+                        $puntos_existentes = $clase_promociones->verificar_puntos_cliente($obtener_id_cliente);
+        
+                        if($puntos_existentes){
+                        // Si ya tiene puntos, actualizar sumando los nuevos
+                        $nuevo_total_puntos = $puntos_existentes['puntos_acumulados'] + $total_puntos;
+                        $clase_promociones->actualizar_puntos_cliente($obtener_id_cliente, $nuevo_total_puntos);
+                        } else {
+                            // Si no tiene puntos, insertar nuevos
+                            $clase_promociones->insertar_puntos_desc($obtener_id_cliente, $total_puntos);
+                        }
+        
+                        // Calcular el descuento total para mostrar al usuario
+                        $descuento_total = $total_puntos * 2;
+                        $mensaje_puntos = "\\nHas ganado $total_puntos puntos ($descuento_total% de descuento para próximas compras)";
+                    } else {
+                        $mensaje_puntos = "";
+                    }
+
                     unset($_SESSION['carrito_promos']);
                     unset($_SESSION['lugar_seleccionado']);
                     unset($_SESSION['fecha_hora_seleccionada']);

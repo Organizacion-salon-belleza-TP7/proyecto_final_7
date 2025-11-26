@@ -15,12 +15,14 @@ class promociones_cliente{
 
     public function traer_servicios_combos_promocionados(){
         $traer_promociones = "SELECT 
-        prom.id_promocion, 
-        comb.nombre AS nombre_combo, 
-        serv.nombre AS nombre_servicio, 
-        prom.dias_promocion, 
-        prom.descuento, 
-        prom.puntos 
+            prom.id_promocion,
+            prom.id_combos,
+            prom.id_servicios,
+            comb.nombre AS nombre_combo,
+            serv.nombre AS nombre_servicio,
+            prom.dias_promocion,
+            prom.descuento,
+            prom.puntos
         FROM promociones prom
         LEFT JOIN combos comb ON prom.id_combos = comb.id_combos
         LEFT JOIN servicios serv ON serv.id_servicios = prom.id_servicios
@@ -211,6 +213,143 @@ class promociones_cliente{
 
 
     }
+
+    public function verificar_puntos_cliente($id_cliente){
+        $sql = "SELECT id_puntos_descuento, puntos_acumulados, descuento 
+            FROM puntos_descuentos 
+            WHERE id_cliente = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("i", $id_cliente);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+    
+        if($resultado->num_rows > 0){
+            return $resultado->fetch_assoc();
+        }
+        return false;
+    }
+
+    public function actualizar_puntos_cliente($id_cliente, $nuevos_puntos){
+        // Calcular descuento: 2% por cada punto
+        $descuento = $nuevos_puntos * 2;
+    
+        $sql = "UPDATE puntos_descuentos 
+            SET puntos_acumulados = ?, descuento = ? 
+            WHERE id_cliente = ?";
+    
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("iii", $nuevos_puntos, $descuento, $id_cliente);
+    
+        return $stmt->execute();
+    }
+
+    public function insertar_puntos_desc($id_cliente, $puntos_acumulados){
+        // Calcular descuento: 2% por cada punto(se puede cambiar el 2 por la cantidad deseada)
+        $descuento = $puntos_acumulados * 2;
+    
+        $insertar_puntos_descuento = $this->conn->prepare("INSERT INTO puntos_descuentos(id_cliente, puntos_acumulados, descuento) VALUES (?,?,?)");
+        $insertar_puntos_descuento->bind_param("iii", $id_cliente, $puntos_acumulados, $descuento);
+
+        if($insertar_puntos_descuento->execute()){
+            return true;
+        }else{
+            echo "hubo un error en la funcion insertar puntos de descuento";
+            return false;
+        }
+    }
+
+    public function obtener_puntos_promociones($id_promo_carrito){
+    // Si el carrito está vacío, retorna 0
+        if(empty($id_promo_carrito)) {
+            return 0;
+        }
+    
+        $sql = "SELECT SUM(puntos) as total_puntos 
+                FROM promociones 
+                WHERE id_promocion IN ($id_promo_carrito)";
+    
+        $resultado = $this->conn->query($sql);
+    
+        if($resultado && $resultado->num_rows > 0){
+            $fila = $resultado->fetch_assoc();
+            return (int)$fila['total_puntos'];
+        }
+        return 0;
+    }
+
+    function calcular_precio_promocion($row, $clase_promos)
+    {
+        // SERVICIO
+        if (!empty($row['nombre_servicio'])) {
+
+            $id_serv = $row['id_servicios'];
+
+            $data_serv = $clase_promos->buscar_importe_servicio($id_serv)->fetch_assoc();
+            $precio_base = $data_serv['precio_servicio'];
+
+            // tipo servicio
+            $tipo = $clase_promos->obtener_tipo_servicio($data_serv['id_tipo_servicio'])->fetch_assoc();
+            $interes_tipo = $tipo['intereses'];
+
+            // trabajadores
+            $trab = $clase_promos->obtener_trabajadores_servicio($id_serv);
+            $suma_intereses_trabajadores = 0;
+
+            while ($t = $trab->fetch_assoc()) {
+                $suma_intereses_trabajadores += $t['intereses'];
+            }
+
+            // cálculo
+            $precio = $precio_base;
+            $precio *= (1 + $suma_intereses_trabajadores / 100);
+            $precio *= (1 + $interes_tipo / 100);
+            $precio *= (1 - $row['descuento'] / 100);
+
+            return $precio;
+        }
+
+        // COMBO 
+        if (!empty($row['nombre_combo'])) {
+
+            $id_combo = $row['id_combos'];
+            $servicios_combo = $clase_promos->buscar_combos_servicios($id_combo);
+
+            $total_combo = 0;
+
+            while ($serv = $servicios_combo->fetch_assoc()) {
+
+                $id_serv = $serv['id_servicios'];
+
+                $data_serv = $clase_promos->buscar_importe_servicio($id_serv)->fetch_assoc();
+                $precio_base = $data_serv['precio_servicio'];
+
+                $tipo = $clase_promos->obtener_tipo_servicio($data_serv['id_tipo_servicio'])->fetch_assoc();
+                $interes_tipo = $tipo['intereses'];
+
+                $trab = $clase_promos->obtener_trabajadores_servicio($id_serv);
+                $suma_intereses_trabajadores = 0;
+
+                while ($t = $trab->fetch_assoc()) {
+                    $suma_intereses_trabajadores += $t['intereses'];
+                }
+
+                $precio = $precio_base;
+                $precio *= (1 + $suma_intereses_trabajadores / 100);
+                $precio *= (1 + $interes_tipo / 100);
+
+                $total_combo += $precio;
+            }
+
+            // aplicar descuento del combo
+            return $total_combo * (1 - $row['descuento'] / 100);
+        }
+
+        return 0;
+    }
+
+
+
     
 
 
