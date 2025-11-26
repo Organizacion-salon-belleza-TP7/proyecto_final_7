@@ -283,9 +283,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
     <h2>RoseSpa</h2>
-    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_citas/layout.php"><i class="fas fa-spa"></i> Reservar cita</a>
-    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_venta_productos/vista_venta.php"><i class="fas fa-boxes"></i>Comprar Productos</a>
-    <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+    <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_inicio/vista_inicio_cli.php"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_citas/layout.php"><i class="fas fa-spa"></i> Reservar cita</a>
+        <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_venta_productos/vista_venta.php"><i class="fas fa-boxes"></i> Comprar Productos</a>
+        <a href="<?= BASE_URL ?>/vista/vista_cliente/vista_promociones/vista_promociones.php"><i class="fas fa-tags"></i> Promociones</a>
+        <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 
 
