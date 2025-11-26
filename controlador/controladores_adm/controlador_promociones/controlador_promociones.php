@@ -89,5 +89,26 @@ if(isset($_GET['agregar']) && $_GET['agregar'] === 'vista_promociones'){
         echo $funcion_insertar_promo_combo;
     }
 
+}elseif(isset($_GET['cambiar_estado']) && $_GET['cambiar_estado'] === 'vista_promociones'){
+    $id_promocion = $_GET['id'];
+
+    $funcion_cambiar_estado = $clase_promociones->dar_baja_promo($id_promocion);
+
+    if($funcion_cambiar_estado == true){
+        echo '<script language = javascript>
+                alert("Se cambio el estado de la promo correctamente")
+                self.location = "' . BASE_URL . '/vista/vista_adm/promociones/vista_promociones.php"
+                </script>';
+                exit;
+
+    }else{
+        echo "hubo un bug en el controlador updateando el estado";
+    }
+
+}elseif(isset($_GET['detalle_promo']) && $_GET['detalle_promo'] === 'vista_promociones'){
+    $id_promocion = $_GET['id'];
+    header("Location: " . BASE_URL . "/vista/vista_adm/promociones/vista_detalle_promo.php?id=$id_promocion");
+    exit;
+
 }
 ?>
