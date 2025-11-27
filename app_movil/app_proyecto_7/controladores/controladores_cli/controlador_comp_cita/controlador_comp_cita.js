@@ -97,7 +97,7 @@ export async function traerLugares() {
 }
 
 /**
- * 💾 Guardar una nueva cita
+ * 💾 Guardar una nueva cita - VERSIÓN CORREGIDA
  * @param {number} id_cliente
  * @param {string} fecha_cita (YYYY-MM-DD HH:mm:ss)
  * @param {number} id_lugar
@@ -106,7 +106,8 @@ export async function traerLugares() {
  * @returns {Promise<Object>} Datos de la cita creada
  */
 export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = [], combos = []) {
-  const API_URL = `${BASE_URL}?route=client_interface&accion=guardar_cita`;
+  // ✅ CORREGIDO: Usar la ruta correcta 'elegir_cita'
+  const API_URL = `${BASE_URL}?route=elegir_cita`;
   
   console.log("💾 [GUARDAR CITA] Preparando datos...");
   console.log("📝 ID Cliente:", id_cliente);
@@ -138,14 +139,23 @@ export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = 
 
     console.log("📡 [GUARDAR CITA] Response status:", response.status);
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ [GUARDAR CITA] Error response:", errorText);
-      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    // ✅ MEJORADO: Obtener texto primero para mejor debug
+    const responseText = await response.text();
+    console.log("📦 [GUARDAR CITA] Response text:", responseText);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("❌ [GUARDAR CITA] Error parseando JSON:", parseError);
+      throw new Error("Respuesta del servidor no es JSON válido: " + responseText);
     }
 
-    const data = await response.json();
-    console.log("📦 [GUARDAR CITA] Data recibida:", data);
+    console.log("📦 [GUARDAR CITA] Data parseada:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `Error HTTP: ${response.status}`);
+    }
 
     if (data.success) {
       console.log("✅ [GUARDAR CITA] Cita guardada exitosamente, ID:", data.id_cita);
@@ -162,7 +172,8 @@ export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = 
         combos
       );
     } else {
-      throw new Error(data.message || "Error al guardar la cita");
+      // ✅ MEJORADO: Mostrar mensaje de error específico del servidor
+      throw new Error(data.message || data.error || "Error al guardar la cita");
     }
   } catch (error) {
     console.error("💥 [GUARDAR CITA] Error completo:", error);
@@ -176,7 +187,7 @@ export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = 
  * @returns {Promise<Cita>}
  */
 export async function traerDetallesCita(id_cita) {
-  const API_URL = `${BASE_URL}?route=client_interface&accion=obtener_detalle_cita&id_cita=${id_cita}`;
+  const API_URL = `${BASE_URL}?route=elegir_cita&tipo=detalles_cita&id_cita=${id_cita}`;
   console.log("🔗 [DETALLES CITA] URL llamada:", API_URL);
 
   try {
@@ -236,8 +247,52 @@ export function obtenerNombre(item) {
 /**
  * 🎯 Función utilitaria para normalizar precios en la vista
  * @param {Object} item - Item del servicio/combo
- * @returns {number} Precio normalizado
+ * @returns {number} Precio normalizado como NÚMERO
  */
 export function obtenerPrecio(item) {
-  return item.precio_servicio ?? item.precio ?? 0;
+  const precio = item.precio_servicio ?? item.precio ?? 0;
+  return parseFloat(precio) || 0; // ✅ CORREGIDO: Convertir a número
+}
+
+/**
+ * 🐛 FUNCIÓN DEBUG TEMPORAL - Para testing
+ */
+export async function guardarCitaDebug(id_cliente, fecha_cita, id_lugar, servicios = [], combos = []) {
+  const API_URL = `${BASE_URL}?route=elegir_cita`;
+  
+  const body = {
+    id_cliente: parseInt(id_cliente),
+    fecha_cita,
+    id_lugar: parseInt(id_lugar),
+    servicios: servicios.map(s => parseInt(s)),
+    combos: combos.map(c => parseInt(c)),
+    accion: 'guardar_cita'
+  };
+
+  console.log("🐛 [DEBUG] Enviando a:", API_URL);
+  console.log("🐛 [DEBUG] Body:", body);
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    const text = await response.text();
+    console.log("🐛 [DEBUG] Respuesta cruda:", text);
+    
+    try {
+      return JSON.parse(text);
+    } catch (parseError) {
+      console.error("🐛 [DEBUG] Error parseando JSON:", parseError);
+      return { success: false, message: "Respuesta no es JSON: " + text };
+    }
+  } catch (error) {
+    console.error("🐛 [DEBUG] Error de red:", error);
+    return { success: false, message: "Error de red: " + error.message };
+  }
 }

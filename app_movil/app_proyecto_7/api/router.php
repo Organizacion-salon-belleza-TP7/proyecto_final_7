@@ -3,9 +3,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once(__DIR__ . '/../../../variable_global.php');// Asegúrate de que esta ruta sea correcta
+require_once(__DIR__ . '/../../../variable_global.php');
 
 $request = $_GET['route'] ?? '';
+$method = $_SERVER['REQUEST_METHOD'];
 
 switch ($request) {
     case 'login':
@@ -13,7 +14,6 @@ switch ($request) {
         break;
     
     case 'inicio':
-        // CORREGIDO: Asegúrate de que la ruta sea correcta
         require_once(__DIR__ . '/routes/adm/inicio/inicio.php');
         break;
 
@@ -33,7 +33,8 @@ switch ($request) {
         require_once(__DIR__ . '/routes/cli/inicio_cli/inicio_cli.php');
         break;
 
-   case 'elegir_cita':
+    case 'elegir_cita':
+        // ✅ CORREGIDO: Permitir tanto GET como POST
         require_once(__DIR__ . '/routes/cli/citas_cli/elegir_cita.php');
         break;
         
@@ -48,7 +49,7 @@ switch ($request) {
     default:
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode([
-            'status' => 'error',
+            'success' => false,
             'message' => 'Ruta no encontrada: ' . $request
         ]);
         break;

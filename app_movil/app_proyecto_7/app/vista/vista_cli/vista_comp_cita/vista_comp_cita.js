@@ -116,8 +116,8 @@ export default function SeleccionarServiciosScreen() {
         )
       );
     } else {
-      // Obtener el precio correctamente
-      const precio = obtenerPrecio(item);
+      // ✅ CORREGIDO: Convertir precio a número inmediatamente
+      const precio = parseFloat(obtenerPrecio(item)) || 0;
       console.log(`➕ Agregando ${tipo}:`, { 
         nombre: obtenerNombre(item), 
         precio: precio,
@@ -127,7 +127,7 @@ export default function SeleccionarServiciosScreen() {
       setSeleccionados([...seleccionados, { 
         id: itemId, 
         nombre: obtenerNombre(item),
-        precio: precio,
+        precio: precio, // ✅ Ahora es número, no string
         tipo 
       }]);
     }
@@ -195,12 +195,13 @@ export default function SeleccionarServiciosScreen() {
     return `${año}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
   };
 
-  // Función mejorada para calcular el total
+  // ✅ CORREGIDO: Función mejorada para calcular el total
   const calcularTotal = () => {
     console.log("🧮 Calculando total...");
     let total = 0;
     
     seleccionados.forEach((item, index) => {
+      // ✅ CORREGIDO: Ya es número, pero por seguridad convertimos
       const precio = parseFloat(item.precio) || 0;
       console.log(`   Item ${index}: ${item.nombre} - $${precio} (tipo: ${typeof item.precio})`);
       total += precio;
@@ -215,7 +216,7 @@ export default function SeleccionarServiciosScreen() {
     const precioNum = parseFloat(precio);
     if (isNaN(precioNum)) {
       console.warn("⚠️ Precio no válido:", precio);
-      return "0";
+      return "0.00";
     }
     return precioNum.toFixed(2);
   };
@@ -246,7 +247,9 @@ export default function SeleccionarServiciosScreen() {
       seleccionados.forEach((item, index) => {
         console.log(`   ${index + 1}. ${item.nombre} - $${item.precio}`);
       });
-      console.log(`💰 TOTAL FINAL: $${calcularTotal()}`);
+      
+      const totalFinal = calcularTotal();
+      console.log(`💰 TOTAL FINAL: $${totalFinal}`);
       
       // Formatear fecha para la API
       const fechaISO = formatearParaAPI(fechaHora);
@@ -287,7 +290,7 @@ export default function SeleccionarServiciosScreen() {
           idLugar,
           fechaCita: fechaISO,
           fechaFormateada: `${formatearFecha(fechaHora)} a las ${formatearHora(fechaHora)}`,
-          total: calcularTotal().toString()
+          total: totalFinal.toString()
         },
       });
 
@@ -311,7 +314,7 @@ export default function SeleccionarServiciosScreen() {
   return (
     <ScrollView 
       style={styles.container}
-      contentContainerStyle={styles.scrollContent} // ✅ NUEVO: Espacio adicional
+      contentContainerStyle={styles.scrollContent}
     >
       <Text style={styles.title}>Reservar Cita</Text>
 
@@ -573,10 +576,9 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: "#fff" 
   },
-  // ✅ NUEVO: Contenedor del ScrollView con padding
   scrollContent: {
     padding: 20,
-    paddingBottom: 40, // ✅ Más espacio en la parte inferior
+    paddingBottom: 40,
   },
   center: { 
     flex: 1, 
@@ -609,7 +611,6 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     marginVertical: 10
   },
-  // Estilos para los selectores de fecha y hora
   filaSelectores: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -638,7 +639,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#333",
   },
-  // Estilos para el modal de horarios
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -703,7 +703,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16
   },
-  // Estilos existentes
   card: {
     backgroundColor: "#f8f9fa",
     padding: 15,
@@ -797,8 +796,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold", 
     fontSize: 18 
   },
-  // ✅ NUEVO: Espacio adicional en la parte inferior
   espacioInferior: {
-    height: 50, // Espacio extra para que no toque el borde
+    height: 50,
   },
 });

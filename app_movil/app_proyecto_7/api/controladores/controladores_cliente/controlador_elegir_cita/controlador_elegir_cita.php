@@ -115,10 +115,61 @@ switch ($method) {
        ================================ */
     case 'POST':
 
-        if (isset($_GET['route']) &&
-            $_GET['route'] === 'client_interface' &&
-            isset($_GET['accion']) &&
-            $_GET['accion'] === 'guardar_cita'
+        // ✅ NUEVO: Manejar POST para elegir_cita
+        if (isset($_GET['route']) && $_GET['route'] === 'elegir_cita') {
+
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            if (!$data) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "JSON inválido."
+                ]);
+                exit;
+            }
+
+            $id_cliente = $data['id_cliente'] ?? null;
+            $fecha = $data['fecha_cita'] ?? null;
+            $id_lugar = $data['id_lugar'] ?? null;
+            $servicios = $data['servicios'] ?? [];
+            $combos = $data['combos'] ?? [];
+
+            // Validación
+            if (!$id_cliente || !$fecha || !$id_lugar) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Faltan parámetros obligatorios."
+                ]);
+                exit;
+            }
+
+            $resultado = $modelo->guardarCita(
+                $id_cliente,
+                $fecha,
+                $id_lugar,
+                $servicios,
+                $combos
+            );
+
+            if (isset($resultado['error'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => $resultado['error']
+                ]);
+                exit;
+            }
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Cita guardada correctamente.",
+                "id_cita" => $resultado['id_cita']
+            ]);
+            exit;
+        }
+
+        // Manejar POST para client_interface (existente)
+        if (isset($_GET['route']) && $_GET['route'] === 'client_interface' &&
+            isset($_GET['accion']) && $_GET['accion'] === 'guardar_cita'
         ) {
 
             $data = json_decode(file_get_contents("php://input"), true);
@@ -187,3 +238,4 @@ switch ($method) {
         ]);
         exit;
 }
+?>

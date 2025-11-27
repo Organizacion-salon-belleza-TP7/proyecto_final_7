@@ -38,15 +38,17 @@ class CitaModeloApi {
         $activo = 1;
         $fecha_cita = date('Y-m-d H:i:s', strtotime($fecha_cita));
 
-        // Insertar cita
+        // ✅ CORREGIDO
         $stmt = $this->conn->prepare("
-            INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar)
-            VALUES (?, ?, ?, ?, ?)
+        INSERT INTO citas (id_cliente, fecha_cita, activo, id_lugar)
+        VALUES (?, ?, ?, ?)
         ");
+
         if (!$stmt) {
             return ['error' => 'Error al preparar la consulta de cita: ' . $this->conn->error];
         }
 
+        // Solo 4 parámetros
         $stmt->bind_param("isii", $id_cliente, $fecha_cita, $activo, $id_lugar);
         if (!$stmt->execute()) {
             return ['error' => 'Error al guardar la cita: ' . $stmt->error];

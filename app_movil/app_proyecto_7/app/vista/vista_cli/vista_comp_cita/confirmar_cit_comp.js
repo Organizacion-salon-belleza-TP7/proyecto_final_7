@@ -10,7 +10,8 @@ export default function ConfirmarCitaScreen() {
     lugares, 
     idLugar, 
     fechaCita,
-    fechaFormateada 
+    fechaFormateada,
+    total 
   } = useLocalSearchParams();
 
   const citaData = JSON.parse(cita);
@@ -19,7 +20,53 @@ export default function ConfirmarCitaScreen() {
   
   const lugarSeleccionado = lugaresData.find(l => l.id_lugar == idLugar);
 
-  const total = seleccionadosData.reduce((sum, item) => sum + item.precio, 0);
+  // ✅ CORREGIDO: Debug para ver los datos recibidos
+  console.log("🔍 [CONFIRMAR] Datos recibidos:");
+  console.log("📦 seleccionadosData:", seleccionadosData);
+  console.log("💰 total desde params:", total, "tipo:", typeof total);
+  
+  seleccionadosData.forEach((item, index) => {
+    console.log(`   Item ${index}: ${item.nombre} - $${item.precio} (tipo: ${typeof item.precio})`);
+  });
+
+  // ✅ CORREGIDO: Función robusta para calcular total
+  const calcularTotal = () => {
+    let totalCalculado = 0;
+    
+    seleccionadosData.forEach((item, index) => {
+      // ✅ FORZAR conversión a número
+      const precio = Number(item.precio) || 0;
+      console.log(`   Item ${index}: ${item.nombre} - $${precio} (convertido de: ${item.precio})`);
+      totalCalculado += precio;
+    });
+    
+    console.log(`💰 Total calculado: $${totalCalculado}`);
+    return totalCalculado;
+  };
+
+  const totalCalculado = calcularTotal();
+  
+  // ✅ CORREGIDO: Usar el total calculado aquí, no el de params
+  const totalFinal = totalCalculado;
+
+  // Función para formatear precio
+  const formatearPrecio = (precio) => {
+    const precioNum = Number(precio);
+    if (isNaN(precioNum)) {
+      return "0.00";
+    }
+    return precioNum.toFixed(2);
+  };
+
+  // Navegar a venta
+  const irAPagar = () => {
+    router.push({
+      pathname: "/vista/vista_cli/vista_venta/vista_venta",
+      params: {
+        id: citaData.id_cita.toString()
+      }
+    });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -55,16 +102,26 @@ export default function ConfirmarCitaScreen() {
                 {item.tipo === 'servicio' ? '💈 ' : '🎁 '}
                 {item.nombre}
               </Text>
-              <Text style={styles.servicioPrecio}>${item.precio}</Text>
+              <Text style={styles.servicioPrecio}>
+                ${formatearPrecio(item.precio)}
+              </Text>
             </View>
           ))}
         </View>
 
         <View style={styles.totalSection}>
           <Text style={styles.totalLabel}>Total:</Text>
-          <Text style={styles.totalValor}>${total}</Text>
+          <Text style={styles.totalValor}>${formatearPrecio(totalFinal)}</Text>
         </View>
       </View>
+
+      {/* ✅ NUEVO: Botón para Pagar Cita */}
+      <TouchableOpacity 
+        style={styles.btnPagar}
+        onPress={irAPagar}
+      >
+        <Text style={styles.btnPagarText}>💳 Pagar Cita - ${formatearPrecio(totalFinal)}</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.btnVolver}
@@ -174,6 +231,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#28a745'
+  },
+  // ✅ NUEVO: Estilos para botón de pagar
+  btnPagar: {
+    backgroundColor: '#ff6b00',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 15
+  },
+  btnPagarText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold'
   },
   btnVolver: {
     backgroundColor: '#007bff',
