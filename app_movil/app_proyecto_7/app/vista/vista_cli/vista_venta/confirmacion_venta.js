@@ -66,16 +66,9 @@ export default function ConfirmacionVentaScreen() {
       <View style={styles.accionesContainer}>
         <TouchableOpacity 
           style={styles.btnPrincipal}
-          onPress={() => router.push("/vista/vista_cli/vista_citas/historial_citas")}
+          onPress={() => router.push("/vista/vista_cli/vista_inicio/vista_inicio_cli")}
         >
-          <Text style={styles.btnPrincipalText}>Ver Historial de Citas</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.btnSecundario}
-          onPress={() => router.push("/vista/vista_cli/vista_inicio/inicio_cli")}
-        >
-          <Text style={styles.btnSecundarioText}>Volver al Inicio</Text>
+          <Text style={styles.btnPrincipalText}>Volver al Historial de Citas</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

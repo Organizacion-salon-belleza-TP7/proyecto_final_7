@@ -1,3 +1,6 @@
+// app/controladores/controladores_cli/controlador_venta/controlador_venta.js
+import { authService } from "../../../modelo/modelo_sesiones/authService";
+
 // 📌 URL base de la API
 const BASE_URL = "http://192.168.100.8/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
@@ -65,7 +68,7 @@ export async function traerDatosCita(id_cita) {
 }
 
 /**
- * 💰 Procesar pago de la cita
+ * 💰 Procesar pago de la cita - VERSIÓN CORREGIDA CON SESIÓN
  * @param {number} id_cita
  * @param {number} id_metodo
  * @param {number} cantidad
@@ -81,12 +84,21 @@ export async function procesarPago(id_cita, id_metodo, cantidad, cantidad_calcul
   console.log("📝 Cantidad:", cantidad);
   console.log("📝 Cantidad Calculada:", cantidad_calculada);
 
+  // ✅ OBTENER USER ID DE LA SESIÓN
+  const userId = await authService.getUserId();
+  console.log("👤 User ID desde sesión:", userId);
+  
+  if (!userId) {
+    throw new Error("No estás autenticado. Por favor, inicia sesión nuevamente.");
+  }
+
   const body = {
     action: 'procesar_pago',
     id_cita: parseInt(id_cita),
     id_metodo: parseInt(id_metodo),
     cantidad: parseFloat(cantidad),
-    cantidad_calculada: parseFloat(cantidad_calculada)
+    cantidad_calculada: parseFloat(cantidad_calculada),
+    user_id: parseInt(userId) // ✅ ENVIAR USER ID EN EL BODY
   };
 
   console.log("📤 [PROCESAR PAGO] Body enviado:", body);
@@ -104,14 +116,23 @@ export async function procesarPago(id_cita, id_metodo, cantidad, cantidad_calcul
 
     console.log("📡 [PROCESAR PAGO] Response status:", response.status);
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("❌ [PROCESAR PAGO] Error response:", errorText);
-      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    // Obtener texto de respuesta primero para mejor debug
+    const responseText = await response.text();
+    console.log("📦 [PROCESAR PAGO] Response text:", responseText);
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (parseError) {
+      console.error("❌ [PROCESAR PAGO] Error parseando JSON:", parseError);
+      throw new Error("Respuesta del servidor no es JSON válido: " + responseText);
     }
 
-    const data = await response.json();
-    console.log("📦 [PROCESAR PAGO] Data recibida:", data);
+    console.log("📦 [PROCESAR PAGO] Data parseada:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || data.error || `Error HTTP: ${response.status}`);
+    }
 
     if (data.status === 'success') {
       console.log("✅ [PROCESAR PAGO] Pago procesado exitosamente");
@@ -133,9 +154,17 @@ export async function procesarPago(id_cita, id_metodo, cantidad, cantidad_calcul
 export async function confirmarCita(id_cita) {
   const API_URL = `${BASE_URL}?route=ventas`;
   
+  // ✅ OBTENER USER ID DE LA SESIÓN
+  const userId = await authService.getUserId();
+  
+  if (!userId) {
+    throw new Error("No estás autenticado. Por favor, inicia sesión nuevamente.");
+  }
+
   const body = {
     action: 'confirmar_cita',
-    id_cita: parseInt(id_cita)
+    id_cita: parseInt(id_cita),
+    user_id: parseInt(userId) // ✅ ENVIAR USER ID
   };
 
   console.log("📤 [CONFIRMAR CITA] Body enviado:", body);
@@ -186,7 +215,7 @@ export function calcularMontoConAjustes(monto, metodoPago) {
     console.log(`📉 Aplicado decremento del ${metodoPago.decremento}%: -$${decremento.toFixed(2)}`);
   }
   
-  return montoAjustado;
+  return parseFloat(montoAjustado.toFixed(2));
 }
 
 /**
@@ -196,4 +225,20 @@ export function calcularMontoConAjustes(monto, metodoPago) {
  */
 export function formatearPrecio(precio) {
   return parseFloat(precio).toFixed(2);
+}
+
+/**
+ * 🔐 Verificar si el usuario está autenticado
+ * @returns {Promise<boolean>}
+ */
+export async function verificarAutenticacion() {
+  return await authService.isLoggedIn();
+}
+
+/**
+ * 👤 Obtener datos del usuario autenticado
+ * @returns {Promise<Object>}
+ */
+export async function obtenerUsuarioActual() {
+  return await authService.getUserData();
 }
