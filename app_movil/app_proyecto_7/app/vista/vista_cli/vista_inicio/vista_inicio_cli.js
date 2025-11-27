@@ -7,15 +7,22 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
-  ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { traerCitasCompradas, cancelarCita } from "../../../../controladores/controladores_cli/controlador_inicio/controlador_inicio_cli";
+import {
+  traerCitasCompradas,
+  cancelarCita,
+} from "../../../../controladores/controladores_cli/controlador_inicio/controlador_inicio_cli";
 
-export default function VistaInicioCliente({ navigation }) {
+// 🔹 Expo Router
+import { useRouter } from "expo-router";
+
+export default function VistaInicioCliente() {
   const [citas, setCitas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
+
+  const router = useRouter(); // ← YA NO USAMOS navigation
 
   useEffect(() => {
     cargarCitas();
@@ -27,7 +34,8 @@ export default function VistaInicioCliente({ navigation }) {
       if (!userData) throw new Error("No hay usuario logueado");
 
       const user = JSON.parse(userData);
-      setUsuario(user); // Guardamos el usuario para usarlo luego
+      setUsuario(user);
+
       const data = await traerCitasCompradas(user.id_usuario);
       setCitas(data);
     } catch (error) {
@@ -44,7 +52,7 @@ export default function VistaInicioCliente({ navigation }) {
 
       const result = await cancelarCita(id_caja, id_cita, user.id_usuario);
       Alert.alert("Éxito", `Cita cancelada. Reembolso: $${result.reembolso}`);
-      cargarCitas(); // refresca lista
+      cargarCitas();
     } catch (error) {
       Alert.alert("Error", error.message);
     }
@@ -55,58 +63,62 @@ export default function VistaInicioCliente({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Mis Citas Compradas</Text>
+    <View style={styles.container}>
+      <FlatList
+        data={citas}
+        ListHeaderComponent={
+          <Text style={styles.title}>Mis Citas Compradas</Text>
+        }
+        keyExtractor={(item, index) =>
+          `${item.id_cita ?? "sin-id"}-${item.id_historial_compra ?? index}`
+        }
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.text}>Lugar: {item.nombre_lugar}</Text>
+            <Text style={styles.text}>Fecha: {item.fecha_cita}</Text>
+            <Text style={styles.text}>
+              Estado: {item.activo ? "Activa" : "Inactiva"}
+            </Text>
 
-      {citas.length === 0 ? (
-        <Text style={styles.empty}>No tienes citas compradas</Text>
-      ) : (
-        <FlatList
-          data={citas}
-          keyExtractor={(item, index) =>
-            `${item.id_cita ?? "sin-id"}-${item.id_historial_compra ?? index}`
-          }
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Text style={styles.text}>Lugar: {item.nombre_lugar}</Text>
-              <Text style={styles.text}>Fecha: {item.fecha_cita}</Text>
-              <Text style={styles.text}>
-                Estado: {item.activo ? "Activa" : "Inactiva"}
-              </Text>
+            {item.activo ? (
+              <TouchableOpacity
+                style={styles.btnCancel}
+                onPress={() => handleCancelarCita(item.id_caja, item.id_cita)}
+              >
+                <Text style={styles.btnText}>Cancelar Cita</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.btnDisabled} disabled>
+                <Text style={styles.btnText}>Cita Inactiva</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+        ListEmptyComponent={
+          <Text style={styles.empty}>No tienes citas compradas</Text>
+        }
+        ListFooterComponent={
+          <TouchableOpacity
+            style={styles.btnComprar}
+            onPress={() => {
+              if (!usuario) {
+                Alert.alert("Error", "No se encontró información del usuario");
+                return;
+              }
 
-              {item.activo ? (
-                <TouchableOpacity
-                  style={styles.btnCancel}
-                  onPress={() => handleCancelarCita(item.id_caja, item.id_cita)}
-                >
-                  <Text style={styles.btnText}>Cancelar Cita</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.btnDisabled} disabled>
-                  <Text style={styles.btnText}>Cita Inactiva</Text>
-                </TouchableOpacity>
-              )}
-            </View>
-          )}
-        />
-      )}
-
-      {/* 🔹 Botón para comprar nueva cita */}
-      <TouchableOpacity
-        style={styles.btnComprar}
-        onPress={() => {
-          if (!usuario) {
-            Alert.alert("Error", "No se encontró información del usuario");
-            return;
-          }
-          navigation.navigate("SeleccionarServiciosScreen", {
-            id_cliente: usuario.id_usuario,
-          });
-        }}
-      >
-        <Text style={styles.btnComprarText}>Comprar Nueva Cita</Text>
-      </TouchableOpacity>
-    </ScrollView>
+              // 🔹 Navegación correcta con Expo Router
+              router.push({
+                pathname: "vista/vista_cli/vista_comp_cita/vista_comp_cita",
+                params: { id_cliente: usuario.id_usuario },
+              });
+            }}
+          >
+            <Text style={styles.btnComprarText}>Comprar Nueva Cita</Text>
+          </TouchableOpacity>
+        }
+        contentContainerStyle={{ paddingBottom: 40 }}
+      />
+    </View>
   );
 }
 
@@ -124,10 +136,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
   },
   text: { fontSize: 16 },
   btnCancel: {
@@ -151,10 +159,6 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 10,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 4,
   },
   btnComprarText: {
     color: "#fff",

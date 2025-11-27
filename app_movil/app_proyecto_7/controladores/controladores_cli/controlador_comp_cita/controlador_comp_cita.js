@@ -1,25 +1,35 @@
 import Cita from "../../../modelo/modelo_cli/modelo_comp_cita/modelo_comp_cita";
 
 // 📌 URL base de la API
-const BASE_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+const BASE_URL = "http://192.168.100.8/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
 /**
  * 📅 Obtener todos los servicios activos
  * @returns {Promise<Array>}
  */
 export async function traerServicios() {
-  const API_URL = `${BASE_URL}?route=client_interface&accion=obtener_servicios`;
+  const API_URL = `${BASE_URL}?route=elegir_cita&tipo=servicios`;
+  console.log("🔗 [SERVICIOS] URL llamada:", API_URL);
+  
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Error al conectar con el servidor: " + response.status);
+    console.log("📡 [SERVICIOS] Response status:", response.status);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
 
     const data = await response.json();
-    if (data.success) {
+    console.log("📦 [SERVICIOS] Data recibida:", data);
+    
+    if (data.success && Array.isArray(data.servicios)) {
+      console.log(`✅ [SERVICIOS] ${data.servicios.length} servicios obtenidos`);
       return data.servicios;
     } else {
       throw new Error(data.message || "No se pudieron obtener los servicios");
     }
   } catch (error) {
+    console.error("💥 [SERVICIOS] Error completo:", error);
     throw new Error("Error al obtener servicios: " + error.message);
   }
 }
@@ -29,18 +39,28 @@ export async function traerServicios() {
  * @returns {Promise<Array>}
  */
 export async function traerCombos() {
-  const API_URL = `${BASE_URL}?route=client_interface&accion=obtener_combos`;
+  const API_URL = `${BASE_URL}?route=elegir_cita&tipo=combos`;
+  console.log("🔗 [COMBOS] URL llamada:", API_URL);
+  
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Error al conectar con el servidor: " + response.status);
+    console.log("📡 [COMBOS] Response status:", response.status);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
 
     const data = await response.json();
-    if (data.success) {
+    console.log("📦 [COMBOS] Data recibida:", data);
+    
+    if (data.success && Array.isArray(data.combos)) {
+      console.log(`✅ [COMBOS] ${data.combos.length} combos obtenidos`);
       return data.combos;
     } else {
       throw new Error(data.message || "No se pudieron obtener los combos");
     }
   } catch (error) {
+    console.error("💥 [COMBOS] Error completo:", error);
     throw new Error("Error al obtener combos: " + error.message);
   }
 }
@@ -50,18 +70,28 @@ export async function traerCombos() {
  * @returns {Promise<Array>}
  */
 export async function traerLugares() {
-  const API_URL = `${BASE_URL}?route=client_interface&accion=obtener_lugares`;
+  const API_URL = `${BASE_URL}?route=elegir_cita&tipo=lugares`;
+  console.log("🔗 [LUGARES] URL llamada:", API_URL);
+  
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Error al conectar con el servidor: " + response.status);
+    console.log("📡 [LUGARES] Response status:", response.status);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
 
     const data = await response.json();
-    if (data.success) {
+    console.log("📦 [LUGARES] Data recibida:", data);
+    
+    if (data.success && Array.isArray(data.lugares)) {
+      console.log(`✅ [LUGARES] ${data.lugares.length} lugares obtenidos`);
       return data.lugares;
     } else {
       throw new Error(data.message || "No se pudieron obtener los lugares");
     }
   } catch (error) {
+    console.error("💥 [LUGARES] Error completo:", error);
     throw new Error("Error al obtener lugares: " + error.message);
   }
 }
@@ -77,32 +107,65 @@ export async function traerLugares() {
  */
 export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = [], combos = []) {
   const API_URL = `${BASE_URL}?route=client_interface&accion=guardar_cita`;
+  
+  console.log("💾 [GUARDAR CITA] Preparando datos...");
+  console.log("📝 ID Cliente:", id_cliente);
+  console.log("📝 Fecha:", fecha_cita);
+  console.log("📝 Lugar ID:", id_lugar);
+  console.log("📝 Servicios:", servicios);
+  console.log("📝 Combos:", combos);
 
   const body = {
-    id_cliente,
+    id_cliente: parseInt(id_cliente),
     fecha_cita,
-    id_lugar,
-    servicios,
-    combos
+    id_lugar: parseInt(id_lugar),
+    servicios: servicios.map(s => parseInt(s)),
+    combos: combos.map(c => parseInt(c))
   };
+
+  console.log("📤 [GUARDAR CITA] Body enviado:", body);
+  console.log("🔗 [GUARDAR CITA] URL:", API_URL);
 
   try {
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(body)
     });
 
-    if (!response.ok) throw new Error("Error al conectar con el servidor: " + response.status);
+    console.log("📡 [GUARDAR CITA] Response status:", response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("❌ [GUARDAR CITA] Error response:", errorText);
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
 
     const data = await response.json();
+    console.log("📦 [GUARDAR CITA] Data recibida:", data);
 
     if (data.success) {
-      return new Cita(data.id_cita, fecha_cita, data.nombre_lugar, 1, servicios, combos);
+      console.log("✅ [GUARDAR CITA] Cita guardada exitosamente, ID:", data.id_cita);
+      
+      // Crear instancia de Cita con los datos necesarios
+      return new Cita(
+        data.id_cita,
+        id_cliente,
+        fecha_cita,
+        1, // activo
+        id_lugar,
+        "", // nombre_lugar - se puede obtener después
+        servicios,
+        combos
+      );
     } else {
       throw new Error(data.message || "Error al guardar la cita");
     }
   } catch (error) {
+    console.error("💥 [GUARDAR CITA] Error completo:", error);
     throw new Error("Error al guardar cita: " + error.message);
   }
 }
@@ -114,26 +177,67 @@ export async function guardarCita(id_cliente, fecha_cita, id_lugar, servicios = 
  */
 export async function traerDetallesCita(id_cita) {
   const API_URL = `${BASE_URL}?route=client_interface&accion=obtener_detalle_cita&id_cita=${id_cita}`;
+  console.log("🔗 [DETALLES CITA] URL llamada:", API_URL);
 
   try {
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Error al conectar con el servidor: " + response.status);
+    console.log("📡 [DETALLES CITA] Response status:", response.status);
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+    }
 
     const data = await response.json();
+    console.log("📦 [DETALLES CITA] Data recibida:", data);
 
     if (data.success) {
+      console.log("✅ [DETALLES CITA] Detalles obtenidos exitosamente");
+      
+      const servicios = data.detalles.filter((d) => d.tipo === "servicio");
+      const combos = data.detalles.filter((d) => d.tipo === "combo");
+      
       return new Cita(
         data.cita.id_cita,
+        data.cita.id_cliente || null,
         data.cita.fecha_cita,
-        data.cita.nombre_lugar,
         data.cita.activo,
-        data.detalles.filter((d) => d.tipo === "servicio"),
-        data.detalles.filter((d) => d.tipo === "combo")
+        data.cita.id_lugar || null,
+        data.cita.nombre_lugar || "",
+        servicios,
+        combos
       );
     } else {
       throw new Error(data.message || "No se pudo obtener el detalle de la cita");
     }
   } catch (error) {
+    console.error("💥 [DETALLES CITA] Error completo:", error);
     throw new Error("Error al obtener detalle de cita: " + error.message);
   }
+}
+
+/**
+ * 🎯 Función utilitaria para normalizar IDs en la vista
+ * @param {Object} item - Item del servicio/combo/lugar
+ * @returns {number} ID normalizado
+ */
+export function obtenerId(item) {
+  return item.id_servicios ?? item.id_combos ?? item.id_lugar ?? item.id;
+}
+
+/**
+ * 🎯 Función utilitaria para normalizar nombres en la vista
+ * @param {Object} item - Item del servicio/combo/lugar
+ * @returns {string} Nombre normalizado
+ */
+export function obtenerNombre(item) {
+  return item.nombre_servicio ?? item.nombre_combo ?? item.nombre_lugar ?? item.nombre ?? "Sin nombre";
+}
+
+/**
+ * 🎯 Función utilitaria para normalizar precios en la vista
+ * @param {Object} item - Item del servicio/combo
+ * @returns {number} Precio normalizado
+ */
+export function obtenerPrecio(item) {
+  return item.precio_servicio ?? item.precio ?? 0;
 }

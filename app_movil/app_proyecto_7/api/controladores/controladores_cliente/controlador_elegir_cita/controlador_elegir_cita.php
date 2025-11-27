@@ -6,84 +6,184 @@ error_reporting(E_ALL);
 header('Content-Type: application/json; charset=UTF-8');
 
 require_once(__DIR__ . '/../../../config/db.php');
-
 require_once(__DIR__ . '/../../../modelos/modelo_cli/modelo_elegir_cita/modelo_elegir_cita.php');
 
 // Crear instancia del modelo
 $modelo = new CitaModeloApi($conn);
 
-// Determinar método de solicitud
+// MÉTODO HTTP
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
 
-    // ✅ OBTENER LISTAS (servicios, combos, lugares)
+    /* ================================
+       GET → servicios, combos, lugares
+       ================================ */
     case 'GET':
-        // Ejemplo de rutas:
-        // /api/citas?tipo=servicios
-        // /api/citas?tipo=combos
-        // /api/citas?tipo=lugares
-        // /api/citas?id_cita=12
 
-        if (isset($_GET['tipo'])) {
+        // /api/router.php?route=elegir_cita&tipo=servicios
+        if (isset($_GET['route']) && $_GET['route'] === 'elegir_cita') {
+
+            if (!isset($_GET['tipo'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Tipo no especificado."
+                ]);
+                exit;
+            }
+
             $tipo = $_GET['tipo'];
 
             if ($tipo === 'servicios') {
-                echo json_encode($modelo->obtenerServicios());
-            } elseif ($tipo === 'combos') {
-                echo json_encode($modelo->obtenerCombos());
-            } elseif ($tipo === 'lugares') {
-                echo json_encode($modelo->obtenerLugares());
-            } else {
-                echo json_encode(['error' => 'Tipo no válido. Usa servicios, combos o lugares.']);
+                $data = $modelo->obtenerServicios();
+                echo json_encode([
+                    "success" => true,
+                    "servicios" => $data
+                ]);
+                exit;
             }
-        }
-        // Si se pasa un ID de cita, traer detalles completos
-        elseif (isset($_GET['id_cita'])) {
-            $id_cita = intval($_GET['id_cita']);
-            $cita = $modelo->obtenerCitaPorId($id_cita);
-            $detalles = $modelo->obtenerDetallesCita($id_cita);
-            echo json_encode(['cita' => $cita, 'detalles' => $detalles]);
-        }
-        else {
-            echo json_encode(['error' => 'Parámetros inválidos']);
-        }
-        break;
 
-    // ✅ GUARDAR UNA NUEVA CITA
-    case 'POST':
-        $data = json_decode(file_get_contents('php://input'), true);
+            if ($tipo === 'combos') {
+                $data = $modelo->obtenerCombos();
+                echo json_encode([
+                    "success" => true,
+                    "combos" => $data
+                ]);
+                exit;
+            }
 
-        if (!$data) {
-            echo json_encode(['error' => 'No se recibieron datos']);
-            break;
-        }
+            if ($tipo === 'lugares') {
+                $data = $modelo->obtenerLugares();
+                echo json_encode([
+                    "success" => true,
+                    "lugares" => $data
+                ]);
+                exit;
+            }
 
-        $id_cliente = $data['id_cliente'] ?? null;
-        $fecha_cita = $data['fecha_cita'] ?? null;
-        $id_lugar = $data['id_lugar'] ?? null;
-        $servicios = $data['servicios'] ?? [];
-        $combos = $data['combos'] ?? [];
+            if ($tipo === 'horarios') {
+                 $fecha = $_GET['fecha'] ?? date('Y-m-d');
+                $data = $modelo->obtenerHorariosDisponibles($fecha);
+                echo json_encode([
+                "success" => true,
+                "horarios" => $data
+                ]);
+                exit;
+            }
 
-        if (!$id_cliente || !$fecha_cita || !$id_lugar) {
-            echo json_encode(['error' => 'Faltan datos obligatorios']);
-            break;
-        }
-
-        $resultado = $modelo->guardarCita($id_cliente, $fecha_cita, $id_lugar, $servicios, $combos);
-
-        if (isset($resultado['error'])) {
-            echo json_encode($resultado);
-        } else {
             echo json_encode([
-                'message' => 'Cita registrada correctamente',
-                'data' => $resultado
+                "success" => false,
+                "message" => "Tipo no válido."
             ]);
+            exit;
         }
-        break;
 
-    // 🚫 MÉTODO NO PERMITIDO
+        // /api/router.php?route=client_interface&accion=obtener_detalle_cita&id_cita=X
+        if (isset($_GET['route']) && $_GET['route'] === 'client_interface' &&
+            isset($_GET['accion']) && $_GET['accion'] === 'obtener_detalle_cita'
+        ) {
+            if (!isset($_GET['id_cita'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "ID de cita no especificado."
+                ]);
+                exit;
+            }
+
+            $id = intval($_GET['id_cita']);
+
+            $cita = $modelo->obtenerCitaPorId($id);
+            $detalles = $modelo->obtenerDetallesCita($id);
+
+            echo json_encode([
+                "success" => true,
+                "cita" => $cita,
+                "detalles" => $detalles
+            ]);
+            exit;
+        }
+
+        echo json_encode([
+            "success" => false,
+            "message" => "Ruta GET inválida."
+        ]);
+        exit;
+
+
+    /* ================================
+       POST → guardar cita
+       ================================ */
+    case 'POST':
+
+        if (isset($_GET['route']) &&
+            $_GET['route'] === 'client_interface' &&
+            isset($_GET['accion']) &&
+            $_GET['accion'] === 'guardar_cita'
+        ) {
+
+            $data = json_decode(file_get_contents("php://input"), true);
+
+            if (!$data) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "JSON inválido."
+                ]);
+                exit;
+            }
+
+            $id_cliente = $data['id_cliente'] ?? null;
+            $fecha = $data['fecha_cita'] ?? null;
+            $id_lugar = $data['id_lugar'] ?? null;
+            $servicios = $data['servicios'] ?? [];
+            $combos = $data['combos'] ?? [];
+
+            // Validación
+            if (!$id_cliente || !$fecha || !$id_lugar) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => "Faltan parámetros obligatorios."
+                ]);
+                exit;
+            }
+
+            $resultado = $modelo->guardarCita(
+                $id_cliente,
+                $fecha,
+                $id_lugar,
+                $servicios,
+                $combos
+            );
+
+            if (isset($resultado['error'])) {
+                echo json_encode([
+                    "success" => false,
+                    "message" => $resultado['error']
+                ]);
+                exit;
+            }
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Cita guardada correctamente.",
+                "id_cita" => $resultado['id_cita']
+            ]);
+            exit;
+        }
+
+        echo json_encode([
+            "success" => false,
+            "message" => "Ruta POST inválida."
+        ]);
+        exit;
+
+
+    /* ================================
+       MÉTODO NO PERMITIDO
+       ================================ */
     default:
-        echo json_encode(['error' => 'Método no permitido']);
-        break;
+        echo json_encode([
+            "success" => false,
+            "message" => "Método no permitido."
+        ]);
+        exit;
 }

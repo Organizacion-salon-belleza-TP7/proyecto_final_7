@@ -108,4 +108,23 @@ class CitaModeloApi {
         $res = $stmt->get_result();
         return $res->fetch_all(MYSQLI_ASSOC);
     }
+
+    public function obtenerHorariosDisponibles($fecha) {
+    // Aquí implementas la lógica para obtener horarios disponibles
+    // Por ahora devuelvo horarios simulados
+        $horarios = [];
+        $horaInicio = 9;
+        $horaFin = 18;
+    
+        for ($hora = $horaInicio; $hora < $horaFin; $hora++) {
+            for ($minuto = 0; $minuto < 60; $minuto += 30) {
+                $horarios[] = [
+                    'hora' => sprintf("%02d:%02d", $hora, $minuto),
+                    'disponible' => true // Aquí verificarías contra la base de datos
+                ];
+            }
+        }
+    
+        return $horarios;
+    }
 }

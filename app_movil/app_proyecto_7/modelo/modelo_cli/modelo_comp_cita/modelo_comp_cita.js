@@ -9,4 +9,25 @@ export default class Cita {
     this.servicios = servicios;
     this.combos = combos;
   }
+
+  // Método para obtener el total de la cita
+  obtenerTotal() {
+    const totalServicios = this.servicios.reduce((sum, serv) => sum + (serv.precio || 0), 0);
+    const totalCombos = this.combos.reduce((sum, combo) => sum + (combo.precio || 0), 0);
+    return totalServicios + totalCombos;
+  }
+
+  // Método para obtener descripción de servicios/combos
+  obtenerDescripcion() {
+    const serviciosDesc = this.servicios.map(s => s.nombre || 'Servicio').join(', ');
+    const combosDesc = this.combos.map(c => c.nombre || 'Combo').join(', ');
+    
+    if (serviciosDesc && combosDesc) {
+      return `${serviciosDesc} + ${combosDesc}`;
+    } else if (serviciosDesc) {
+      return serviciosDesc;
+    } else {
+      return combosDesc;
+    }
+  }
 }

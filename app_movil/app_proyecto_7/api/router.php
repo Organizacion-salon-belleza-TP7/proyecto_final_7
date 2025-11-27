@@ -33,8 +33,16 @@ switch ($request) {
         require_once(__DIR__ . '/routes/cli/inicio_cli/inicio_cli.php');
         break;
 
+   case 'elegir_cita':
+        require_once(__DIR__ . '/routes/cli/citas_cli/elegir_cita.php');
+        break;
+        
     case 'citas_cli':
         require_once(__DIR__ . '/routes/cli/citas_cli/citas_cli.php');
+        break;
+
+    case 'ventas':
+        require_once(__DIR__ . '/routes/cli/ventas/venta.php');
         break;
 
     default:

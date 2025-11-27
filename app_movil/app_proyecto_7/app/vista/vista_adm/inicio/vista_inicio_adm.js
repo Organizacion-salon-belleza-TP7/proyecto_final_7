@@ -13,7 +13,7 @@ import { getInventario, deleteProducto } from "../../../../controladores/control
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 
-const IMAGE_BASE_URL = "http://10.0.2.206/proyecto_final_7/imagenes/inventario/";
+const IMAGE_BASE_URL = "http://192.168.100.8/proyecto_final_7/imagenes/inventario/";
 
 export default function InventarioScreen() {
   const [productos, setProductos] = useState([]);
