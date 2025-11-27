@@ -26,7 +26,7 @@ switch ($request) {
         break;
 
     case 'logouts':
-        require_once(__DIR__ . '/routes/adm/logouts/logouts.php');
+        require_once(__DIR__ . '/routes/logouts/logouts.php');
         break;
 
     case 'client_interface':
