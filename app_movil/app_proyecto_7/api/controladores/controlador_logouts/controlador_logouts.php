@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 header('Content-Type: application/json; charset=UTF-8');
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 
 require_once(__DIR__ . '/../../config/db.php');
 require_once(__DIR__ . '/../../modelos/modelo_logouts/modelo_logouts.php'); // Ajusta la ruta según tu estructura
