@@ -12,13 +12,13 @@ import {
   FlatList,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 // Importar controladores
 import {
   traerMetodosPago,
   traerDatosCita,
   procesarPago,
-  confirmarCita,
   calcularMontoConAjustes,
   formatearPrecio,
 } from "../../../../controladores/controladores_cli/controlador_venta/controlador_venta";
@@ -171,8 +171,8 @@ export default function VentaScreen() {
 
   if (cargando) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#ff6b9d" />
         <Text style={styles.loadingText}>Cargando datos de la venta...</Text>
       </View>
     );
@@ -180,7 +180,7 @@ export default function VentaScreen() {
 
   if (!datosCita) {
     return (
-      <View style={styles.center}>
+      <View style={styles.centerContainer}>
         <Text style={styles.errorText}>No se encontraron datos para la cita</Text>
         <TouchableOpacity 
           style={styles.btnVolver}
@@ -193,412 +193,498 @@ export default function VentaScreen() {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>💳 Procesar Pago</Text>
-
-      {/* Información de la Cita */}
-      <View style={styles.seccion}>
-        <Text style={styles.subtitle}>📋 Detalle de la Cita #{id_cita}</Text>
-        
-        {datosCita.detalle && datosCita.detalle.length > 0 ? (
-          datosCita.detalle.map((item, index) => (
-            <View key={index} style={styles.itemDetalle}>
-              <Text style={styles.itemNombre}>
-                {item.id_servicios ? '💈 ' : '🎁 '}
-                {item.nombre_servicio || item.nombre_combo || 'Item'}
-              </Text>
-              <Text style={styles.itemPrecio}>
-                ${formatearPrecio(item.precio_servicio || item.precio_combo || 0)}
-              </Text>
-            </View>
-          ))
-        ) : (
-          <Text style={styles.noData}>No hay items en esta cita</Text>
-        )}
-
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalLabel}>Total Original:</Text>
-          <Text style={styles.totalValor}>
-            ${formatearPrecio(datosCita.total || 0)}
-          </Text>
-        </View>
+    <View style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>Procesar Pago</Text>
       </View>
 
-      {/* Selección de Método de Pago */}
-      <View style={styles.seccion}>
-        <Text style={styles.subtitle}>💳 Método de Pago</Text>
-        
-        <TouchableOpacity 
-          style={styles.selectorMetodo}
-          onPress={() => setModalMetodosVisible(true)}
-        >
-          <Text style={
-            metodoPagoSeleccionado ? 
-            styles.selectorMetodoText : 
-            styles.selectorMetodoPlaceholder
-          }>
-            {metodoPagoSeleccionado ? 
-              `${metodoPagoSeleccionado.metodo_pago}` : 
-              "Seleccioná un método de pago"
-            }
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Información de la Cita */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
+            <Ionicons name="list" size={20} color="#ff6b9d" />
+            Detalle de la Cita #{id_cita}
           </Text>
-          <Text style={styles.selectorMetodoIcon}>▼</Text>
-        </TouchableOpacity>
-
-        {metodoPagoSeleccionado && (
-          <View style={styles.ajustesContainer}>
-            {metodoPagoSeleccionado.incremento > 0 && (
-              <Text style={styles.ajusteText}>
-                📈 Incremento: +{metodoPagoSeleccionado.incremento}%
-              </Text>
-            )}
-            {metodoPagoSeleccionado.decremento > 0 && (
-              <Text style={styles.ajusteText}>
-                📉 Decremento: -{metodoPagoSeleccionado.decremento}%
-              </Text>
-            )}
-          </View>
-        )}
-      </View>
-
-      {/* Monto Final */}
-      {metodoPagoSeleccionado && (
-        <View style={styles.seccion}>
-          <Text style={styles.subtitle}>💰 Monto a Pagar</Text>
           
-          <View style={styles.montoContainer}>
-            <Text style={styles.montoLabel}>Monto calculado:</Text>
-            <Text style={styles.montoFinal}>
-              ${formatearPrecio(montoFinal)}
+          {datosCita.detalle && datosCita.detalle.length > 0 ? (
+            datosCita.detalle.map((item, index) => (
+              <View key={index} style={styles.itemDetalle}>
+                <View style={styles.itemInfo}>
+                  <Ionicons 
+                    name={item.id_servicios ? "cut" : "gift"} 
+                    size={16} 
+                    color="#ff6b9d" 
+                  />
+                  <Text style={styles.itemNombre}>
+                    {item.nombre_servicio || item.nombre_combo || 'Item'}
+                  </Text>
+                </View>
+                <Text style={styles.itemPrecio}>
+                  ${formatearPrecio(item.precio_servicio || item.precio_combo || 0)}
+                </Text>
+              </View>
+            ))
+          ) : (
+            <Text style={styles.noData}>No hay items en esta cita</Text>
+          )}
+
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>Total Original:</Text>
+            <Text style={styles.totalValor}>
+              ${formatearPrecio(datosCita.total || 0)}
             </Text>
           </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>Ingresá el monto:</Text>
-            <TextInput
-              style={styles.input}
-              value={montoIngresado}
-              onChangeText={setMontoIngresado}
-              placeholder="0.00"
-              keyboardType="numeric"
-              placeholderTextColor="#999"
-            />
-          </View>
         </View>
-      )}
 
-      {/* Botón de Procesar Pago */}
-      <TouchableOpacity 
-        style={[
-          styles.btnProcesar,
-          (!metodoPagoSeleccionado || procesandoPago) && styles.btnDisabled
-        ]} 
-        onPress={procesarVenta}
-        disabled={!metodoPagoSeleccionado || procesandoPago}
-      >
-        {procesandoPago ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.btnProcesarText}>
-            {!metodoPagoSeleccionado ? 
-              "Seleccioná un método de pago" : 
-              `Procesar Pago - $${formatearPrecio(montoFinal)}`
-            }
+        {/* Selección de Método de Pago */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
+            <Ionicons name="card" size={20} color="#ff6b9d" />
+            Método de Pago
           </Text>
-        )}
-      </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.selectorMetodo}
+            onPress={() => setModalMetodosVisible(true)}
+          >
+            <Text style={
+              metodoPagoSeleccionado ? 
+              styles.selectorMetodoText : 
+              styles.selectorMetodoPlaceholder
+            }>
+              {metodoPagoSeleccionado ? 
+                `${metodoPagoSeleccionado.metodo_pago}` : 
+                "Seleccioná un método de pago"
+              }
+            </Text>
+            <Ionicons name="chevron-down" size={20} color="#666" />
+          </TouchableOpacity>
 
-      {/* Modal de Métodos de Pago */}
-      <Modal
-        visible={modalMetodosVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalMetodosVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Seleccionar Método de Pago</Text>
-            
-            <FlatList
-              data={metodosPago}
-              keyExtractor={(item) => item.id_metodo_pago.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[
-                    styles.metodoItem,
-                    metodoPagoSeleccionado?.id_metodo_pago === item.id_metodo_pago && 
-                    styles.metodoItemSeleccionado
-                  ]}
-                  onPress={() => seleccionarMetodoPago(item)}
-                >
-                  <Text style={styles.metodoNombre}>{item.metodo_pago}</Text>
-                  <View style={styles.metodoAjustes}>
-                    {item.incremento > 0 && (
-                      <Text style={styles.metodoAjuste}>+{item.incremento}%</Text>
-                    )}
-                    {item.decremento > 0 && (
-                      <Text style={styles.metodoAjuste}>-{item.decremento}%</Text>
-                    )}
-                  </View>
-                </TouchableOpacity>
+          {metodoPagoSeleccionado && (
+            <View style={styles.ajustesContainer}>
+              {metodoPagoSeleccionado.incremento > 0 && (
+                <View style={styles.ajusteRow}>
+                  <Ionicons name="trending-up" size={16} color="#27ae60" />
+                  <Text style={styles.ajusteText}>
+                    Incremento: +{metodoPagoSeleccionado.incremento}%
+                  </Text>
+                </View>
               )}
-            />
-            
-            <TouchableOpacity
-              style={styles.modalCerrar}
-              onPress={() => setModalMetodosVisible(false)}
-            >
-              <Text style={styles.modalCerrarTexto}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
+              {metodoPagoSeleccionado.decremento > 0 && (
+                <View style={styles.ajusteRow}>
+                  <Ionicons name="trending-down" size={16} color="#e74c3c" />
+                  <Text style={styles.ajusteText}>
+                    Decremento: -{metodoPagoSeleccionado.decremento}%
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
         </View>
-      </Modal>
 
-      {/* Espacio adicional */}
-      <View style={styles.espacioInferior} />
-    </ScrollView>
+        {/* Monto Final */}
+        {metodoPagoSeleccionado && (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>
+              <Ionicons name="cash" size={20} color="#ff6b9d" />
+              Monto a Pagar
+            </Text>
+            
+            <View style={styles.montoContainer}>
+              <Text style={styles.montoLabel}>Monto calculado:</Text>
+              <Text style={styles.montoFinal}>
+                ${formatearPrecio(montoFinal)}
+              </Text>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Ingresá el monto:</Text>
+              <TextInput
+                style={styles.input}
+                value={montoIngresado}
+                onChangeText={setMontoIngresado}
+                placeholder="0.00"
+                keyboardType="numeric"
+                placeholderTextColor="#999"
+              />
+            </View>
+          </View>
+        )}
+
+        {/* Botón de Procesar Pago */}
+        <TouchableOpacity 
+          style={[
+            styles.btnProcesar,
+            (!metodoPagoSeleccionado || procesandoPago) && styles.btnDisabled
+          ]} 
+          onPress={procesarVenta}
+          disabled={!metodoPagoSeleccionado || procesandoPago}
+        >
+          {procesandoPago ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="card" size={24} color="#fff" />
+              <Text style={styles.btnProcesarText}>
+                {!metodoPagoSeleccionado ? 
+                  "Seleccioná un método de pago" : 
+                  `Procesar Pago - $${formatearPrecio(montoFinal)}`
+                }
+              </Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* Modal de Métodos de Pago */}
+        <Modal
+          visible={modalMetodosVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalMetodosVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Seleccionar Método de Pago</Text>
+              
+              <FlatList
+                data={metodosPago}
+                keyExtractor={(item) => item.id_metodo_pago.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={[
+                      styles.metodoItem,
+                      metodoPagoSeleccionado?.id_metodo_pago === item.id_metodo_pago && 
+                      styles.metodoItemSeleccionado
+                    ]}
+                    onPress={() => seleccionarMetodoPago(item)}
+                  >
+                    <Text style={styles.metodoNombre}>{item.metodo_pago}</Text>
+                    <View style={styles.metodoAjustes}>
+                      {item.incremento > 0 && (
+                        <View style={styles.ajusteBadge}>
+                          <Ionicons name="trending-up" size={12} color="#27ae60" />
+                          <Text style={styles.ajusteBadgeText}>+{item.incremento}%</Text>
+                        </View>
+                      )}
+                      {item.decremento > 0 && (
+                        <View style={[styles.ajusteBadge, styles.ajusteBadgeRed]}>
+                          <Ionicons name="trending-down" size={12} color="#e74c3c" />
+                          <Text style={styles.ajusteBadgeText}>-{item.decremento}%</Text>
+                        </View>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
+              
+              <TouchableOpacity
+                style={styles.modalCerrar}
+                onPress={() => setModalMetodosVisible(false)}
+              >
+                <Text style={styles.modalCerrarTexto}>Cerrar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Espacio adicional */}
+        <View style={styles.espacioInferior} />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fdf0f5' 
+  },
+  header: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  title: { 
+    fontSize: 28, 
+    fontWeight: '700', 
+    color: '#000',
+    textAlign: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  centerContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    backgroundColor: '#fdf0f5',
     padding: 20,
   },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: "#666",
+  loadingText: { 
+    marginTop: 10, 
+    fontSize: 16, 
+    color: '#333' 
   },
   errorText: {
     fontSize: 16,
-    color: "#dc3545",
-    textAlign: "center",
+    color: '#e74c3c',
+    textAlign: 'center',
     marginBottom: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#333",
+  card: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 15,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  seccion: {
-    marginBottom: 25,
-  },
-  subtitle: {
+  cardTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: '700',
     marginBottom: 15,
-    color: "#333",
+    color: '#333',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   noData: {
-    textAlign: "center",
-    color: "#666",
-    fontStyle: "italic",
+    textAlign: 'center',
+    color: '#666',
+    fontStyle: 'italic',
     marginVertical: 10,
   },
   // Estilos para el detalle de items
   itemDetalle: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  itemInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   itemNombre: {
     fontSize: 14,
-    color: "#333",
+    color: '#333',
+    marginLeft: 8,
     flex: 1,
   },
   itemPrecio: {
     fontSize: 14,
-    fontWeight: "bold",
-    color: "#28a745",
+    fontWeight: '700',
+    color: '#27ae60',
   },
   totalContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 15,
     paddingTop: 15,
     borderTopWidth: 1,
-    borderTopColor: "#dee2e6",
+    borderTopColor: '#eee',
   },
   totalLabel: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#333",
+    fontWeight: 'bold',
+    color: '#333',
   },
   totalValor: {
     fontSize: 16,
-    fontWeight: "bold",
-    color: "#28a745",
+    fontWeight: 'bold',
+    color: '#27ae60',
   },
   // Selector de método de pago
   selectorMetodo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#dee2e6",
+    borderColor: '#dee2e6',
   },
   selectorMetodoText: {
     fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
+    color: '#333',
+    fontWeight: '500',
   },
   selectorMetodoPlaceholder: {
     fontSize: 16,
-    color: "#999",
-  },
-  selectorMetodoIcon: {
-    fontSize: 14,
-    color: "#666",
+    color: '#999',
   },
   ajustesContainer: {
     marginTop: 10,
-    padding: 10,
-    backgroundColor: "#e7f3ff",
-    borderRadius: 6,
+    padding: 12,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 8,
+  },
+  ajusteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   ajusteText: {
     fontSize: 12,
-    color: "#0066cc",
-    marginBottom: 2,
+    color: '#666',
+    marginLeft: 6,
   },
   // Monto final
   montoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 15,
   },
   montoLabel: {
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
   montoFinal: {
     fontSize: 18,
-    fontWeight: "bold",
-    color: "#28a745",
+    fontWeight: 'bold',
+    color: '#27ae60',
   },
   inputContainer: {
     marginTop: 10,
   },
   inputLabel: {
     fontSize: 14,
-    color: "#666",
-    marginBottom: 5,
+    color: '#666',
+    marginBottom: 8,
+    fontWeight: '600',
   },
   input: {
-    backgroundColor: "#f8f9fa",
+    backgroundColor: '#f8f9fa',
     borderWidth: 1,
-    borderColor: "#dee2e6",
-    borderRadius: 8,
+    borderColor: '#dee2e6',
+    borderRadius: 10,
     padding: 12,
     fontSize: 16,
-    color: "#333",
+    color: '#333',
   },
   // Botón procesar
   btnProcesar: {
-    marginTop: 30,
-    padding: 15,
-    backgroundColor: "#28a745",
-    borderRadius: 10,
-    alignItems: "center",
+    marginTop: 25,
+    padding: 16,
+    backgroundColor: '#ff6b9d',
+    borderRadius: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
   btnDisabled: {
-    backgroundColor: "#6c757d",
+    backgroundColor: '#7f8c8d',
   },
   btnProcesarText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: '700',
     fontSize: 18,
+    marginLeft: 8,
   },
   btnVolver: {
     padding: 12,
-    backgroundColor: "#6c757d",
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: '#ff6b9d',
+    borderRadius: 10,
+    alignItems: 'center',
   },
   btnVolverText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   // Modal métodos de pago
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 20,
   },
   modalContent: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 15,
     padding: 20,
-    width: "100%",
-    maxHeight: "80%",
+    width: '100%',
+    maxHeight: '80%',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 15,
-    textAlign: "center",
-    color: "#333",
+    textAlign: 'center',
+    color: '#333',
   },
   metodoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#f0f0f0",
+    borderBottomColor: '#f0f0f0',
   },
   metodoItemSeleccionado: {
-    backgroundColor: "#e7f3ff",
+    backgroundColor: '#fdf0f5',
     borderRadius: 8,
   },
   metodoNombre: {
     fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
+    color: '#333',
+    fontWeight: '500',
   },
   metodoAjustes: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
-  metodoAjuste: {
-    fontSize: 12,
-    color: "#666",
-    marginLeft: 8,
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    backgroundColor: "#f8f9fa",
-    borderRadius: 4,
+  ajusteBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e8f5e8',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 6,
+  },
+  ajusteBadgeRed: {
+    backgroundColor: '#fde8e8',
+  },
+  ajusteBadgeText: {
+    fontSize: 10,
+    color: '#333',
+    fontWeight: '600',
+    marginLeft: 4,
   },
   modalCerrar: {
     marginTop: 15,
     padding: 12,
-    backgroundColor: "#6c757d",
-    borderRadius: 8,
-    alignItems: "center",
+    backgroundColor: '#ff6b9d',
+    borderRadius: 10,
+    alignItems: 'center',
   },
   modalCerrarTexto: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   espacioInferior: {

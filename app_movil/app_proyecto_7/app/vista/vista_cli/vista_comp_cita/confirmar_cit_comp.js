@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ConfirmarCitaScreen() {
   const router = useRouter();
@@ -69,39 +70,65 @@ export default function ConfirmarCitaScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.successIcon}>✅</Text>
-        <Text style={styles.title}>¡Cita Confirmada!</Text>
-        <Text style={styles.subtitle}>Tu cita ha sido agendada exitosamente</Text>
+        <Text style={styles.title}>Confirmación de Cita</Text>
       </View>
 
-      <View style={styles.detallesContainer}>
-        <Text style={styles.detallesTitle}>Detalles de la Cita</Text>
-        
-        <View style={styles.detalleItem}>
-          <Text style={styles.detalleLabel}>ID de Cita:</Text>
-          <Text style={styles.detalleValor}>{citaData.id_cita}</Text>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Icono de éxito */}
+        <View style={styles.successContainer}>
+          <Ionicons name="checkmark-circle" size={80} color="#27ae60" />
+          <Text style={styles.successTitle}>¡Cita Confirmada!</Text>
+          <Text style={styles.successSubtitle}>Tu cita ha sido agendada exitosamente</Text>
         </View>
 
-        <View style={styles.detalleItem}>
-          <Text style={styles.detalleLabel}>Fecha y Hora:</Text>
-          <Text style={styles.detalleValor}>{fechaFormateada}</Text>
+        {/* Detalles de la cita */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Detalles de la Cita</Text>
+          
+          <View style={styles.detalleItem}>
+            <View style={styles.detalleRow}>
+              <Ionicons name="calendar" size={20} color="#ff6b9d" />
+              <Text style={styles.detalleLabel}>ID de Cita:</Text>
+            </View>
+            <Text style={styles.detalleValor}>{citaData.id_cita}</Text>
+          </View>
+
+          <View style={styles.detalleItem}>
+            <View style={styles.detalleRow}>
+              <Ionicons name="time" size={20} color="#ff6b9d" />
+              <Text style={styles.detalleLabel}>Fecha y Hora:</Text>
+            </View>
+            <Text style={styles.detalleValor}>{fechaFormateada}</Text>
+          </View>
+
+          <View style={styles.detalleItem}>
+            <View style={styles.detalleRow}>
+              <Ionicons name="location" size={20} color="#ff6b9d" />
+              <Text style={styles.detalleLabel}>Lugar:</Text>
+            </View>
+            <Text style={styles.detalleValor}>{lugarSeleccionado?.nombre_lugar}</Text>
+          </View>
         </View>
 
-        <View style={styles.detalleItem}>
-          <Text style={styles.detalleLabel}>Lugar:</Text>
-          <Text style={styles.detalleValor}>{lugarSeleccionado?.nombre_lugar}</Text>
-        </View>
-
-        <View style={styles.serviciosSection}>
-          <Text style={styles.serviciosTitle}>Servicios y Combos:</Text>
+        {/* Servicios y combos seleccionados */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Servicios y Combos</Text>
           {seleccionadosData.map((item, index) => (
             <View key={index} style={styles.servicioItem}>
-              <Text style={styles.servicioNombre}>
-                {item.tipo === 'servicio' ? '💈 ' : '🎁 '}
-                {item.nombre}
-              </Text>
+              <View style={styles.servicioInfo}>
+                <Ionicons 
+                  name={item.tipo === 'servicio' ? "cut" : "gift"} 
+                  size={18} 
+                  color="#ff6b9d" 
+                />
+                <Text style={styles.servicioNombre}>{item.nombre}</Text>
+              </View>
               <Text style={styles.servicioPrecio}>
                 ${formatearPrecio(item.precio)}
               </Text>
@@ -109,151 +136,216 @@ export default function ConfirmarCitaScreen() {
           ))}
         </View>
 
-        <View style={styles.totalSection}>
-          <Text style={styles.totalLabel}>Total:</Text>
-          <Text style={styles.totalValor}>${formatearPrecio(totalFinal)}</Text>
+        {/* Total */}
+        <View style={styles.totalCard}>
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalLabel}>Total:</Text>
+            <Text style={styles.totalValor}>${formatearPrecio(totalFinal)}</Text>
+          </View>
         </View>
-      </View>
 
-      {/* ✅ NUEVO: Botón para Pagar Cita */}
-      <TouchableOpacity 
-        style={styles.btnPagar}
-        onPress={irAPagar}
-      >
-        <Text style={styles.btnPagarText}>💳 Pagar Cita - ${formatearPrecio(totalFinal)}</Text>
-      </TouchableOpacity>
+        {/* Botones de acción */}
+        <TouchableOpacity 
+          style={styles.btnPagar}
+          onPress={irAPagar}
+        >
+          <Ionicons name="card" size={24} color="#fff" />
+          <Text style={styles.btnPagarText}>
+            Pagar Cita - ${formatearPrecio(totalFinal)}
+          </Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.btnVolver}
-        onPress={() => router.back()}
-      >
-        <Text style={styles.btnVolverText}>Volver al Inicio</Text>
-      </TouchableOpacity>
-    </ScrollView>
+
+        {/* Espacio inferior */}
+        <View style={styles.espacioInferior} />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff'
+  container: { 
+    flex: 1, 
+    backgroundColor: '#fdf0f5' 
   },
   header: {
+    padding: 16,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  title: { 
+    fontSize: 28, 
+    fontWeight: '700', 
+    color: '#000',
+    textAlign: 'center',
+  },
+  scrollContent: {
+    padding: 16,
+    paddingBottom: 40,
+  },
+  successContainer: {
     alignItems: 'center',
-    marginBottom: 30,
-    paddingVertical: 20
+    marginBottom: 25,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  successIcon: {
-    fontSize: 60,
-    marginBottom: 10
-  },
-  title: {
-    fontSize: 28,
+  successTitle: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#28a745',
-    marginBottom: 5
+    color: '#27ae60',
+    marginTop: 10,
+    marginBottom: 5,
   },
-  subtitle: {
+  successSubtitle: {
     fontSize: 16,
     color: '#666',
-    textAlign: 'center'
+    textAlign: 'center',
   },
-  detallesContainer: {
-    backgroundColor: '#f8f9fa',
-    padding: 20,
-    borderRadius: 10,
-    marginBottom: 20
+  card: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 15,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  detallesTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
     marginBottom: 15,
-    color: '#333'
+    color: '#333',
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    paddingBottom: 8,
   },
   detalleItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
-    paddingBottom: 10,
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#dee2e6'
+    borderBottomColor: '#f0f0f0',
+  },
+  detalleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   detalleLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
-    fontWeight: '500'
+    fontWeight: '600',
+    marginLeft: 8,
   },
   detalleValor: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
-    fontWeight: 'bold'
-  },
-  serviciosSection: {
-    marginTop: 15
-  },
-  serviciosTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333'
+    fontWeight: '700',
+    textAlign: 'right',
+    flex: 1,
   },
   servicioItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 8,
-    paddingLeft: 10
+    alignItems: 'center',
+    marginBottom: 10,
+    paddingVertical: 8,
+  },
+  servicioInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   servicioNombre: {
     fontSize: 14,
     color: '#333',
-    flex: 1
+    marginLeft: 8,
+    flex: 1,
   },
   servicioPrecio: {
     fontSize: 14,
     color: '#333',
-    fontWeight: '500'
+    fontWeight: '700',
   },
-  totalSection: {
+  totalCard: {
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 15,
+    marginBottom: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  totalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 15,
-    paddingTop: 15,
-    borderTopWidth: 2,
-    borderTopColor: '#dee2e6'
+    alignItems: 'center',
   },
   totalLabel: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333'
+    color: '#333',
   },
   totalValor: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#28a745'
+    color: '#27ae60',
   },
-  // ✅ NUEVO: Estilos para botón de pagar
   btnPagar: {
-    backgroundColor: '#ff6b00',
-    padding: 15,
-    borderRadius: 10,
+    backgroundColor: '#ff6b9d',
+    padding: 16,
+    borderRadius: 20,
     alignItems: 'center',
-    marginBottom: 15
+    marginBottom: 12,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
   },
   btnPagarText: {
     color: '#fff',
+    fontWeight: '700',
     fontSize: 18,
-    fontWeight: 'bold'
+    marginLeft: 8,
   },
   btnVolver: {
-    backgroundColor: '#007bff',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center'
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#ff6b9d',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   btnVolverText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold'
-  }
+    color: '#ff6b9d',
+    fontWeight: '700',
+    fontSize: 16,
+    marginLeft: 8,
+  },
+  espacioInferior: {
+    height: 50,
+  },
 });

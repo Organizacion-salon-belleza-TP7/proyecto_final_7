@@ -7,15 +7,13 @@ import {
   StyleSheet,
   Alert,
   TouchableOpacity,
-  Modal,
-  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   traerCitasCompradas,
   cancelarCita,
 } from "../../../../controladores/controladores_cli/controlador_inicio/controlador_inicio_cli";
-import { cerrarSesion, verificarSesion } from "../../../../controladores/controlador_logouts/controlador_logouts";
+import { cerrarSesion } from "../../../../controladores/controlador_logouts/controlador_logouts";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -24,30 +22,12 @@ export default function VistaInicioCliente() {
   const [loading, setLoading] = useState(true);
   const [usuario, setUsuario] = useState(null);
   const [menuVisible, setMenuVisible] = useState(false);
-  const [slideAnim] = useState(new Animated.Value(-300));
 
   const router = useRouter();
 
   useEffect(() => {
     cargarCitas();
   }, []);
-
-  // Animación del menú
-  useEffect(() => {
-    if (menuVisible) {
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    } else {
-      Animated.timing(slideAnim, {
-        toValue: -300,
-        duration: 300,
-        useNativeDriver: true,
-      }).start();
-    }
-  }, [menuVisible]);
 
   async function cargarCitas() {
     try {
@@ -83,7 +63,6 @@ export default function VistaInicioCliente() {
     }
   }
 
-  // 👇 FUNCIÓN DE CERRAR SESIÓN
   async function handleCerrarSesion() {
     Alert.alert(
       "Cerrar Sesión",
@@ -96,24 +75,15 @@ export default function VistaInicioCliente() {
           onPress: async () => {
             try {
               setMenuVisible(false);
-              
-              console.log('🔴 Iniciando proceso de logout...');
               const resultado = await cerrarSesion();
               
               if (resultado.success) {
-                console.log('✅ Logout exitoso, redirigiendo...');
-                // Navegar al login
                 router.replace('/');
               } else {
                 throw new Error('No se pudo completar el logout');
               }
-              
             } catch (error) {
-              console.error('❌ Error en cerrar sesión:', error);
-              Alert.alert(
-                "Error", 
-                "No se pudo cerrar sesión correctamente. Intenta nuevamente."
-              );
+              Alert.alert("Error", "No se pudo cerrar sesión correctamente");
             }
           },
         },
@@ -123,8 +93,8 @@ export default function VistaInicioCliente() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#e91e63" />
+      <View style={styles.centerContainer}>
+        <ActivityIndicator size="large" color="#ff6b9d" />
         <Text style={styles.loadingText}>Cargando tus citas...</Text>
       </View>
     );
@@ -132,327 +102,293 @@ export default function VistaInicioCliente() {
 
   return (
     <View style={styles.container}>
-      {/* Header con botón de menú */}
+      {/* Header con título y botón de menú */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Mis Citas</Text>
         <TouchableOpacity 
           style={styles.menuButton}
-          onPress={() => setMenuVisible(true)}
+          onPress={() => setMenuVisible(!menuVisible)}
         >
           <Ionicons name="menu" size={28} color="#fff" />
         </TouchableOpacity>
+        <Text style={styles.title}>Mis Citas</Text>
+        <View style={styles.headerSpacer} />
       </View>
 
-      {/* Menú desplegable */}
-      <Modal
-        visible={menuVisible}
-        transparent={true}
-        animationType="none"
-        onRequestClose={() => setMenuVisible(false)}
-      >
-        <TouchableOpacity 
-          style={styles.menuOverlay}
-          activeOpacity={1}
-          onPress={() => setMenuVisible(false)}
-        >
-          <Animated.View 
-            style={[
-              styles.menuContainer,
-              { transform: [{ translateX: slideAnim }] }
-            ]}
+      {/* Menú desplegable a la izquierda */}
+      {menuVisible && (
+        <View style={styles.dropdownMenu}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={handleCerrarSesion}
           >
-            <View style={styles.menuHeader}>
-              <Text style={styles.menuTitle}>Menú</Text>
-              <TouchableOpacity 
-                onPress={() => setMenuVisible(false)}
-                style={styles.closeButton}
-              >
-                <Ionicons name="close" size={24} color="#fff" />
-              </TouchableOpacity>
-            </View>
+            <Ionicons name="log-out" size={20} color="#e74c3c" />
+            <Text style={styles.logoutText}>Cerrar Sesión</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-            <View style={styles.userInfo}>
-              <Ionicons name="person-circle" size={50} color="#e91e63" />
-              <Text style={styles.userName}>
-                {usuario?.nombre_usuario || 'Usuario'}
-              </Text>
-              <Text style={styles.userId}>ID: {usuario?.id_usuario}</Text>
-            </View>
+      {/* Información del usuario */}
+      <View style={styles.userInfo}>
+        <Ionicons name="person-circle" size={40} color="#ff6b9d" />
+        <View style={styles.userTextContainer}>
+          <Text style={styles.userName}>{usuario?.nombre_usuario || 'Usuario'}</Text>
+          <Text style={styles.userId}>ID: {usuario?.id_usuario}</Text>
+        </View>
+      </View>
 
-            <TouchableOpacity 
-              style={styles.menuItem}
-              onPress={() => {
-                setMenuVisible(false);
-                // Navegar a perfil si lo tienes
-              }}
-            >
-              <Ionicons name="person" size={20} color="#333" />
-              <Text style={styles.menuText}>Mi Perfil</Text>
-            </TouchableOpacity>
+      {/* Botón para comprar nueva cita */}
+      <TouchableOpacity
+        style={styles.addButton}
+        onPress={() => {
+          if (!usuario) {
+            Alert.alert("Error", "No se encontró información del usuario");
+            return;
+          }
+          router.push({
+            pathname: "vista/vista_cli/vista_comp_cita/vista_comp_cita",
+            params: { id_cliente: usuario.id_usuario },
+          });
+        }}
+      >
+        <Ionicons name="add-circle" size={20} color="#fff" />
+        <Text style={styles.addButtonText}>Comprar Nueva Cita</Text>
+      </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={styles.menuItem}
-              onPress={() => {
-                setMenuVisible(false);
-                // Navegar a configuración si lo tienes
-              }}
-            >
-              <Ionicons name="settings" size={20} color="#333" />
-              <Text style={styles.menuText}>Configuración</Text>
-            </TouchableOpacity>
+      <Text style={styles.subtitle}>Total de citas: {citas.length}</Text>
 
-            <TouchableOpacity 
-              style={styles.menuItem}
-              onPress={() => {
-                setMenuVisible(false);
-                cargarCitas();
-                Alert.alert("Éxito", "Datos actualizados");
-              }}
-            >
-              <Ionicons name="refresh" size={20} color="#333" />
-              <Text style={styles.menuText}>Actualizar</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity 
-              style={[styles.menuItem, styles.logoutButton]}
-              onPress={handleCerrarSesion}
-            >
-              <Ionicons name="log-out" size={20} color="#e74c3c" />
-              <Text style={[styles.menuText, styles.logoutText]}>Cerrar Sesión</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </TouchableOpacity>
-      </Modal>
-
-      {/* Contenido principal */}
+      {/* Lista de citas */}
       <FlatList
         data={citas}
-        ListHeaderComponent={
-          <Text style={styles.title}>Mis Citas Compradas</Text>
-        }
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.textContainer}>
+              <Text style={styles.cardTitle}>Lugar: {item.nombre_lugar}</Text>
+              <Text style={styles.cardText}>Fecha: {item.fecha_cita}</Text>
+              <Text style={[
+                styles.cardText, 
+                styles.statusText,
+                item.activo ? styles.activeStatus : styles.inactiveStatus
+              ]}>
+                Estado: {item.activo ? "Activa" : "Inactiva"}
+              </Text>
+            </View>
+            <View style={styles.buttonContainer}>
+              {item.activo ? (
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => handleCancelarCita(item.id_caja, item.id_cita)}
+                >
+                  <Text style={styles.buttonText}>Cancelar Cita</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.disabledButton} disabled>
+                  <Text style={styles.buttonText}>Cita Inactiva</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
         keyExtractor={(item, index) =>
           `${item.id_cita ?? "sin-id"}-${item.id_historial_compra ?? index}`
         }
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.text}>Lugar: {item.nombre_lugar}</Text>
-            <Text style={styles.text}>Fecha: {item.fecha_cita}</Text>
-            <Text style={styles.text}>
-              Estado: {item.activo ? "Activa" : "Inactiva"}
-            </Text>
-
-            {item.activo ? (
-              <TouchableOpacity
-                style={styles.btnCancel}
-                onPress={() => handleCancelarCita(item.id_caja, item.id_cita)}
-              >
-                <Text style={styles.btnText}>Cancelar Cita</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.btnDisabled} disabled>
-                <Text style={styles.btnText}>Cita Inactiva</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons name="calendar-outline" size={60} color="#ccc" />
             <Text style={styles.emptyText}>No tienes citas compradas</Text>
           </View>
         }
-        ListFooterComponent={
-          <TouchableOpacity
-            style={styles.btnComprar}
-            onPress={() => {
-              if (!usuario) {
-                Alert.alert("Error", "No se encontró información del usuario");
-                return;
-              }
-
-              router.push({
-                pathname: "vista/vista_cli/vista_comp_cita/vista_comp_cita",
-                params: { id_cliente: usuario.id_usuario },
-              });
-            }}
-          >
-            <Ionicons name="add-circle" size={20} color="#fff" />
-            <Text style={styles.btnComprarText}>Comprar Nueva Cita</Text>
-          </TouchableOpacity>
-        }
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff'
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: '#fdf0f5' 
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666'
-  },
-  // Header styles
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#e91e63',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    paddingTop: 50,
+    marginBottom: 16,
   },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
+  title: { 
+    fontSize: 28, 
+    fontWeight: '700', 
+    color: '#000',
+    textAlign: 'center',
+    flex: 1,
+  },
+  headerSpacer: {
+    width: 40, // Mismo ancho que el botón para centrar el título
   },
   menuButton: {
-    padding: 5,
+    padding: 8,
+    backgroundColor: '#ff6b9d',
+    borderRadius: 8,
+    width: 40,
+    alignItems: 'center',
   },
-  // Menu styles
-  menuOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  menuContainer: {
+  dropdownMenu: {
     position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 300,
-    backgroundColor: '#fff',
-    paddingTop: 60,
-  },
-  menuHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  menuTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  closeButton: {
-    padding: 5,
-  },
-  userInfo: {
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
-    color: '#333'
-  },
-  userId: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 5
+    top: 60,
+    left: 16,
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 8,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    zIndex: 1000,
+    minWidth: 160,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  menuText: {
-    marginLeft: 15,
-    fontSize: 16,
-    color: '#333',
-  },
-  logoutButton: {
-    marginTop: 20,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
   logoutText: {
+    marginLeft: 8,
+    fontSize: 16,
     color: '#e74c3c',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  // Content styles
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 15,
-    textAlign: "center",
-    marginTop: 20,
-    color: '#333'
-  },
-  emptyContainer: {
+  userInfo: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 50,
-    padding: 20
+    backgroundColor: 'white',
+    padding: 16,
+    borderRadius: 15,
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  userTextContainer: {
+    marginLeft: 12,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#000',
+    marginBottom: 4,
+  },
+  userId: {
+    fontSize: 14,
+    color: '#666',
+  },
+  subtitle: { 
+    fontSize: 16, 
+    marginBottom: 16, 
+    textAlign: 'center', 
+    color: '#333' 
+  },
+  addButton: { 
+    backgroundColor: '#ff6b9d', 
+    paddingVertical: 12, 
+    borderRadius: 20, 
+    marginBottom: 16, 
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  addButtonText: {
+    color: '#fff', 
+    fontWeight: '700', 
+    fontSize: 18,
+    marginLeft: 8,
+  },
+  card: { 
+    backgroundColor: 'white', 
+    padding: 16, 
+    borderRadius: 15, 
+    marginBottom: 12, 
+    elevation: 5, 
+    flexDirection: 'row', 
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+  },
+  textContainer: { 
+    flex: 1,
+    marginRight: 12,
+  },
+  cardTitle: { 
+    fontSize: 18, 
+    fontWeight: '700', 
+    marginBottom: 6, 
+    color: '#000' 
+  },
+  cardText: { 
+    fontSize: 14, 
+    color: '#333', 
+    marginBottom: 2 
+  },
+  statusText: {
+    fontWeight: '600',
+  },
+  activeStatus: {
+    color: '#27ae60',
+  },
+  inactiveStatus: {
+    color: '#7f8c8d',
+  },
+  buttonContainer: { 
+    flexDirection: 'column',
+  },
+  cancelButton: { 
+    backgroundColor: '#e74c3c', 
+    paddingVertical: 8, 
+    paddingHorizontal: 12, 
+    borderRadius: 8 
+  },
+  disabledButton: { 
+    backgroundColor: '#7f8c8d', 
+    paddingVertical: 8, 
+    paddingHorizontal: 12, 
+    borderRadius: 8 
+  },
+  buttonText: { 
+    color: '#fff', 
+    fontWeight: '700', 
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  centerContainer: { 
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    padding: 20 
+  },
+  loadingText: { 
+    marginTop: 10, 
+    fontSize: 16, 
+    color: '#333' 
+  },
+  emptyContainer: { 
+    alignItems: 'center', 
+    marginTop: 50, 
+    padding: 20 
   },
   emptyText: { 
     textAlign: "center", 
     marginTop: 15, 
-    fontSize: 16,
-    color: '#666'
+    fontSize: 16, 
+    color: '#666' 
   },
-  card: {
-    backgroundColor: "#f5f5f5",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    marginHorizontal: 20,
-    borderLeftWidth: 4,
-    borderLeftColor: '#e91e63'
-  },
-  text: { 
-    fontSize: 16,
-    marginBottom: 5
-  },
-  btnCancel: {
-    marginTop: 10,
-    backgroundColor: "#e74c3c",
-    padding: 12,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  btnDisabled: {
-    marginTop: 10,
-    backgroundColor: "#7f8c8d",
-    padding: 12,
-    borderRadius: 6,
-    alignItems: "center",
-  },
-  btnText: { 
-    color: "#fff", 
-    fontWeight: "bold",
-    fontSize: 16
-  },
-  btnComprar: {
-    marginTop: 25,
-    backgroundColor: "#e91e63",
-    padding: 16,
-    borderRadius: 10,
-    alignItems: "center",
-    marginHorizontal: 20,
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  btnComprarText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 18,
-    marginLeft: 10
+  list: { 
+    paddingBottom: 20 
   },
 });
