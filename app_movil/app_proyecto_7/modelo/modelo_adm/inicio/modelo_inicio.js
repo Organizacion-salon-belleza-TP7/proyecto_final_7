@@ -1,4 +1,4 @@
-// app/modelos/modelo_inventario/Producto.js
+// app/modelo/modelo_adm/inicio/modelo_inicio.js
 export default class Producto {
   constructor(
     id_inventario,
@@ -9,7 +9,7 @@ export default class Producto {
     precio_venta,
     imagen_producto,
     nombre_proveedor,
-    id_proveedor // 👈 agregado
+    id_proveedor
   ) {
     this.id_inventario = id_inventario;
     this.nombre_producto = nombre_producto;
@@ -20,5 +20,27 @@ export default class Producto {
     this.imagen_producto = imagen_producto;
     this.nombre_proveedor = nombre_proveedor;
     this.id_proveedor = id_proveedor;
+  }
+
+  // Métodos útiles si los necesitas
+  getPrecioConFormato() {
+    return `$${parseFloat(this.precio_venta).toFixed(2)}`;
+  }
+
+  getStockColor() {
+    if (this.stock <= 0) return '#e74c3c';
+    if (this.stock <= 10) return '#f39c12';
+    return '#27ae60';
+  }
+
+  tieneImagen() {
+    return this.imagen_producto && this.imagen_producto.trim() !== '';
+  }
+
+  getUrlImagen() {
+    if (this.tieneImagen()) {
+      return `http://192.168.100.8/proyecto_final_7/imagenes/inventario/${this.imagen_producto}`;
+    }
+    return null;
   }
 }

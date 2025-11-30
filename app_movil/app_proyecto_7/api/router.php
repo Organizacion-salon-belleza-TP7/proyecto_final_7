@@ -46,6 +46,11 @@ switch ($request) {
         require_once(__DIR__ . '/routes/cli/ventas/venta.php');
         break;
 
+    case 'historial_logueos':
+        require_once(__DIR__ . '/routes/adm/logouts/logouts.php');
+        break;
+
+
     default:
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode([

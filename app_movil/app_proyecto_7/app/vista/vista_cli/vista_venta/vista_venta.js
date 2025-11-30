@@ -97,8 +97,28 @@ export default function VentaScreen() {
       setVenta(venta);
     }
     
-    // Establecer monto ingresado como el monto final calculado
-    setMontoIngresado(montoFinal.toString());
+    // AUTOMÁTICAMENTE establecer monto ingresado como el monto final calculado
+    const montoCalculado = calcularMontoConAjustes(datosCita.total, metodo);
+    setMontoIngresado(montoCalculado.toString());
+  };
+
+  // Función para manejar cambios manuales en el input
+  const manejarCambioMonto = (texto) => {
+    // Permitir solo números y punto decimal
+    const textoLimpio = texto.replace(/[^0-9.]/g, '');
+    
+    // Validar que solo haya un punto decimal
+    const partes = textoLimpio.split('.');
+    if (partes.length > 2) {
+      return; // No permitir múltiples puntos decimales
+    }
+    
+    // Validar que después del punto no haya más de 2 decimales
+    if (partes.length === 2 && partes[1].length > 2) {
+      return;
+    }
+    
+    setMontoIngresado(textoLimpio);
   };
 
   const procesarVenta = async () => {
@@ -119,7 +139,17 @@ export default function VentaScreen() {
     if (Math.abs(montoNum - montoCalculado) > 0.01) {
       Alert.alert(
         "Monto incorrecto", 
-        `El monto debe ser exactamente $${formatearPrecio(montoCalculado)}`
+        `El monto debe ser exactamente $${formatearPrecio(montoCalculado)}`,
+        [
+          {
+            text: "Usar monto calculado",
+            onPress: () => setMontoIngresado(montoCalculado.toString())
+          },
+          {
+            text: "Cancelar",
+            style: "cancel"
+          }
+        ]
       );
       return;
     }
@@ -302,15 +332,18 @@ export default function VentaScreen() {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Ingresá el monto:</Text>
+              <Text style={styles.inputLabel}>Monto a pagar:</Text>
               <TextInput
                 style={styles.input}
                 value={montoIngresado}
-                onChangeText={setMontoIngresado}
+                onChangeText={manejarCambioMonto}
                 placeholder="0.00"
                 keyboardType="numeric"
                 placeholderTextColor="#999"
               />
+              <Text style={styles.inputHelper}>
+                El monto se completa automáticamente según el método de pago seleccionado
+              </Text>
             </View>
           </View>
         )}
@@ -332,7 +365,7 @@ export default function VentaScreen() {
               <Text style={styles.btnProcesarText}>
                 {!metodoPagoSeleccionado ? 
                   "Seleccioná un método de pago" : 
-                  `Procesar Pago - $${formatearPrecio(montoFinal)}`
+                  `Procesar Pago - $${formatearPrecio(parseFloat(montoIngresado) || montoFinal)}`
                 }
               </Text>
             </>
@@ -362,7 +395,12 @@ export default function VentaScreen() {
                     ]}
                     onPress={() => seleccionarMetodoPago(item)}
                   >
-                    <Text style={styles.metodoNombre}>{item.metodo_pago}</Text>
+                    <View style={styles.metodoInfo}>
+                      <Text style={styles.metodoNombre}>{item.metodo_pago}</Text>
+                      <Text style={styles.metodoPrecio}>
+                        ${formatearPrecio(calcularMontoConAjustes(datosCita.total, item))}
+                      </Text>
+                    </View>
                     <View style={styles.metodoAjustes}>
                       {item.incremento > 0 && (
                         <View style={styles.ajusteBadge}>
@@ -575,6 +613,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  inputHelper: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 6,
+    fontStyle: 'italic',
+  },
   // Botón procesar
   btnProcesar: {
     marginTop: 25,
@@ -645,14 +689,23 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
-  metodoItemSeleccionado: {
-    backgroundColor: '#fdf0f5',
-    borderRadius: 8,
+  metodoInfo: {
+    flex: 1,
   },
   metodoNombre: {
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
+  },
+  metodoPrecio: {
+    fontSize: 14,
+    color: '#27ae60',
+    fontWeight: '600',
+    marginTop: 4,
+  },
+  metodoItemSeleccionado: {
+    backgroundColor: '#fdf0f5',
+    borderRadius: 8,
   },
   metodoAjustes: {
     flexDirection: 'row',

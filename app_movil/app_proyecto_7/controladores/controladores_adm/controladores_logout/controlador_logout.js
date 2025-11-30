@@ -19,7 +19,7 @@ export async function cerrarSesion(id_usuario) {
 
 export async function obtenerLogueos() {
   try {
-    const response = await fetch(`${API_URL}?route=logouts`);
+    const response = await fetch(`${API_URL}?route=historial_logueos`);
     return await response.json();
   } catch (error) {
     console.error("Error obteniendo logueos:", error);

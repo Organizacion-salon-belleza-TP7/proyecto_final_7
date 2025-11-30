@@ -61,7 +61,6 @@ export default function LoginScreen() {
         // ✅ Ya se guardó en authService, pero mantenemos AsyncStorage por compatibilidad
         await AsyncStorage.setItem("usuarioLogueado", JSON.stringify(user));
         
-        Alert.alert("Bienvenido", `${user.nombre_usuario} (${tipo})`);
         redirigirSegunTipo(tipo);
         
       } else {
