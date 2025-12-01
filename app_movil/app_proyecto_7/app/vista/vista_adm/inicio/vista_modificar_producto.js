@@ -295,6 +295,12 @@ export default function ModificarProductoScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 50 }}>
+
+      {/* 🔙 BOTÓN DE VOLVER */}
+    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+      <Text style={styles.backButtonText}>← Volver</Text>
+    </TouchableOpacity>
+
       <Text style={styles.title}>Modificar Producto</Text>
       <Text style={styles.productId}>ID: {id}</Text>
 
@@ -662,4 +668,20 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 2,
   },
+  backButton: {
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: "flex-start",
+    backgroundColor: "#ff6b9d",
+    borderRadius: 10,
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
 });

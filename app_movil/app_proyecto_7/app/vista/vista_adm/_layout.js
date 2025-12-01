@@ -143,17 +143,28 @@ export default function AdmLayout() {
         {/* Ocultas */}
         <Drawer.Screen
           name="vista_citas/vista_detalle_cita"
-          options={{ drawerItemStyle: { display: "none" } }}
+          options={{ 
+          drawerItemStyle: { display: "none" },
+          headerShown: false   // 👈 ESTO OCULTA EL HEADER
+          }}
         />
+
 
         <Drawer.Screen
           name="inicio/vista_agregar_producto"
-          options={{ drawerItemStyle: { display: "none" } }}
+          options={{ 
+          drawerItemStyle: { display: "none" },
+          headerShown: false   // 👈 ESTO OCULTA EL HEADER
+        }}
         />
+
 
         <Drawer.Screen
           name="inicio/vista_modificar_producto"
-          options={{ drawerItemStyle: { display: "none" } }}
+          options={{ 
+            drawerItemStyle: { display: "none" },
+            headerShown: false   // 👈 ESTO OCULTA EL HEADER
+          }}
         />
       </Drawer>
 

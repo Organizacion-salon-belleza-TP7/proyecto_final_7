@@ -1,8 +1,11 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView,TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+
 
 export default function VistaDetalleCita() {
+  const router = useRouter();
   const { id } = useLocalSearchParams();
   const [detalle, setDetalle] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +44,11 @@ export default function VistaDetalleCita() {
 
   return (
     <ScrollView style={styles.container}>
+
+    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+      <Text style={styles.backButtonText}>← Volver</Text>
+    </TouchableOpacity>
+
       <Text style={styles.title}>Detalle de la cita</Text>
       <View style={styles.infoContainer}>
         <Text style={styles.label}>ID:</Text>
@@ -139,5 +147,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 6,
     elevation: 2
-  }
+  },
+  backButton: {
+    marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    alignSelf: "flex-start",
+    backgroundColor: "#ff6b9d",
+    borderRadius: 10,
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
 });

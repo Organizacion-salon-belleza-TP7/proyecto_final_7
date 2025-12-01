@@ -134,6 +134,12 @@ export default function AgregarProductoScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
+
+    <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+      <Text style={styles.backButtonText}>← Volver</Text>
+    </TouchableOpacity>
+
+
       <Text style={styles.title}>Agregar Nuevo Producto</Text>
       
       <Text style={styles.label}>Nombre del producto *</Text>
@@ -242,5 +248,20 @@ const styles = StyleSheet.create({
   submitButton: { backgroundColor: '#ff6b9d', paddingVertical: 12, borderRadius: 20, alignItems: 'center', flex: 1, marginLeft: 8 },
   buttonText: { color: '#fff', fontWeight: '700', textAlign: 'center' },
   centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: 10, fontSize: 16, color: '#333' }
+  loadingText: { marginTop: 10, fontSize: 16, color: '#333' },backButton: {
+  marginBottom: 10,
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 6,
+  paddingHorizontal: 10,
+  alignSelf: "flex-start",
+  backgroundColor: "#ff6b9d",
+  borderRadius: 10,
+},
+backButtonText: {
+  color: "white",
+  fontSize: 16,
+  fontWeight: "700",
+},
+
 });
