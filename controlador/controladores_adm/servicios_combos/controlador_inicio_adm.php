@@ -17,27 +17,37 @@
     
     session_start();
 
-    if(isset($_GET['eliminar']) && $_GET['eliminar'] === 'vista_inicio_adm'){
-        if($_SERVER['REQUEST_METHOD'] === 'GET'){
-            $id_servicio = $_GET['id'];
-            $servicio_modelo = new servicios($conn);
+ if(isset($_GET['eliminar']) && $_GET['eliminar'] === 'vista_inicio_adm'){
+    if($_SERVER['REQUEST_METHOD'] === 'GET'){
 
-            $eliminar_servicio = $servicio_modelo->dar_baja_servicios($id_servicio);
+        $id_servicio = $_GET['id'];
+        $servicio_modelo = new servicios($conn);
 
-            if($eliminar_servicio && $eliminar_servicio->affected_rows > 0){
-                echo '<script language = javascript>
-                alert("servicio eliminado correctamente")
-                self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
-                </script>';
-                exit;
+        $eliminar_servicio = $servicio_modelo->dar_baja_servicios($id_servicio);
 
-            }else{
-                echo '<script language = javascript>
-                alert("hubo un error al eliminar el servicio")
-                self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
-                </script>';
-                exit;
-            }
+        if($eliminar_servicio){
+            echo '<script language="javascript">
+            alert("Servicio eliminado correctamente");
+            self.location = "'. BASE_URL .'/vista/vista_adm/servicios_combos/vista_inicio_adm.php";
+            </script>';
+            exit;
+        } else {
+            echo '<script language="javascript">
+            alert("Hubo un error al eliminar el servicio");
+            self.location = "'. BASE_URL .'/vista/vista_adm/servicios_combos/vista_inicio_adm.php";
+            </script>';
+            exit;
+        }
+
+    } else {
+        echo '<script language="javascript">
+        alert("Hubo un fallo con el servidor");
+        self.location = "'. BASE_URL .'/vista/vista_adm/servicios_combos/vista_inicio_adm.php";
+        </script>';
+        exit;
+    }
+
+
 
 
 
@@ -47,8 +57,7 @@
             self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
             </script>';
             exit;
-        }
-
+        
     }elseif(isset($_GET['agregar']) && $_GET['agregar'] === 'vista_inicio_adm'){
         header("Location: " . BASE_URL . "/vista/vista_adm/servicios_combos/vista_agregar_servicio_adm.php");
         exit;
@@ -176,7 +185,7 @@
 
         
 
-    }elseif(isset($_GET['dar_baja_combo']) && $_GET['dar_baja_combo'] === 'vista_inicio_adm'){
+     } elseif(isset($_GET['dar_baja_combo']) && $_GET['dar_baja_combo'] === 'vista_inicio_adm'){
         $id_combo = $_GET['id'];
 
         $servicio_modelo = new servicios($conn);

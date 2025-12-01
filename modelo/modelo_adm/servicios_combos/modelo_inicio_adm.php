@@ -13,61 +13,54 @@ class servicios{
 
     }
 
-    public function mostrar_servicios(){
-        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio_servicio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio ,servicios.imagen
-        FROM servicios
-        INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
-        INNER JOIN trabajadores 
-        ON trabajadores.id_trabajador = trabajadores_servicios.id_trabajador
-        INNER JOIN tiempo_servicio
-        ON tiempo_servicio.id_tiempo_servicio = servicios.id_tiempo_servicio
-        INNER JOIN tipo_servicio ON servicios.id_tipo_servicio = tipo_servicio.id_tipo_servicio";
-        $resultado_traer_servicios = $this->conn->query($traer_servicios);
+public function mostrar_servicios(){
+    $sql = "SELECT 
+                s.id_servicios,
+                s.nombre,
+                s.descripcion,
+                s.duracion,
+                ts.tiempo_servicio,
+                s.precio_servicio,
+                COALESCE(CONCAT(tr.nombre_trabajador, ' ', tr.apellido_trabajador), 'Sin asignar') AS nombre_trabajador,
+                s.activo,
+                tp.tipo_servicio,
+                s.imagen
+            FROM servicios s
+            LEFT JOIN tiempo_servicio ts ON s.id_tiempo_servicio = ts.id_tiempo_servicio
+            LEFT JOIN trabajadores_servicios tsrv ON tsrv.id_servicio = s.id_servicios
+            LEFT JOIN trabajadores tr ON tr.id_trabajador = tsrv.id_trabajador
+            LEFT JOIN tipo_servicio tp ON s.id_tipo_servicio = tp.id_tipo_servicio
+            WHERE s.activo = 1
+            GROUP BY s.id_servicios
+            ORDER BY s.id_servicios DESC";
 
-        return $resultado_traer_servicios;
+    return $this->conn->query($sql);
+}
+	public function dar_baja_servicios($id_servicio)
+{
+    // Buscar el estado actual
+    $sql = "SELECT activo FROM servicios WHERE id_servicios = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id_servicio);
+    $stmt->execute();
+    $resultado = $stmt->get_result()->fetch_assoc();
+
+    if (!$resultado) {
+        return false; // No existe el servicio
     }
 
-	public function dar_baja_servicios($id_servicio){
-		$encontrar_servicio = $this->conn->prepare("SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, id_trabajadores_servicios, activo 
-		FROM servicios WHERE id_servicios = ?");
+    // Alternar estado: si es 1 pasa a 0, si es 0 pasa a 1
+    $nuevo_estado = $resultado['activo'] == 1 ? 0 : 1;
 
-		$encontrar_servicio->bind_param("i",$id_servicio);
-		$encontrar_servicio->execute();
+    // Actualizar
+    $sql_update = "UPDATE servicios SET activo = ? WHERE id_servicios = ?";
+    $update = $this->conn->prepare($sql_update);
+    $update->bind_param("ii", $nuevo_estado, $id_servicio);
+    $update->execute();
 
-		$array_asociativo_elim_serv = $encontrar_servicio->fetch();
+    return $update->affected_rows > 0;
+}
 
-
-
-		if ($array_asociativo_elim_serv['activo'] == 1) {
-			$dar_alta_servicio = $this->conn->prepare("UPDATE servicios SET activo = 1 WHERE ?");
-
-			$dar_alta_servicio->bind_param("i",$id_servicio);
-
-			$dar_alta_servicio->execute();
-
-		}elseif ($array_asociativo_elim_serv['activo'] == 0) {
-			$dar_baja_servicio = $this->conn->prepare("UPDATE servicios SET activo = 0 WHERE ?");
-
-			$dar_baja_servicio->bind_param("i",$id_servicio);
-
-			$dar_baja_servicio->execute();
-		}else {
-			echo '<script language = javascript>
-                alert("hubo un fallo tratando de dar de baja el servicio")
-                self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
-                </script>';
-                exit;
-
-		}
-	
-        $eliminar_servicio = $this->conn->prepare("");
-        $eliminar_servicio->bind_param('i',$id_servicio);
-        $eliminar_servicio->execute();
-
-        return $eliminar_servicio;
-        
-
-    }
 
     public function formulario_agregar_servicio(){
         $traer_tiempo = "SELECT id_tiempo_servicio, tiempo_servicio FROM tiempo_servicio";
@@ -478,42 +471,27 @@ class servicios{
         
     }
 
-    public function dar_baja_combos($id_combo){
-        $buscar_combo = $this->conn->prepare("SELECT id_combos, nombre, descripcion_combo, precio, imagen, activo, fecha_creacion 
-        FROM combos WHERE id_combos = ?");
-        $buscar_combo->bind_param('i',$id_combo);
+   public function dar_baja_combos($id_combo){
+    $sql = "UPDATE combos 
+            SET activo = IF(activo = 1, 0, 1)
+            WHERE id_combos = ?";
 
-        if($buscar_combo->execute()){
-            $resultado = $buscar_combo->get_result();
-            if($resultado && $resultado->num_rows > 0){
-                $dar_bajaAlta_combo = $resultado->fetch_assoc();
+    $stmt = $this->conn->prepare($sql);
 
-                if($dar_bajaAlta_combo['activo'] == 1){
-                    $dar_baja_combo = "UPDATE combos SET activo = 0 WHERE id_combos = $id_combo";
-                    $ejecutar_baja_combo = $this->conn->query($dar_baja_combo);
-
-                    return true;
-
-                }elseif($dar_bajaAlta_combo['activo'] == 0){
-                    $dar_baja_combo = "UPDATE combos SET activo = 1 WHERE id_combos = $id_combo";
-                    $ejecutar_baja_combo = $this->conn->query($dar_baja_combo);
-
-                    return true;
-
-                }else{
-                    echo '<script language = javascript>
-                    alert("hubo un fallo eliminandi los combos")
-                    self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
-                    </script>';
-                    exit;
-                }
-
-            }
-
-            
-
-        }
+    if(!$stmt){
+        return false;
     }
+
+    $stmt->bind_param("i", $id_combo);
+
+    if($stmt->execute()){
+        return $stmt->affected_rows > 0;
+    }
+
+    return false;
+}
+
+
 
     public function formulario_modificar_combo($id_combo){
     // Traer información del combo y servicios asociados

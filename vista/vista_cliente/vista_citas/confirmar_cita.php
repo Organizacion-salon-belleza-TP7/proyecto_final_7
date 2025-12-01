@@ -97,6 +97,11 @@ foreach ($lugares as $l) {
                        class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-4 px-10 rounded-xl text-center transition">
                         Reservar otra cita
                     </a>
+                    <!-- ... tu código original ... --
+
+
+
+<!-- ... resto igual -->
 
                <form action="<?= BASE_URL ?>/vista/vista_cliente/vista_venta/venta.php" method="POST">
     <input type="hidden" name="id_cita" value="<?= $id_cita ?>">

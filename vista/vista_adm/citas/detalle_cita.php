@@ -81,7 +81,6 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       background: var(--primary);
       color:#fff;
     }
-    .sidebar.hidden { transform: translateX(-100%); }
 
     /* Toggle */
     .toggle-btn{
@@ -99,7 +98,6 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       transition:.3s;
       box-shadow: var(--shadow);
     }
-    .toggle-btn:hover{ background: rgba(224, 85, 133, 0.8); }
 
     /* Content */
     .content{
@@ -109,7 +107,6 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       transition: margin-left .3s ease;
       width: 100%;
     }
-    .content.expanded{ margin-left: 0; }
     h1{
       font-size:2rem;
       margin-bottom:25px;
@@ -139,17 +136,6 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       color: var(--primary);
       margin-bottom: 15px;
       font-size: 1.3rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .info-section p{
-      margin-bottom: 10px;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-    .info-section strong{
-      color: var(--primary);
     }
 
     .item-list{
@@ -166,25 +152,12 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       align-items: center;
       font-size: 0.95rem;
     }
-    .item strong{
-      color: #fff;
-    }
 
     .empty{
       color: var(--text-muted);
       font-style: italic;
       text-align: center;
       padding: 20px;
-    }
-
-    /* Estado */
-    .estado-activa{
-      color: var(--success);
-      font-weight: 600;
-    }
-    .estado-inactiva{
-      color: var(--danger);
-      font-weight: 600;
     }
 
     /* Botón Volver */
@@ -198,16 +171,11 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
       text-decoration: none;
       border-radius: 8px;
       font-weight: 600;
-      transition: all 0.3s;
-      box-shadow: var(--shadow);
       margin-top: 20px;
-    }
-    .btn-volver:hover{
-      background: #666;
-      transform: translateY(-2px);
     }
   </style>
 </head>
+
 <body>
 
   <!-- Toggle -->
@@ -258,14 +226,12 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
         ?>
           <div class="item-list">
             <?php foreach ($servicios as $servicio): ?>
-              <?php if (!empty($servicio['servicio_nombre'])): ?>
-                <div class="item">
-                  <strong><?= htmlspecialchars($servicio['servicio_nombre']) ?></strong>
-                  <?php if (isset($servicio['servicio_precio'])): ?>
-                    <span>$<?= number_format($servicio['servicio_precio'], 2) ?></span>
-                  <?php endif; ?>
-                </div>
-              <?php endif; ?>
+              <div class="item">
+                <strong><?= htmlspecialchars($servicio['servicio_nombre']) ?></strong>
+                <?php if (isset($servicio['servicio_precio'])): ?>
+                  <span>$<?= number_format($servicio['servicio_precio'], 2) ?></span>
+                <?php endif; ?>
+              </div>
             <?php endforeach; ?>
           </div>
         <?php else: ?>
@@ -282,14 +248,12 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
         ?>
           <div class="item-list">
             <?php foreach ($combos as $combo): ?>
-              <?php if (!empty($combo['combo_nombre'])): ?>
-                <div class="item">
-                  <strong><?= htmlspecialchars($combo['combo_nombre']) ?></strong>
-                  <?php if (isset($combo['combo_precio'])): ?>
-                    <span>$<?= number_format($combo['combo_precio'], 2) ?></span>
-                  <?php endif; ?>
-                </div>
-              <?php endif; ?>
+              <div class="item">
+                <strong><?= htmlspecialchars($combo['combo_nombre']) ?></strong>
+                <?php if (isset($combo['combo_precio'])): ?>
+                  <span>$<?= number_format($combo['combo_precio'], 2) ?></span>
+                <?php endif; ?>
+              </div>
             <?php endforeach; ?>
           </div>
         <?php else: ?>
@@ -307,70 +271,7 @@ $cita = $detalle_cita[0]; // Tomar la primera fila para datos generales
     </div>
   </div>
 
-<<<<<<< HEAD
-  <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
-=======
-    <div class="detalle-container">
-        <h1>Detalle de Cita #<?= $cita['id_cita'] ?></h1>
-        
-        <div class="info-section">
-            <h3>Información General</h3>
-            <p><strong>Cliente:</strong> <?= $cita['nombre_cliente'] ?? 'No asignado' ?></p>
-            <p><strong>Fecha:</strong> <?= $cita['fecha_cita'] ?></p>
-            <p><strong>ID Lugar:</strong> <?= $cita['id_lugar'] ?? 'No especificado' ?></p>
-            <p><strong>Estado:</strong> <?= $cita['activo'] ? 'Activa' : 'Inactiva' ?></p>
 
-        <div class="info-section">
-            <h3>Servicios Contratados</h3>
-            <?php
-            $servicios = array_filter($detalle_cita, function($item) {
-                return !empty($item['id_servicios']);
-            });
-            
-            if (!empty($servicios)) {
-                foreach ($servicios as $servicio) {
-                    if (!empty($servicio['servicio_nombre'])) {
-                        echo "<div class='servicio-item'>";
-                        echo "<strong>{$servicio['servicio_nombre']}</strong>";
-                        if (isset($servicio['servicio_precio'])) {
-                            echo " - $" . $servicio['servicio_precio'];
-                        }
-                        echo "</div>";
-                    }
-                }
-            } else {
-                echo "<p>No hay servicios contratados</p>";
-            }
-            ?>
-        </div>
-
-        <div class="info-section">
-            <h3>Combos Contratados</h3>
-            <?php
-            $combos = array_filter($detalle_cita, function($item) {
-                return !empty($item['id_combos']);
-            });
-            
-            if (!empty($combos)) {
-                foreach ($combos as $combo) {
-                    if (!empty($combo['combo_nombre'])) {
-                        echo "<div class='combo-item'>";
-                        echo "<strong>{$combo['combo_nombre']}</strong>";
-                        if (isset($combo['combo_precio'])) {
-                            echo " - $" . $combo['combo_precio'];
-                        }
-                        echo "</div>";
-                    }
-                }
-            } else {
-                echo "<p>No hay combos contratados</p>";
-            }
-            ?>
-        </div>
-
-        <a href="<?= BASE_URL ?>/vista/vista_adm/citas/citas.php" class="volver-btn">Volver a la lista</a>
-    </div>
->>>>>>> 28c84d613320e0a8fb8f38eab8c47c0293a8c38e
 </body>
 </html>
