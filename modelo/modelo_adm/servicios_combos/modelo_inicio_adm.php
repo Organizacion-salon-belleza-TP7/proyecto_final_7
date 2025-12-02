@@ -1,31 +1,46 @@
+
 <?php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 require_once(__DIR__ . '/../../../variable_global.php');
 require_once(ROOT_PATH . '/modelo/BD.php');
 
-class servicios{
+class servicios {
     private $conn;
 
     public function __construct($conn){
         $this->conn = $conn;
-
     }
 
-    public function mostrar_servicios(){
-        $traer_servicios = "SELECT servicios.id_servicios, servicios.nombre, servicios.descripcion, servicios.duracion,tiempo_servicio.tiempo_servicio, servicios.precio_servicio, trabajadores.nombre_trabajador, servicios.activo,tipo_servicio.tipo_servicio ,servicios.imagen
-        FROM servicios
-        INNER JOIN trabajadores_servicios ON trabajadores_servicios.id_servicio = servicios.id_servicios
-        INNER JOIN trabajadores 
-        ON trabajadores.id_trabajador = trabajadores_servicios.id_trabajador
-        INNER JOIN tiempo_servicio
-        ON tiempo_servicio.id_tiempo_servicio = servicios.id_tiempo_servicio
-        INNER JOIN tipo_servicio ON servicios.id_tipo_servicio = tipo_servicio.id_tipo_servicio";
-        $resultado_traer_servicios = $this->conn->query($traer_servicios);
-
-        return $resultado_traer_servicios;
+    // Método para traer todos los servicios
+    public function mostrar_servicios() {
+        $query = "
+            SELECT 
+                s.id_servicios, 
+                s.nombre, 
+                s.descripcion, 
+                s.duracion,
+                COALESCE(ts.tiempo_servicio, 'Sin tiempo definido') AS tiempo_servicio,
+                s.precio_servicio,
+                t.nombre_trabajador,
+                s.activo,
+                COALESCE(tp.tipo_servicio, 'Sin tipo definido') AS tipo_servicio,
+                s.imagen
+            FROM servicios s
+            LEFT JOIN trabajadores_servicios tsr 
+                ON tsr.id_servicio = s.id_servicios
+            LEFT JOIN trabajadores t 
+                ON t.id_trabajador = tsr.id_trabajador
+            LEFT JOIN tiempo_servicio ts 
+                ON ts.id_tiempo_servicio = s.id_tiempo_servicio
+            LEFT JOIN tipo_servicio tp 
+                ON tp.id_tipo_servicio = s.id_tipo_servicio
+        ";
+        return $this->conn->query($query);
     }
+
 
 	public function dar_baja_servicios($id_servicio){
 		$encontrar_servicio = $this->conn->prepare("SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, id_trabajadores_servicios, activo 
@@ -605,15 +620,6 @@ class servicios{
         }
 
     }
-
-    
-
-
-
-
 }
-
-
-
 
 ?>

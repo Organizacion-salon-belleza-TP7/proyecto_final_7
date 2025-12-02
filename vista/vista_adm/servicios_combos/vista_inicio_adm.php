@@ -215,10 +215,12 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
     <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_logout/controlador_logout.php?logout=vista_inicio_adm"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
   </div>
 
-  <!-- Content -->
-  <div class="content" id="content">
+<div class="content" id="content">
+    <div class="seccion-servicios">
     <h1>Servicios</h1>
     <?php
+    $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
+
     if($resultado_traer_servicios && $resultado_traer_servicios->num_rows > 0){
         echo "<table>
             <thead>
@@ -230,57 +232,42 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
             </thead><tbody>";
         
         while($row = $resultado_traer_servicios->fetch_assoc()){
+            // Duración con unidad según tiempo_servicio
+            $unidad = $row['tiempo_servicio'] ?? 'Sin tiempo definido';
+            if($unidad == 'horas') $duracion = "{$row['duracion']}Hs";
+            elseif($unidad == 'minutos') $duracion = "{$row['duracion']}Min";
+            elseif($unidad == 'segundos') $duracion = "{$row['duracion']}Sec";
+            else $duracion = "{$row['duracion']}";
+
             echo "<tr>
                     <td>{$row['nombre']}</td>
                     <td>{$row['descripcion']}</td>
-                    ";
-                    if($row['tiempo_servicio'] == 'horas'){
-                      echo "
-                      <td>{$row['duracion']}Hs</td>
-                      <td>\${$row['precio_servicio']}</td>
-                      <td>{$row['nombre_trabajador']}</td>
-                      <td>".($row['activo']==1?'Activo':'Inactivo')."</td>
-                      <td>{$row['tipo_servicio']}</td>
-                      <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
-                      <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
-                      <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
-                      ";
-
-                    }elseif($row['tiempo_servicio'] == 'minutos'){
-                      echo "
-                      <td>{$row['duracion']}Min</td>
-                      <td>\${$row['precio_servicio']}</td>
-                      <td>{$row['nombre_trabajador']}</td>
-                      <td>".($row['activo']==1?'Activo':'Inactivo')."</td>
-                      <td>{$row['tipo_servicio']}</td>
-                      <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
-                      <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
-                      <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
-                      ";
-
-                    }elseif($row['tiempo_servicio'] == 'segundos'){
-                      echo "
-                      <td>{$row['duracion']}Sec</td>
-                      <td>\${$row['precio_servicio']}</td>
-                      <td>{$row['nombre_trabajador']}</td>
-                      <td>".($row['activo']==1?'Activo':'Inactivo')."</td>
-                      <td>{$row['tipo_servicio']}</td>
-                      <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
-                      <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
-                      <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
-                      ";
+                    <td>$duracion</td>
+                    <td>\${$row['precio_servicio']}</td>
+                    <td>" . ($row['nombre_trabajador'] ?? 'Sin trabajador') . "</td>
+                    <td>" . ($row['activo'] == 1 ? 'Activo' : 'Inactivo') . "</td>
+                    <td>" . ($row['tipo_servicio'] ?? 'Sin tipo definido') . "</td>
+                    <td>";
+                    if(!empty($row['imagen'])){
+                        echo "<img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'>";
+                    } else {
+                        echo "Sin imagen";
                     }
-                    
-                echo "</tr>";
+            echo "</td>
+                    <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
+                    <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
+                    <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
+                </tr>";
         }
         echo "</tbody></table>";
         echo "<a href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?agregar=vista_inicio_adm' class='add-btn'>+ Agregar Servicio</a>";
+    } else {
+        echo "<p>No hay servicios disponibles.</p>";
     }
     ?>
+  </div>
 
+    <div class="seccion-combos">
     <h1>Combos</h1>
     <?php
     $resultado_traer_combos = $servicio_modelo->mostrar_combos();
@@ -309,6 +296,7 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
         echo "<a href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?agregar_combo=vista_inicio_adm' class='add-btn'>+ Agregar Combo</a>";
     }
     ?>
+  </div>
   </div>
 
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>

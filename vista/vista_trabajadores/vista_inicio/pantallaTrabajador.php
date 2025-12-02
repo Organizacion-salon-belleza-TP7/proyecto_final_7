@@ -1,5 +1,12 @@
 <?php
 require_once(__DIR__ . '/../../../variable_global.php');
+require_once(ROOT_PATH . '/modelo/BD.php');
+require_once(ROOT_PATH . '/controlador/controlador_trabajadores/controlador_inicio/TrabajadorController.php');
+
+$controller = new TrabajadorController($conn);
+
+// Obtener lista de trabajadores
+$trabajadores = $controller->listarTrabajadores();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -7,7 +14,6 @@ require_once(__DIR__ . '/../../../variable_global.php');
     <meta charset="UTF-8">
     <title>Pantalla Trabajador</title>
     <style>
-        /* Fondo y fuente */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #fce4ec, #f8bbd0);
@@ -15,8 +21,6 @@ require_once(__DIR__ . '/../../../variable_global.php');
             padding: 0;
             color: #4a148c;
         }
-
-        /* Contenedor principal */
         .container {
             width: 80%;
             max-width: 900px;
@@ -26,19 +30,14 @@ require_once(__DIR__ . '/../../../variable_global.php');
             padding: 30px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-
-        /* Títulos */
         h1, h2 {
             text-align: center;
             color: #ad1457;
         }
-
-        /* Navegación */
         nav {
             text-align: center;
             margin-bottom: 20px;
         }
-
         nav a {
             text-decoration: none;
             color: #d81b60;
@@ -46,17 +45,13 @@ require_once(__DIR__ . '/../../../variable_global.php');
             margin: 0 10px;
             transition: 0.3s;
         }
-
         nav a:hover {
             color: #880e4f;
         }
-
-        /* Lista de trabajadores */
         ul {
             list-style: none;
             padding: 0;
         }
-
         ul li {
             background: #f8bbd0;
             margin: 8px 0;
@@ -65,7 +60,6 @@ require_once(__DIR__ . '/../../../variable_global.php');
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: 0.3s;
         }
-
         ul li:hover {
             background: #f48fb1;
             color: white;

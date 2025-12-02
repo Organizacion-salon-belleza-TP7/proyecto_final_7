@@ -1,7 +1,13 @@
 <?php
 require_once(__DIR__ . '/../../../variable_global.php');
-?>
+require_once(ROOT_PATH . '/modelo/BD.php');
+require_once(ROOT_PATH . '/controlador/controlador_trabajadores/controlador_inicio/TrabajadorController.php');
 
+$controller = new TrabajadorController($conn);
+
+// Obtener la lista de espera
+$lista = $controller->listaEspera();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -34,7 +40,6 @@ require_once(__DIR__ . '/../../../variable_global.php');
             margin-top: 25px;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         table th, table td {
             padding: 12px;
@@ -81,14 +86,12 @@ require_once(__DIR__ . '/../../../variable_global.php');
             text-decoration: none;
             color: #d81b60;
         }
-        .volver:hover {
-            color: #880e4f;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Lista de Espera</h1>
+
         <table border="1" cellpadding="8" cellspacing="0">
             <tr>
                 <th>Trabajador</th>
@@ -99,6 +102,7 @@ require_once(__DIR__ . '/../../../variable_global.php');
                 <th>Confirmación</th>
                 <th>Acciones</th>
             </tr>
+
             <?php if (!empty($lista)): ?>
                 <?php foreach ($lista as $l): ?>
                     <tr>
@@ -106,22 +110,22 @@ require_once(__DIR__ . '/../../../variable_global.php');
                         <td><?= htmlspecialchars($l['dni_trabajador']) ?></td>
                         <td><?= htmlspecialchars($l['nombre_cliente'] . " " . $l['apellido_cliente']) ?></td>
                         <td><?= htmlspecialchars($l['dni_cliente']) ?></td>
-                        <td><?= htmlspecialchars($l['tiempo_estimado']) ?></td>
+                        <td><?= htmlspecialchars($l['tiempo_estimado']) ?> min</td>
                         <td><?= $l['confirmacion'] == 1 ? '✔ Confirmado' : '❌ Pendiente' ?></td>
                         <td class="acciones">
-                            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/confirmar.php?id=<?= $l['id_lista_espera'] ?>" class="confirmar">Confirmar</a>
-                            <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cancelar.php?id=<?= $l['id_lista_espera'] ?>" class="cancelar">Cancelar</a>
+                            <a class="confirmar" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/confirmar.php?id=<?= $l['id_lista_espera'] ?>">Confirmar</a>
+                            <a class="cancelar" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cancelar.php?id=<?= $l['id_lista_espera'] ?>">Cancelar</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td colspan="7">No hay registros en lista de espera</td>
+                    <td colspan="7">No hay registros en la lista de espera</td>
                 </tr>
             <?php endif; ?>
         </table>
 
-        <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php" class="volver">⬅ Volver</a>
+        <a class="volver" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php">⬅ Volver</a>
     </div>
 </body>
 </html>
