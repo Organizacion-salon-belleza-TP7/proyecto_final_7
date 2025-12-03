@@ -238,7 +238,7 @@ $lugares = $modelo->obtenerLugares();
 
     <!-- FORMULARIO CORREGIDO -->
     <div class="form-card">
-      <form method="POST" action="../../../controlador/controladores_adm/lugares/controlador_lugares.php" enctype="multipart/form-data">
+      <form method="POST" action="<?= BASE_URL ?>/controlador/controladores_adm/lugares/controlador_lugares.php" enctype="multipart/form-data">
         <div class="form-grid">
           <div class="form-group">
             <label>Nombre del lugar</label>
@@ -310,11 +310,10 @@ $lugares = $modelo->obtenerLugares();
                 <?php endif; ?>
               </td>
               <td><?= $row['activo'] ? 'Activo' : 'Inactivo' ?></td>
-              <td><a class="btn btn-view" href="#">Detalle</a></td>
               <td><a class="btn btn-edit" href="#">Editar</a></td>
               <td>
                 <a class="btn btn-delete" 
-                   href="../../../controlador/controladores_adm/lugares/controlador_lugares.php?eliminar=<?= $row['id_lugar'] ?>"
+                   href="<?= BASE_URL ?>/controlador/controladores_adm/lugares/controlador_lugares.php?eliminar=<?= $row['id_lugar'] ?>"
                    onclick="return confirm('¿Eliminar este lugar?')">
                    Borrar
                 </a>
