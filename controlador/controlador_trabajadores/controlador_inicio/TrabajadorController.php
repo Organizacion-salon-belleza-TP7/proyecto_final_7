@@ -8,43 +8,31 @@ require_once(ROOT_PATH . '/modelo/modelo_trabajadores/inicio_trabajador/Trabajad
 require_once(ROOT_PATH . '/modelo/BD.php');
 
 class TrabajadorController {
+
     private $trabajadorModel;
 
-    // Constructor: recibe la conexión y crea la instancia del modelo
     public function __construct($conn) {
         $this->trabajadorModel = new Trabajador($conn);
     }
 
-    // Pantalla principal del trabajador
-    public function pantalla() {
-        $trabajadores = $this->trabajadorModel->obtenerTodos();
-        include __DIR__ . '/../view/pantallaTrabajador.php';
+    // Método real que tu vista necesita
+    public function listarTrabajadores() {
+        return $this->trabajadorModel->obtenerTodos();
     }
 
-    // Lista de espera
     public function listaEspera() {
-        $lista = $this->trabajadorModel->listaEspera();
-        include __DIR__ . '/../view/listaEspera.php';
+        return $this->trabajadorModel->listaEspera();
     }
 
-    // Confirmar registro de lista de espera
     public function confirmar($id) {
         $this->trabajadorModel->confirmar($id);
-        header("Location: pantallaTrabajador.php");
+        header("Location: listaEspera.php");
         exit;
     }
 
-    // Cancelar registro de lista de espera
     public function cancelar($id) {
         $this->trabajadorModel->cancelar($id);
-        header("Location: pantallaTrabajador.php");
+        header("Location: listaEspera.php");
         exit;
-    }
-
-    // Cerrar sesión
-    public function cerrarSesion() {
-        session_start();
-        session_destroy();
-        include __DIR__ . '/../view/cerrarSesion.php';
     }
 }

@@ -285,6 +285,10 @@ $proveedores = $modelo->obtenerProveedores();
     </div>
   </div>
 
+  <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_contactos/ControladorContacto.php?agregar_contacto_proveedor=vista_proveedores">
+    <i class="fas fa-plus"></i> Añadir Contacto de Proveedor
+  </a>
+
   <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>
   <script>
