@@ -93,17 +93,13 @@ foreach ($lugares as $l) {
 
                 <!-- Botones -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                    <a href="layout.php" 
-                       class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-4 px-10 rounded-xl text-center transition">
-                        Reservar otra cita
-                    </a>
 
                <form action="<?= BASE_URL ?>/vista/vista_cliente/vista_venta/venta.php" method="POST">
-    <input type="hidden" name="id_cita" value="<?= $id_cita ?>">
-    <button type="submit" class="...">
-        Ir a Pagar
-    </button>
-</form>
+                    <input type="hidden" name="id_cita" value="<?= $id_cita ?>">
+                        <button type="submit" class="...">
+                        Ir a Pagar
+                        </button>
+                </form>
                 </div>
 
             </div>

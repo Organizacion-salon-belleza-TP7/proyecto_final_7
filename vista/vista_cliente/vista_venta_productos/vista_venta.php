@@ -91,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     *{margin:0;padding:0;box-sizing:border-box;}
     body{
       font-family: 'Segoe UI', sans-serif;
-      background: url('../../imagenes/lugares/istockphoto-1856117770-612x612.jpg') no-repeat center center fixed;
+      background: url('../../../imagenes/lugares/istockphoto-1856117770-612x612.jpg') no-repeat center center fixed;
       background-size: cover;
       color: var(--text);
       display: flex;

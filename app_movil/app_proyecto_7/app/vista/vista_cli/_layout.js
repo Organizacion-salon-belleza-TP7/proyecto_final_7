@@ -61,7 +61,7 @@ export default function CliLayout() {
               icon={({ color, size }) => (
                 <Ionicons name="calendar-outline" size={size} color={color} />
               )}
-              onPress={() => router.push("/vista/vista_cli/vista_inicio")}
+              onPress={() => router.push("/vista/vista_cli/vista_inicio/vista_inicio_cli")}
             />
 
             {/* ✔ BOTÓN CERRAR SESIÓN */}

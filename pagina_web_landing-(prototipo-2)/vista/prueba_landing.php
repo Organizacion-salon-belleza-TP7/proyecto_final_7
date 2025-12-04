@@ -1602,7 +1602,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                     <div class="contact-details">
                         <p><i class="fas fa-map-marker-alt"></i> Av. Principal #123, Zona Exclusiva</p>
                         <p><i class="fas fa-phone"></i> (123) 456-7890</p>
-                        <p><i class="fas fa-envelope"></i> rose@rose_spa.com</p>
+                        <p><i class="fas fa-envelope"></i> rosespasalonbelleza23@gmail.com</p>
                         <p><i class="fas fa-clock"></i> Lunes a Sábado: 9:00 - 20:00</p>
                         <p><i class="fas fa-crown"></i> Domingos: Solo citas VIP</p>
                     </div>
@@ -1615,22 +1615,23 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                     </div>
                 </div>
                 <div class="contact-form slide-in-right">
-                    <form>
+                    <form action="<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/controlador/controlador.php" method="post">
+                        <input type="hidden" name="contactos" value="formulario_contactos_landing">
                         <div class="form-group">
                             <label for="name">Nombre Completo</label>
-                            <input type="text" id="name" placeholder="Tu nombre" required>
+                            <input type="text" name="name" id="name" placeholder="Tu nombre" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email Premium</label>
-                            <input type="email" id="email" placeholder="tu@email.com" required>
+                            <input type="email" name="email" id="email" placeholder="tu@email.com" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Teléfono</label>
-                            <input type="tel" id="phone" placeholder="+1 (555) 000-0000">
+                            <input type="tel" id="phone" name="phone" placeholder="+1 (555) 000-0000">
                         </div>
                         <div class="form-group">
                             <label for="service">Servicio de Interés</label>
-                            <select id="service">
+                            <select id="service" name="service">
                                 <option value="">Selecciona un servicio premium</option>
                                 <option value="corte">Corte de cabello exclusivo</option>
                                 <option value="color">Coloración artística</option>
@@ -1643,7 +1644,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                         </div>
                         <div class="form-group">
                             <label for="message">Mensaje Personal</label>
-                            <textarea id="message" placeholder="Cuéntanos cómo podemos hacer tu día especial..."></textarea>
+                            <textarea id="message" name="message" placeholder="Cuéntanos cómo podemos hacer tu día especial..."></textarea>
                         </div>
                         <button type="submit" class="btn">Enviar Solicitud</button>
                     </form>
@@ -1925,32 +1926,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                 });
             });
         });
-
-        // Enhanced form validation and submission
-        document.querySelector('.contact-form form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            
-            // Animate button
-            submitBtn.textContent = 'Enviando...';
-            submitBtn.style.background = 'var(--gradient-3)';
-            submitBtn.style.transform = 'scale(0.98)';
-            
-            // Simulate form submission
-            setTimeout(() => {
-                submitBtn.textContent = '¡Enviado! ✓';
-                submitBtn.style.background = 'linear-gradient(135deg, #4CAF50, #45a049)';
-                
-                setTimeout(() => {
-                    submitBtn.textContent = originalText;
-                    submitBtn.style.background = 'var(--gradient-rose)';
-                    submitBtn.style.transform = 'scale(1)';
-                    this.reset();
-                }, 2000);
-            }, 1500);
-        });
+       
 
         // Newsletter form
         document.querySelector('.footer-col form').addEventListener('submit', function(e) {
