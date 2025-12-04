@@ -511,7 +511,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
         .about-image {
             height: 500px;
             border-radius: 25px;
-            background: url('../imagenes/liderar-exito-diversidad-equipo.jpg') no-repeat center center/cover;
+            background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/liderar-exito-diversidad-equipo.jpg') no-repeat center center/cover;
             box-shadow: var(--shadow-heavy);
             position: relative;
             overflow: hidden;
@@ -743,15 +743,15 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
             box-shadow: var(--shadow-heavy);
         }
 
-        .gallery-item:nth-child(1) { background: url('../imagenes/images_tintado_pelo.jpg') center/cover; }
-        .gallery-item:nth-child(2) { background: url('../imagenes/images_uñas.jpg') center/cover; }
-        .gallery-item:nth-child(3) { background: url('../imagenes/images_maquillaje.jpg') center/cover; }
-        .gallery-item:nth-child(4) { background: url('../imagenes/116053406-front-view-of-stylish-barber-in-white-shirt-and-waistcoat-looking-at-camera-posing-and-smiling-in.jpg') center/cover; }
-        .gallery-item:nth-child(5) { background: url('../imagenes/images_cortando_barba.jpg') center/cover; }
-        .gallery-item:nth-child(6) { background: url('../imagenes/images.jpg') center/cover; }
-        .gallery-item:nth-child(7) { background: url('../imagenes/images_salon.jpg') center/cover; }
-        .gallery-item:nth-child(8) { background: url('../imagenes/istockphoto-511777075-612x612.jpg') center/cover; }
-        .gallery-item:nth-child(9) { background: url('../imagenes/images_masaje.jpg') center/cover; }
+        .gallery-item:nth-child(1) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_tintado_pelo.jpg') center/cover; }
+        .gallery-item:nth-child(2) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_uñas.jpg') center/cover; }
+        .gallery-item:nth-child(3) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_maquillaje.jpg') center/cover; }
+        .gallery-item:nth-child(4) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/116053406-front-view-of-stylish-barber-in-white-shirt-and-waistcoat-looking-at-camera-posing-and-smiling-in.jpg') center/cover; }
+        .gallery-item:nth-child(5) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_cortando_barba.jpg') center/cover; }
+        .gallery-item:nth-child(6) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images.jpg') center/cover; }
+        .gallery-item:nth-child(7) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_salon.jpg') center/cover; }
+        .gallery-item:nth-child(8) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/istockphoto-511777075-612x612.jpg') center/cover; }
+        .gallery-item:nth-child(9) { background: url('<?= BASE_URL ?>/pagina_web_landing-(prototipo-2)/imagenes/images_masaje.jpg') center/cover; }
 
         /* Contacto mejorado */
         .contact {
@@ -1622,7 +1622,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                             <input type="text" name="name" id="name" placeholder="Tu nombre" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email Premium</label>
+                            <label for="email">Email</label>
                             <input type="email" name="email" id="email" placeholder="tu@email.com" required>
                         </div>
                         <div class="form-group">
@@ -1686,7 +1686,7 @@ $funcion_traer_lugares = $modelo_pagina_landing->traer_lugares();
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2024 Rose Spa Premium. Todos los derechos reservados. | Diseñado con 💖</p>
+                <p>&copy; 2024 Rose Spa. Todos los derechos reservados. | Diseñado con 💖</p>
             </div>
         </div>
     </footer>
