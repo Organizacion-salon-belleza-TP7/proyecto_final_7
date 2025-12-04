@@ -40,6 +40,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $id_admin = $traer_relacion['id_trabajador'];
 
                 $_SESSION['id_admin'] = $id_admin;
+                $tipo_usuario = "administrador";
+
+                if($bucle_email = $usuario){
+                    $nombre_usuario = $bucle_email['nombre_usuario'];
+                    $funcion_enviar_email = $logeo->enviar_email_logueo($nombre_usuario,$tipo_usuario);
+
+                }
 
                 header("Location: ". BASE_URL ."/vista/vista_adm/servicios_combos/vista_inicio_adm.php");
                 exit;
@@ -51,6 +58,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
                 $_SESSION['id_emp'] = $id_emp;
 
+                $tipo_usuario = "trabajador";
+
+                if($bucle_email = $usuario){
+                    $nombre_usuario = $bucle_email['nombre_usuario'];
+                    $funcion_enviar_email = $logeo->enviar_email_logueo($nombre_usuario,$tipo_usuario);
+
+                }
+
                 header("Location: ". BASE_URL ."/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php");
                 exit;
                 
@@ -60,6 +75,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
                 $id_cli = $traer_relacion['id_cliente'];
 
                 $_SESSION['id_cliente'] = $id_cli;
+
+                $tipo_usuario = "cliente";
+
+                if($bucle_email = $usuario){
+                    $nombre_usuario = $bucle_email['nombre_usuario'];
+                    $funcion_enviar_email = $logeo->enviar_email_logueo($nombre_usuario,$tipo_usuario);
+
+                }
 
                 header("Location: " . BASE_URL . "/vista/vista_cliente/vista_inicio/vista_inicio_cli.php");
                 exit;
