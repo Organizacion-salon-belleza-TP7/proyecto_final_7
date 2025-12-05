@@ -26,14 +26,14 @@
 
             if($eliminar_servicio && $eliminar_servicio->affected_rows > 0){
                 echo '<script language = javascript>
-                alert("servicio eliminado correctamente")
+                alert("Estado cambiado correctamente")
                 self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
                 </script>';
                 exit;
 
             }else{
                 echo '<script language = javascript>
-                alert("hubo un error al eliminar el servicio")
+                alert("hubo un error al cambiar el estado")
                 self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
                 </script>';
                 exit;

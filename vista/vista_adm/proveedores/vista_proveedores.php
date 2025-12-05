@@ -211,6 +211,29 @@ $proveedores = $modelo->obtenerProveedores();
       color: var(--primary);
       margin-bottom: 15px;
     }
+    .add-contact-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    background: var(--primary);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: .3s;
+    z-index: 1200;
+  }
+  .add-contact-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+  }
+
   </style>
 </head>
 <body>
@@ -287,9 +310,11 @@ $proveedores = $modelo->obtenerProveedores();
     </div>
   </div>
 
-  <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_contactos/ControladorContacto.php?agregar_contacto_proveedor=vista_proveedores">
-    <i class="fas fa-plus"></i> Añadir Contacto de Proveedor
+  <a href="<?= BASE_URL ?>/controlador/controladores_adm/controlador_contactos/ControladorContacto.php?agregar_contacto_proveedor=vista_proveedores"
+   class="add-contact-btn">
+    <i class="fas fa-address-book"></i> Añadir Contacto de Proveedor
   </a>
+
 
   <!-- JS -->
   <script src="<?= BASE_URL ?>/modelo/modelo_adm/servicios_combos/menu_desplegable.js"></script>

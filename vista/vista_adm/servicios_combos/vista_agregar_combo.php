@@ -111,6 +111,23 @@ $resultado_traer_servicios = $servicio_modelo->formulario_agregar_combo();
         padding: 5px 10px;
         font-size: 0.9rem;
     }
+    .add-btn {
+        display: inline-block;
+        background: var(--primary);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 1rem;
+        text-decoration: none;
+        font-weight: bold;
+        box-shadow: var(--shadow);
+        transition: 0.3s;
+        margin-top: 15px;
+    }
+    .add-btn:hover {
+        background: var(--primary-dark);
+    }
+
   </style>
 </head>
 <body>
@@ -162,7 +179,15 @@ $resultado_traer_servicios = $servicio_modelo->formulario_agregar_combo();
 
       <button type="submit" name="enviar_nuevo_combo" value="vista_agregar_combo_adm">Guardar Combo</button>
     </form>
+
+    <div style='text-align:center;'>
+                    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php" class='add-btn'>Volver</a>
+                  </div>
+    
+
   </div>
+
+  
 
   <script>
     const serviciosDisponibles = <?= json_encode($resultado_traer_servicios) ?>;

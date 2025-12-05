@@ -245,7 +245,12 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
                       <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
                       <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
                       <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
+                      <td>
+                      <a class='btn btn-delete'
+                      href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>
+                      ".($row['activo']==1? 'Dar de baja' : 'Dar de alta')."
+                      </a>
+                      </td>
                       ";
 
                     }elseif($row['tiempo_servicio'] == 'minutos'){
@@ -258,7 +263,13 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
                       <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
                       <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
                       <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
+                      <td>
+                      <a class='btn btn-delete'
+                      href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>
+                      ".($row['activo']==1? 'Dar de baja' : 'Dar de alta')."
+                      </a>
+                      </td>
+
                       ";
 
                     }elseif($row['tiempo_servicio'] == 'segundos'){
@@ -271,7 +282,13 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
                       <td><img src='".BASE_URL."/imagenes/servicios/{$row['imagen']}' width='80'></td>
                       <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&detalle_servicio=vista_inicio_adm'>Detalle</a></td>
                       <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&modificar=vista_inicio_adm'>Editar</a></td>
-                      <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>Borrar</a></td>
+                      <td>
+                      <a class='btn btn-delete'
+                      href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row['id_servicios']}&eliminar=vista_inicio_adm'>
+                      ".($row['activo']==1? 'Dar de baja' : 'Dar de alta')."
+                      </a>
+                      </td>
+
                       ";
                     }
                     
@@ -303,7 +320,13 @@ $resultado_traer_servicios = $servicio_modelo->mostrar_servicios();
                 <td>{$row_combos['fecha_creacion']}</td>
                 <td><a class='btn btn-view' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&detalle_combo=vista_inicio_adm'>Detalle</a></td>
                 <td><a class='btn btn-edit' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&modificar_combo=vista_inicio_adm''>Editar</a></td>
-                <td><a class='btn btn-delete' href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&dar_baja_combo=vista_inicio_adm'>Borrar</a></td>
+                <td>
+                <a class='btn btn-delete' 
+                href='".BASE_URL."/controlador/controladores_adm/servicios_combos/controlador_inicio_adm.php?id={$row_combos['id_combos']}&dar_baja_combo=vista_inicio_adm'>
+                ".($row_combos['activo']==1? 'Dar de baja' : 'Dar de alta')."
+                </a>
+                </td>
+
             </tr>";
         }
         echo "</tbody></table>";

@@ -127,6 +127,23 @@ while ($row = $datos_formulario_modificar['productosJS']->fetch_assoc()) {
         button:hover, input[type="submit"]:hover {
             background: var(--primary-dark);
         }
+        .add-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+.add-btn:hover {
+    background: var(--primary-dark);
+}
+
     </style>
 </head>
 <body>
@@ -233,7 +250,10 @@ while ($row = $datos_formulario_modificar['productosJS']->fetch_assoc()) {
                 <input type="submit" name="modificar_servicio" value="Guardar Cambios">
             </div>
         </form>
-    </div>
+        <div style='text-align:center;'>
+                    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php" class='add-btn'>Volver</a>
+                  </div>
+        </div>
 
     <template id="product-template">
         <div class="product-row">

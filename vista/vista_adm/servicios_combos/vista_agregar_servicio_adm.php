@@ -111,6 +111,23 @@
             text-align: center;
             margin-top: 25px;
         }
+        .add-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 1rem;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        .add-btn:hover {
+            background: var(--primary-dark);
+        }
+
     </style>
 </head>
 <body>
@@ -229,6 +246,11 @@
                 <input type="submit" name="enviar_servicio_new" value="Guardar Servicio">
             </div>
         </form>
+
+        <div style='text-align:center;'>
+                    <a href="<?= BASE_URL ?>/vista/vista_adm/servicios_combos/vista_inicio_adm.php" class='add-btn'>Volver</a>
+                  </div>
+        </div>
 
         <!-- Plantilla oculta -->
         <template id="product-template">

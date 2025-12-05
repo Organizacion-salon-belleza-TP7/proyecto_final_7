@@ -28,46 +28,31 @@ class servicios{
     }
 
 	public function dar_baja_servicios($id_servicio){
-		$encontrar_servicio = $this->conn->prepare("SELECT id_servicios, nombre, descripcion, duracion, id_tiempo_servicio, precio_servicio, id_trabajadores_servicios, activo 
-		FROM servicios WHERE id_servicios = ?");
+        $stmt = $this->conn->prepare("SELECT activo 
+        FROM servicios 
+        WHERE id_servicios = ?");
 
-		$encontrar_servicio->bind_param("i",$id_servicio);
-		$encontrar_servicio->execute();
-
-		$array_asociativo_elim_serv = $encontrar_servicio->fetch();
-
-
-
-		if ($array_asociativo_elim_serv['activo'] == 1) {
-			$dar_alta_servicio = $this->conn->prepare("UPDATE servicios SET activo = 1 WHERE ?");
-
-			$dar_alta_servicio->bind_param("i",$id_servicio);
-
-			$dar_alta_servicio->execute();
-
-		}elseif ($array_asociativo_elim_serv['activo'] == 0) {
-			$dar_baja_servicio = $this->conn->prepare("UPDATE servicios SET activo = 0 WHERE ?");
-
-			$dar_baja_servicio->bind_param("i",$id_servicio);
-
-			$dar_baja_servicio->execute();
-		}else {
-			echo '<script language = javascript>
-                alert("hubo un fallo tratando de dar de baja el servicio")
-                self.location = "' . BASE_URL . '/vista/vista_adm/servicios_combos/vista_inicio_adm.php"
-                </script>';
-                exit;
-
-		}
-	
-        $eliminar_servicio = $this->conn->prepare("");
-        $eliminar_servicio->bind_param('i',$id_servicio);
-        $eliminar_servicio->execute();
-
-        return $eliminar_servicio;
+        $stmt->bind_param("i", $id_servicio);
+        $stmt->execute();
         
+        $resultado = $stmt->get_result();
 
+        $data = $resultado->fetch_assoc();
+        $stmt->close();
+
+        if (!$data) {
+            return false;
+        }
+
+        $nuevo_estado = ($data['activo'] == 1) ? 0 : 1;
+
+        $update = $this->conn->prepare("UPDATE servicios SET activo = ? WHERE id_servicios = ?");
+        $update->bind_param("ii", $nuevo_estado, $id_servicio);
+        $update->execute();
+
+        return $update;
     }
+
 
     public function formulario_agregar_servicio(){
         $traer_tiempo = "SELECT id_tiempo_servicio, tiempo_servicio FROM tiempo_servicio";
