@@ -4,128 +4,152 @@ require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/controlador/controlador_trabajadores/controlador_inicio/TrabajadorController.php');
 
 $controller = new TrabajadorController($conn);
-
-// Obtener la lista de espera
 $lista = $controller->listaEspera();
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Espera</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-            margin: 0;
-            padding: 0;
-            color: #4a148c;
-        }
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 50px auto;
-            background: #fff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-        }
-        h1 {
-            text-align: center;
-            color: #ad1457;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 25px;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        table th, table td {
-            padding: 12px;
-            text-align: center;
-        }
-        table th {
-            background: #f48fb1;
-            color: white;
-        }
-        table tr:nth-child(even) {
-            background: #fce4ec;
-        }
-        table tr:nth-child(odd) {
-            background: #f8bbd0;
-        }
-        .acciones a {
-            display: inline-block;
-            padding: 6px 12px;
-            margin: 2px;
-            border-radius: 8px;
-            font-size: 14px;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-        .confirmar {
-            background: #ec407a;
-            color: white;
-        }
-        .confirmar:hover {
-            background: #c2185b;
-        }
-        .cancelar {
-            background: #f48fb1;
-            color: white;
-        }
-        .cancelar:hover {
-            background: #ad1457;
-        }
-        .volver {
-            display: block;
-            margin-top: 20px;
-            text-align: center;
-            font-weight: bold;
-            text-decoration: none;
-            color: #d81b60;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Lista de Espera</h1>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #ffe6f2;
+        margin: 0;
+        padding: 20px;
+    }
 
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Trabajador</th>
-                <th>DNI Trabajador</th>
-                <th>Cliente</th>
-                <th>DNI Cliente</th>
-                <th>Tiempo Estimado</th>
-                <th>Confirmación</th>
-                <th>Acciones</th>
-            </tr>
+    h2 {
+        text-align: center;
+        color: #d63384;
+        margin-bottom: 20px;
+        font-size: 28px;
+    }
 
-            <?php if (!empty($lista)): ?>
-                <?php foreach ($lista as $l): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($l['nombre_trabajador'] . " " . $l['apellido_trabajador']) ?></td>
-                        <td><?= htmlspecialchars($l['dni_trabajador']) ?></td>
-                        <td><?= htmlspecialchars($l['nombre_cliente'] . " " . $l['apellido_cliente']) ?></td>
-                        <td><?= htmlspecialchars($l['dni_cliente']) ?></td>
-                        <td><?= htmlspecialchars($l['tiempo_estimado']) ?> min</td>
-                        <td><?= $l['confirmacion'] == 1 ? '✔ Confirmado' : '❌ Pendiente' ?></td>
-                        <td class="acciones">
-                            <a class="confirmar" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/confirmar.php?id=<?= $l['id_lista_espera'] ?>">Confirmar</a>
-                            <a class="cancelar" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cancelar.php?id=<?= $l['id_lista_espera'] ?>">Cancelar</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    thead {
+        background: #ff99cc;
+        color: white;
+    }
+
+    thead th {
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    tbody td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ffe0f0;
+        font-size: 15px;
+    }
+
+    tr:nth-child(even) {
+        background: #fff5fa;
+    }
+
+    tr:hover {
+        background: #ffe0ef;
+        transition: 0.2s;
+    }
+
+    .btn {
+        padding: 6px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        color: white;
+    }
+
+    .btn-confirmar {
+        background: #ff66b3;
+    }
+
+    .btn-confirmar:hover {
+        background: #ff3385;
+    }
+
+    .btn-cancelar {
+        background: #ff4d88;
+    }
+
+    .btn-cancelar:hover {
+        background: #cc0052;
+    }
+
+
+    .btn-volver {
+        display: inline-block;
+        margin-bottom: 15px;
+        background: #d63384;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .btn-volver:hover {
+        background: #b0246a;
+    }
+</style>
+
+
+<h2> Lista de Espera</h2>
+
+<table border="1" width="100%">
+    <thead>
+        <tr>
+             <th>ID</th>
+            <th>Cliente</th>
+            <th>Trabajador</th>
+            <th>Tiempo Estimado</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <?php if (!empty($lista)): ?>
+            <?php foreach ($lista as $fila): ?>
                 <tr>
-                    <td colspan="7">No hay registros en la lista de espera</td>
-                </tr>
-            <?php endif; ?>
-        </table>
+                    <td><?= $fila['id_lista_espera'] ?></td>
 
-        <a class="volver" href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/pantallaTrabajador.php">⬅ Volver</a>
-    </div>
-</body>
-</html>
+
+                    <td><?= $fila['nombre_cliente'] . " " . $fila['apellido_cliente'] ?></td>
+
+                    <td>
+                        <?= $fila['nombre_trabajador'] 
+                            ? $fila['nombre_trabajador'] . " " . $fila['apellido_trabajador']
+                            : "Sin trabajador asignado" ?>
+                    </td>
+
+                    <td><?= $fila['tiempo_estimado'] ?></td>
+
+                    <td><?= $fila['confirmacion'] == 1 ? "Confirmado" : "Pendiente" ?></td>
+
+                   <td>
+    <?php if ($fila['confirmacion'] == 0): ?>
+        <a class="btn btn-confirmar" href="confirmar.php?id=<?= $fila['id_lista_espera'] ?>">Confirmar</a>
+    <?php endif; ?>
+
+    <a class="btn btn-cancelar" href="cancelar.php?id=<?= $fila['id_lista_espera'] ?>">Cancelar</a>
+</td>
+                </tr>
+                
+
+                
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr><td colspan="6">No hay clientes en la lista de espera.</td></tr>
+        <?php endif; ?>
+    </tbody>
+</table>
+<a href="pantallaTrabajador.php" class="btn btn-volver">← Volver</a>
+
+</div>
