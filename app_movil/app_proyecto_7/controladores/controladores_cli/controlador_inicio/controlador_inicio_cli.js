@@ -2,7 +2,7 @@
 import Cita from "../../../modelo/modelo_cli/modelo_inicio/modelo_inicio_cli";
 
 // 📌 URL base de tu API
-const BASE_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+const BASE_URL = "http://10.253.89.87/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
 /**
  * Trae todas las citas compradas de un usuario

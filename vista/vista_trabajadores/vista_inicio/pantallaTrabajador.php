@@ -4,9 +4,6 @@ require_once(ROOT_PATH . '/modelo/BD.php');
 require_once(ROOT_PATH . '/controlador/controlador_trabajadores/controlador_inicio/TrabajadorController.php');
 
 $controller = new TrabajadorController($conn);
-
-// Obtener lista de trabajadores
-$trabajadores = $controller->listarTrabajadores();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -30,13 +27,13 @@ $trabajadores = $controller->listarTrabajadores();
             padding: 30px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
-        h1, h2 {
+        h1 {
             text-align: center;
             color: #ad1457;
         }
         nav {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         nav a {
             text-decoration: none;
@@ -47,22 +44,6 @@ $trabajadores = $controller->listarTrabajadores();
         }
         nav a:hover {
             color: #880e4f;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        ul li {
-            background: #f8bbd0;
-            margin: 8px 0;
-            padding: 12px;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: 0.3s;
-        }
-        ul li:hover {
-            background: #f48fb1;
-            color: white;
         }
     </style>
 </head>
@@ -75,19 +56,9 @@ $trabajadores = $controller->listarTrabajadores();
             <a href="<?= BASE_URL ?>/vista/vista_trabajadores/vista_inicio/cerrarSesion.php">Cerrar Sesión</a>
         </nav>
 
-        <h2>Control de Horarios</h2>
-        <ul>
-            <?php if (!empty($trabajadores)): ?>
-                <?php foreach ($trabajadores as $t): ?>
-                    <li>
-                        <?= htmlspecialchars($t['nombre_trabajador']) . " " . htmlspecialchars($t['apellido_trabajador']) ?>
-                        (DNI: <?= htmlspecialchars($t['dni']) ?>)
-                    </li>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <li>No hay trabajadores activos</li>
-            <?php endif; ?>
-        </ul>
+        <p style="text-align:center;font-size:18px;">
+            Bienvenido al panel del trabajador. Selecciona una opción del menú.
+        </p>
     </div>
 </body>
 </html>

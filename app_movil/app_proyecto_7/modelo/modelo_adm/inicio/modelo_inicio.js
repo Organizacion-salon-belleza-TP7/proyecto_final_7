@@ -39,7 +39,7 @@ export default class Producto {
 
   getUrlImagen() {
     if (this.tieneImagen()) {
-      return `http://10.0.2.206/proyecto_final_7/imagenes/inventario/${this.imagen_producto}`;
+      return `http://10.253.89.87/proyecto_final_7/imagenes/inventario/${this.imagen_producto}`;
     }
     return null;
   }

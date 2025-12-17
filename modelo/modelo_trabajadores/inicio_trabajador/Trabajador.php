@@ -1,85 +1,77 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-require_once(__DIR__ . '/../../../variable_global.php');
-require_once(ROOT_PATH . '/modelo/BD.php');
-
-class Trabajador {
+class ListaEspera {
 
     private $conn;
 
-    public function __construct($conn) {
+    public function __construct($conn){
         $this->conn = $conn;
     }
 
-    // Obtener trabajadores activos
-    public function obtenerTodos() {
-        $sql = "SELECT * FROM trabajadores WHERE activo = 1";
+    // 👉 INSERTAR RESERVA DEL CLIENTE
+    public function agregar($id_usuario_persona, $id_servicio, $id_tipo_servicio, $tiempo_estimado){
+
+        $sql = "INSERT INTO lista_espera 
+                (id_usuario_persona, id_servicio, id_tipo_servicio, tiempo_estimado, confirmacion)
+                VALUES (?, ?, ?, ?, 0)";
+
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->bind_param("iiis", $id_usuario_persona, $id_servicio, $id_tipo_servicio, $tiempo_estimado);
+        return $stmt->execute();
     }
 
-  public function listaEspera() {
 
-    $sql = "SELECT 
-                le.id_lista_espera,
-                le.tiempo_estimado,
-                le.confirmacion,
+    public function obtenerListaEspera() {
 
-                t.nombre_trabajador,
-                t.apellido_trabajador,
-                t.dni AS dni_trabajador,
+        $sql = "SELECT 
+                    le.id_lista_espera,
+                    le.tiempo_estimado,
+                    le.confirmacion,
 
-                c.nombre AS nombre_cliente,
-                c.apellido AS apellido_cliente,
-                c.dni AS dni_cliente
+                    c.nombre AS nombre_cliente,
+                    c.apellido AS apellido_cliente,
 
-            FROM lista_espera le
+                    t.nombre_trabajador,
+                    t.apellido_trabajador
 
-            INNER JOIN usuarios_personas up 
-                    ON le.id_usuario_persona = up.id_usuarios_personas
+                FROM lista_espera le
 
-            LEFT JOIN trabajadores t 
-                    ON up.id_trabajador = t.id_trabajador
+                LEFT JOIN usuarios_personas up 
+                    ON up.id_usuarios_personas = le.id_usuario_persona
 
-            LEFT JOIN clientes c 
-                    ON up.id_cliente = c.id_cliente
+                LEFT JOIN clientes c 
+                    ON c.id_cliente = up.id_cliente
 
-            ORDER BY le.id_lista_espera DESC";
+                LEFT JOIN trabajadores t 
+                    ON t.id_trabajador = up.id_trabajador
 
-    // DEBUG SQL
-    $stmt = $this->conn->prepare($sql);
+                ORDER BY le.id_lista_espera DESC";
 
-    if (!$stmt) {
-        die("❌ ERROR SQL listaEspera(): " . $this->conn->error);
+        $result = $this->conn->query($sql);
+        $datos = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $datos[] = $row;
+        }
+
+        return $datos;
     }
 
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
 
 
-
-    // Confirmar cita
-    public function confirmar($id) {
+    // 👉 CONFIRMAR TURNO
+    public function confirmar($id){
         $sql = "UPDATE lista_espera SET confirmacion = 1 WHERE id_lista_espera = ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
 
-    // Cancelar cita (borrar)
-    public function cancelar($id) {
-        $sql = "DELETE FROM lista_espera WHERE id_lista_espera = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-        return $stmt->execute();
-    }
+    // 👉 CANCELAR
+  public function cancelar($id) {
+    $sql = "DELETE FROM lista_espera WHERE id_lista_espera = ?";
+    $stmt = $this->conn->prepare($sql);
+    $stmt->bind_param("i", $id);
+    return $stmt->execute();
+}
+
 }

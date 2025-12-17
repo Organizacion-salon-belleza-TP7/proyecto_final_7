@@ -2,7 +2,7 @@
 import User from "../../modelo/modelo_login/modelo_login.js";
 import { authService } from "../../modelo/modelo_sesiones/authService.js"; // ✅ NUEVO
 
-const API_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=login";
+const API_URL = "http://10.253.89.87/proyecto_final_7/app_movil/app_proyecto_7/api/router.php?route=login";
 
 export async function login(nombre_usuario, contrasena) {
   const response = await fetch(API_URL, {

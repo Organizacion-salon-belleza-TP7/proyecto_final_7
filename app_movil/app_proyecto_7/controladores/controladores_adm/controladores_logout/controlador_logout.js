@@ -1,4 +1,4 @@
-const API_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+const API_URL = "http://10.253.89.87/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
 export async function cerrarSesion(id_usuario) {
   try {

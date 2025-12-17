@@ -1,7 +1,7 @@
 // app/controladores/controladores_adm/inicio/controlador_inicio.js
 import Producto from "../../../modelo/modelo_adm/inicio/modelo_inicio";
 
-const API_URL = "http://10.0.2.206/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
+const API_URL = "http://10.253.89.87/proyecto_final_7/app_movil/app_proyecto_7/api/router.php";
 
 // OBTENER INVENTARIO
 export async function getInventario() {
@@ -341,7 +341,7 @@ export async function getProveedores() {
 // FUNCIÓN PARA OBTENER LA URL DE LA IMAGEN
 export function getUrlImagen(nombreImagen) {
   if (!nombreImagen) return null;
-  return `http://10.0.2.206/proyecto_final_7/imagenes/inventario/${nombreImagen}`;
+  return `http://10.253.89.87/proyecto_final_7/imagenes/inventario/${nombreImagen}`;
 }
 
 // VALIDAR DATOS DEL PRODUCTO
